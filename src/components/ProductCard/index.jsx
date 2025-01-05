@@ -6,7 +6,7 @@ import { FaShoppingCart } from "react-icons/fa";
 
 const ProductCard = ({ product, discount,  }) => {
   return (
-   <div className={styles.productGrid}>
+   <div >
              <div key={product.id} className={styles.productCard}>
                {product.discount && (
                  <span className={styles.discountBadge}>-{product.discount}%</span>

@@ -9,6 +9,7 @@ const Home = lazy(() => import("./pages/home/index.jsx"));
 const BrandsPage = lazy(() => import("./pages/Brands/index.jsx"));
 const CartPage = lazy(() => import("./pages/Cart/index.jsx"));
 const WishList = lazy(() => import("./pages/LikedProducts/index.jsx"));
+const Category = lazy(() => import("./pages/Category/index.jsx"));
 // const Product = lazy(() => import("./pages/product/index"));
 
 export default function Router() {
@@ -25,6 +26,7 @@ export default function Router() {
         { path: "/brands", element: <BrandsPage /> },
         { path: "/cart", element: <CartPage /> },
         { path: "/wishlist", element: <WishList /> },
+        { path: "/category", element: <Category /> },
       
       ],
     },
