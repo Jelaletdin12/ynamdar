@@ -1,0 +1,134 @@
+.navButton {
+  display: flex;
+  gap: 5px;
+  border: none;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.875rem;
+  padding-right: 0.875rem;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.5rem;
+  height: 2.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+  background-color: transparent;
+  cursor: pointer;
+  &:hover {
+    background-color: red !important;
+  }
+}
+
+.dropdownWrapper {
+  position: relative;
+}
+
+.dropdownPanel {
+  position: absolute;
+  left: -30%;
+  top: 100%;
+  margin-top: 4px;
+  z-index: 50;
+  display: flex;
+  width: 1050px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.categoriesList {
+  flex: 1;
+  // width: 33.333%;
+  max-height: 500px;
+  overflow-y: auto;
+  border-right: 1px solid #e5e7eb;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
+
+  &.active {
+    background-color: #f3f4f6;
+  }
+
+  .icon {
+    font-size: 18px;
+  }
+
+  .title {
+    font-size: 14px;
+  }
+}
+
+.contentPanel {
+  flex: 3;
+  // width: 66.666%;
+  padding: 16px;
+  max-height: 500px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  flex: 2;
+  text-align: left;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.subcategoryList {
+  margin-bottom: 24px;
+  display: flex;
+}
+
+.subcategoryItem {
+  font-size: 14px;
+  color: #4b5563;
+  padding: 4px 0;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #111827;
+  }
+}

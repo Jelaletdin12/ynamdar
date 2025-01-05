@@ -1,0 +1,31 @@
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+:global(.ant-input) {
+  min-width: 570px;
+}
+
+:global(.swiper-pagination-bullet) {
+  width: 15px !important;
+  height: 3px !important;
+  background: transparent;
+  border-radius: 0 !important;
+  opacity: 1;
+  transition: 0.3s;
+  color: red !important;
+}
+
+:global(.swiper-pagination-bullet-active) {
+  background: #fff !important;
+}
+:global(.swiper-button-next),
+:global(.swiper-button-prev) {
+  color: #fff !important; 
+  font-size: 20px;
+  z-index: 10;
+  &:after {
+    font-size: 20px;
+  }
+}

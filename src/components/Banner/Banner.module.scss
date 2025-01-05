@@ -1,0 +1,88 @@
+.carouselContainer {
+  width: 100%;
+  max-width: 1336px;
+  margin: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.mainSlider {
+  flex: 3.3;
+  height: 550px;
+  border-radius: 10px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.thumbSlider {
+  flex: 0.7;
+  height: 550px;
+  overflow-y: scroll;
+  // scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+  }
+
+  .thumbWrapper {
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    .progressBarImg {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 5px;
+      width: 100%;
+      background: rgba(57, 47, 47, 0.5);
+      animation: progress 3s linear infinite;
+      height: 122.5px;
+      border-radius: 10px;
+    }
+
+    .progressBar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 5px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.5);
+      animation: progress 3s linear infinite;
+      border-end-end-radius: 10px;
+    }
+  }
+}
+
+@keyframes progress {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}

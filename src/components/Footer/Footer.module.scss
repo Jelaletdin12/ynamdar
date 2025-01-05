@@ -1,0 +1,84 @@
+/* Footer.module.scss */
+
+.footer {
+  background-color: #f9f9f9;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #4b5563;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 2rem;
+}
+
+.container {
+  max-width: 1336px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: 0 1.5rem 0 1.5rem;
+  flex-direction: column;
+  width: 100%;
+}
+.logo {
+  width: 10rem;
+  img {
+    height: auto;
+    max-width: 100%;
+  }
+}
+
+.marketSection,
+.contactSection,
+.appsSection {
+  flex: 1;
+  margin: 10px;
+  min-width: 200px;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.appLinks {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.appLogo {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.appLogo:hover {
+  transform: scale(1.05);
+}
+.bottom {
+  display: flex;
+  align-items: center;
+  padding-left: 1.5rem;
+
+  p {
+    font-size: 12px;
+  }
+}
