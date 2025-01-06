@@ -13,7 +13,7 @@ const CategoryPage = () => {
       price: 19.5,
       oldPrice: 19.9,
       discount: "-2%",
-      img: "path/to/image", // Replace with actual image path
+      img: temp2,
     },
     {
       id: 2,
