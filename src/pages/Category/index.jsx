@@ -1,5 +1,8 @@
 import React from "react";
 import styles from "./CategoryPage.module.scss";
+import temp1 from "../../assets/temp1.jpg";
+import temp2 from "../../assets/temp2.jpg";
+import temp3 from "../../assets/temp3.jpg";
 
 const CategoryPage = () => {
   const products = [
@@ -19,7 +22,7 @@ const CategoryPage = () => {
       price: 4.4,
       oldPrice: 5.5,
       discount: "-20%",
-      img: "path/to/image",
+      img: temp2,
     },
     {
       id: 3,
@@ -28,7 +31,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -37,7 +40,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -46,7 +49,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -55,7 +58,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -64,7 +67,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -73,7 +76,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -82,7 +85,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -91,7 +94,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -100,7 +103,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -109,7 +112,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -118,7 +121,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -127,7 +130,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -136,7 +139,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -145,7 +148,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -154,7 +157,7 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
     {
       id: 3,
@@ -163,35 +166,9 @@ const CategoryPage = () => {
       price: 75.8,
       oldPrice: null,
       discount: null,
-      img: "path/to/image",
+      img: temp1,
     },
-    {
-      id: 3,
-      name: "Carte Noire",
-      description: "Kofe Carte Noire 'Elegant' paket gapda 75 gr",
-      price: 75.8,
-      oldPrice: null,
-      discount: null,
-      img: "path/to/image",
-    },
-    {
-      id: 3,
-      name: "Carte Noire",
-      description: "Kofe Carte Noire 'Elegant' paket gapda 75 gr",
-      price: 75.8,
-      oldPrice: null,
-      discount: null,
-      img: "path/to/image",
-    },
-    {
-      id: 3,
-      name: "Carte Noire",
-      description: "Kofe Carte Noire 'Elegant' paket gapda 75 gr",
-      price: 75.8,
-      oldPrice: null,
-      discount: null,
-      img: "path/to/image",
-    },
+    
   ];
 
   return (
@@ -199,7 +176,7 @@ const CategoryPage = () => {
       {/* Left Sidebar */}
       <h2>Ýmit, kulinariýa</h2>
       <p>Jemi: 2291 haryt</p>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: "flex", gap:"20px", paddingTop:"20px" }}>
         <aside className={styles.sidebar}>
           <div className={styles.filterSection}>
             <h3>Önümler</h3>

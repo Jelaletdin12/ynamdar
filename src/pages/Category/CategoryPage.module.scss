@@ -1,6 +1,8 @@
 .categoryPage {
   display: flex;
   gap: 20px;
+  max-width: 1336px;
+  margin: auto;
 
   aside {
     width: 250px;
@@ -11,6 +13,7 @@
     border-radius: 8px;
     overflow-x: auto;
     height: calc(-6.25rem + 100vh);
+    margin: 0 0 1.5rem 0;
 
     h2 {
       margin-bottom: 10px;
@@ -56,7 +59,7 @@
 
     .productGrid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(4, minmax(200px, 1fr));
       gap: 20px;
     }
 
@@ -76,8 +79,8 @@
 
       .discount {
         position: absolute;
-        top: 10px;
-        left: 10px;
+        // top: 10px;
+        // left: 10px;
         background-color: #ff4d4f;
         color: #fff;
         padding: 5px 10px;
