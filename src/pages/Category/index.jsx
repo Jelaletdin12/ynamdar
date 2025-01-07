@@ -176,7 +176,7 @@ const CategoryPage = () => {
       {/* Left Sidebar */}
       <h2>Ýmit, kulinariýa</h2>
       <p>Jemi: 2291 haryt</p>
-      <div style={{ display: "flex", gap:"20px", paddingTop:"20px" }}>
+      <div className={styles.Container}>
         <aside className={styles.sidebar}>
           <div className={styles.filterSection}>
             <h3>Önümler</h3>

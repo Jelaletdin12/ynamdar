@@ -79,10 +79,16 @@
   margin-bottom: 16px;
   
   label {
-    display: block;
+    display: table-cell;
     margin-bottom: 8px;
     color: #666;
     font-size: 14px;
+    transform: translateY(10px);
+    background-color: #fff;
+    width: min-content;
+    z-index: 99;
+    position: relative;
+    left: 15px;
   }
 }
 

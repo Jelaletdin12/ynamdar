@@ -3,18 +3,28 @@
   flex-direction: column;
   align-items: center;
   color: #fff;
-
+  background-color: #fff;
   justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
 
   .navbarUp {
     width: 100%;
     background-color: #ff6600;
+    margin-bottom: 1px;
   }
+
   .navbarDown {
     width: 100%;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     background-color: #ffffff;
-    // max-width: 1336px;
+    max-width: 1366px;
+    position: sticky;
+    top: 0;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    
   }
   .logo img {
     height: 50px;
@@ -30,26 +40,11 @@
     display: flex;
     justify-content: center;
     gap: 10px;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
-    padding-bottom: 0.5rem;
+    // padding-left: 0.75rem;
+    // padding-right: 0.75rem;
+    // padding-bottom: 0.5rem;
     margin: 0 auto 0 auto;
-
-    @media (min-width: 640px) {
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
-
-    @media (min-width: 768px) {
-      padding-left: 1.25rem;
-      padding-right: 1.25rem;
-    }
-
-    @media (min-width: 1024px) {
-      padding-left: 1.375rem;
-      padding-right: 1.375rem;
-      padding-top: 0.5rem;
-    }
+    box-sizing: border-box;
 
     li,
     a {

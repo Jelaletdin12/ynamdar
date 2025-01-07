@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import { Modal, Input, Button } from "antd";
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-import IMask from 'imask';
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import IMask from "imask";
 import styles from "./SignUpModal.module.scss";
 
 const SignUpModal = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState('phone');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [messageTitle, setMessageTitle] = useState('');
+  const [activeTab, setActiveTab] = useState("phone");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageTitle, setMessageTitle] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
 
   // Phone number mask configuration
   const phoneMaskOptions = {
-    mask: '+{993} 000 000000',
-    lazy: false
+    mask: "+{993} 000 000000",
+    lazy: false,
   };
 
   const showModal = () => {
@@ -26,10 +26,10 @@ const SignUpModal = () => {
   const handleCancel = () => {
     if (hasChanges) {
       Modal.confirm({
-        title: 'Siz hakykatdanam modaly yapmakçymy?',
+        title: "Siz hakykatdanam modaly yapmakçymy?",
         icon: <ExclamationCircleOutlined />,
-        okText: 'Hawa',
-        cancelText: 'Ýok',
+        okText: "Hawa",
+        cancelText: "Ýok",
         onOk() {
           setIsModalVisible(false);
           resetForm();
@@ -42,26 +42,26 @@ const SignUpModal = () => {
   };
 
   const resetForm = () => {
-    setPhone('');
-    setEmail('');
-    setMessage('');
-    setMessageTitle('');
+    setPhone("");
+    setEmail("");
+    setMessage("");
+    setMessageTitle("");
     setHasChanges(false);
   };
 
   const handleInputChange = (type, value) => {
     setHasChanges(true);
     switch (type) {
-      case 'phone':
+      case "phone":
         setPhone(value);
         break;
-      case 'email':
+      case "email":
         setEmail(value);
         break;
-      case 'message':
+      case "message":
         setMessage(value);
         break;
-      case 'messageTitle':
+      case "messageTitle":
         setMessageTitle(value);
         break;
       default:
@@ -76,7 +76,7 @@ const SignUpModal = () => {
       phone,
       email,
       message,
-      messageTitle
+      messageTitle,
     });
   };
 
@@ -85,7 +85,7 @@ const SignUpModal = () => {
       <Button onClick={showModal} className={styles.navButton}>
         Agza bol
       </Button>
-      
+
       <Modal
         title="Agza bol"
         open={isModalVisible}
@@ -95,32 +95,38 @@ const SignUpModal = () => {
         closeIcon={<span>×</span>}
       >
         <div className={styles.tabWrapper}>
-          <div 
-            className={`${styles.tab} ${activeTab === 'phone' ? styles.active : ''}`}
-            onClick={() => setActiveTab('phone')}
+          <div
+            className={`${styles.tab} ${
+              activeTab === "phone" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("phone")}
           >
             Telefon
           </div>
-          <div 
-            className={`${styles.tab} ${activeTab === 'email' ? styles.active : ''}`}
-            onClick={() => setActiveTab('email')}
+          <div
+            className={`${styles.tab} ${
+              activeTab === "email" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("email")}
           >
             Email
           </div>
         </div>
 
         <div className={styles.inputGroup}>
-          <label>{activeTab === 'phone' ? 'Telefon' : 'Email'}</label>
+          <label>{activeTab === "phone" ? "Telefon" : "Email"}</label>
           <Input
-            value={activeTab === 'phone' ? phone : email}
+            value={activeTab === "phone" ? phone : email}
             onChange={(e) => handleInputChange(activeTab, e.target.value)}
-            {...(activeTab === 'phone' ? {
-              onInput: (e) => {
-                const maskOptions = IMask.createMask(phoneMaskOptions);
-                const masked = maskOptions.resolve(e.target.value);
-                setPhone(masked);
-              }
-            } : {})}
+            {...(activeTab === "phone"
+              ? {
+                  onInput: (e) => {
+                    const maskOptions = IMask.createMask(phoneMaskOptions);
+                    const masked = maskOptions.resolve(e.target.value);
+                    setPhone(masked);
+                  },
+                }
+              : {})}
           />
         </div>
 
@@ -128,7 +134,7 @@ const SignUpModal = () => {
           <label>Açar söz</label>
           <Input
             value={message}
-            onChange={(e) => handleInputChange('message', e.target.value)}
+            onChange={(e) => handleInputChange("message", e.target.value)}
           />
         </div>
 
@@ -136,7 +142,7 @@ const SignUpModal = () => {
           <label>Açar söz tassykla</label>
           <Input
             value={messageTitle}
-            onChange={(e) => handleInputChange('messageTitle', e.target.value)}
+            onChange={(e) => handleInputChange("messageTitle", e.target.value)}
           />
         </div>
 

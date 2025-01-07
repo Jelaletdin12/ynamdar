@@ -1,6 +1,6 @@
 .carouselContainer {
   width: 100%;
-  max-width: 1336px;
+  max-width: 1366px;
   margin: auto;
   display: flex;
   gap: 10px;
@@ -61,6 +61,7 @@
       width: 100%;
       background: rgba(57, 47, 47, 0.5);
       animation: progress 3s linear infinite;
+      // animation-delay: 0.3s;
       height: 122.5px;
       border-radius: 10px;
     }
@@ -73,6 +74,7 @@
       width: 100%;
       background: rgba(255, 255, 255, 0.5);
       animation: progress 3s linear infinite;
+      // animation-delay: 0.3s;
       border-end-end-radius: 10px;
     }
   }

@@ -5,7 +5,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
-  background-color: #fff;
+  // background-color: #fff;
 }
 
 .cartItems {
@@ -28,6 +28,7 @@
   gap: 1.5rem;
   padding: 1.5rem;
   border-bottom: 1px solid #eee;
+  background-color: #fff;
 
   .itemImage {
     width: 100px;
@@ -105,7 +106,7 @@
 .cartSummary {
   width: 300px;
   position: sticky;
-  top: 2rem;
+  top: 5rem;
   height: fit-content;
   padding: 1.5rem;
   border-radius: 8px;
