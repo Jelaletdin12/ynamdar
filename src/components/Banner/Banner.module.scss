@@ -1,9 +1,10 @@
 .carouselContainer {
   width: 100%;
   max-width: 1366px;
-  margin: auto;
+  padding: 0 0.75rem 0 0.75rem;
   display: flex;
   gap: 10px;
+  box-sizing: border-box;
 }
 
 .mainSlider {

@@ -64,14 +64,30 @@ const CartPage = () => {
             Sebedim ({cartItems.reduce((sum, item) => sum + item.quantity, 0)})
           </h2>
           <div>
-            <button className={styles.deleteBtn}>
+            <button
+              className={styles.deleteBtn}
+              style={{ padding: "4px 12px" }}
+            >
               <FaTrashAlt /> Sebedi Bosat
             </button>
           </div>
         </div>
 
-        <div style={{ display: "flex", gap: "20px" }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: "10px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              backgroundColor: "#fff",
+              borderRadius: "10px",
+            }}
+          >
             {cartItems.map((item) => (
               <div key={item.id} className={styles.cartItem}>
                 <div className={styles.itemImage}>
@@ -132,26 +148,26 @@ const CartPage = () => {
                 </div>
               </div>
             ))}
-
           </div>
-        <div className={styles.cartSummary}>
-          <h3>Sebedim:</h3>
-          <div className={styles.summaryRow}>
-            <span>Mukdar:</span>
-            <span>{calculateTotal().toFixed(2)} m.</span>
+          <div className={styles.cartSummary}>
+            <div className={styles.cartContent}>
+              <h3>Sebedim:</h3>
+              <div className={styles.summaryRow}>
+                <span>Bahasy::</span>
+                <span>{calculateTotal().toFixed(2)} m.</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>Eltip berme :</span>
+                <span>0.00 m.</span>
+              </div>
+              <div className={styles.summaryRow}>
+                <span>Jemi:</span>
+                <span>{calculateTotal().toFixed(2)} m.</span>
+              </div>
+            </div>
+            <button className={styles.checkoutBtn}>Sargydy tayyarlamak</button>
           </div>
-          <div className={styles.summaryRow}>
-            <span>Indirim:</span>
-            <span>0.00 m.</span>
-          </div>
-          <div className={styles.summaryRow}>
-            <span>Jemi:</span>
-            <span>{calculateTotal().toFixed(2)} m.</span>
-          </div>
-          <button className={styles.checkoutBtn}>Sargyt et</button>
         </div>
-        </div>
-
       </div>
     </div>
   );

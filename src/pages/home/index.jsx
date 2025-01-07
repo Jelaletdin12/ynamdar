@@ -47,17 +47,6 @@ const Home = () => {
       discount: 50,
       image: temp3,
     },
-    {
-      id: 5,
-      name: "Philips Avent",
-      description:
-        'Emzikli çüýşe Philips Avent "Natural Response" 3 aý+ plastik 330 ml',
-      price: 259.5,
-      oldPrice: 519.0,
-      discount: 50,
-      image: temp1,
-    },
-    // Add other products similarly
   ];
 
   return (
