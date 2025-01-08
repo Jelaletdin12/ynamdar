@@ -8,6 +8,7 @@
   margin-bottom: 24px;
   display: flex;
   align-items: center;
+  height: 40px;
   svg {
     position: absolute;
     width: 24px;
@@ -17,10 +18,10 @@
 
   input {
     width: 46%;
-    height: 40px;
+    height: 38px;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 14px;
     padding-left: 40px;
 
     &::placeholder {

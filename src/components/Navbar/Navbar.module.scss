@@ -17,7 +17,6 @@
 
   .navbarDown {
     width: 100%;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     background-color: #ffffff;
     max-width: 1366px;
     position: sticky;
@@ -27,8 +26,6 @@
     padding-left: 1.375rem;
     padding-right: 1.375rem;
     box-sizing: border-box;
-  
-    
   }
   .logo img {
     height: 50px;
@@ -75,25 +72,31 @@
       align-items: center;
       flex: 1;
       flex-direction: row-reverse;
-     
+      
+
       svg {
         position: absolute;
         width: 24px;
         height: 24px;
         transform: translateX(-35%);
       }
-    
+
       input {
         width: 100%;
         height: 40px;
-        border: 1px solid #e5e7eb;
         border-radius: 8px;
-        font-size: 16px;
-        padding-right: 40px;
-        
-    
+        font-size: 0.75rem;
+        padding: 4px 16px;
+        background-color: #e5e7eb;
+        box-sizing: border-box;
+        border: 0 solid #e5e7eb;
+      
+        &:focus-visible{
+          border: 0 solid #e5e7eb !important;
+        }
         &::placeholder {
           color: #9ca3af;
+          font-size: 0.75rem;
         }
       }
     }
@@ -116,7 +119,7 @@
     background-color: transparent;
     cursor: pointer;
     &:hover {
-      background-color: red;
+      background-color: #f3f4f6;
     }
   }
 

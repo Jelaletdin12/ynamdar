@@ -6,6 +6,7 @@ import temp2 from "../../assets/temp2.jpg";
 import temp3 from "../../assets/temp3.jpg";
 import { FaHeart } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
+import ProductCard from "../../components/ProductCard/index";
 
 const WishtList = () => {
   const products = [
@@ -61,45 +62,30 @@ const WishtList = () => {
     // Add other products similarly
   ];
 
+  const handleAddToCart = (product) => {
+    // Implement cart logic here
+    console.log("Adding to cart:", product);
+  };
+
+  const handleToggleFavorite = (product) => {
+    // Implement favorite toggle logic here
+    console.log("Toggling favorite:", product);
+  };
+
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Halanlarym</h1>
       <div className={styles.productGrid}>
         {products.map((product) => (
-          <div key={product.id} className={styles.productCard}>
-            {product.discount && (
-              <span className={styles.discountBadge}>-{product.discount}%</span>
-            )}
-            <div className={styles.imageContainer}>
-              <img
-                src={product.image}
-                alt={product.name}
-                className={styles.productImage}
-              />
-            </div>
-            <div className={styles.productInfo}>
-              <h3 className={styles.productName}>{product.name}</h3>
-              <p className={styles.productDescription}>{product.description}</p>
-              <div className={styles.priceContainer}>
-                <span className={styles.currentPrice}>
-                  {product.price.toFixed(2)} m.
-                </span>
-                {product.oldPrice && (
-                  <span className={styles.oldPrice}>
-                    {product.oldPrice.toFixed(2)} m.
-                  </span>
-                )}
-              </div>
-              <div className={styles.actions}>
-                <button className={styles.favoriteButton}>
-                  <FaHeart />
-                </button>
-                <button className={styles.addToCartButton}>
-                  <FaShoppingCart />
-                </button>
-              </div>
-            </div>
-          </div>
+           <ProductCard
+           key={product.id}
+           product={product}
+           onAddToCart={handleAddToCart}
+           onToggleFavorite={handleToggleFavorite}
+           isFavorite={true} // Since this is wishlist, all items are favorites
+           showFavoriteButton={true}
+           showAddToCart={true}
+         />
         ))}
       </div>
     </div>

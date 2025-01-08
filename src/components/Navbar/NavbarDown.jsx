@@ -46,7 +46,7 @@ const NavbarDown = () => {
             </li>
             <li className={styles.searchWrapper}>
               <CiSearch />
-              <input type="text" placeholder="Gözleg" />
+              <input type="text" placeholder="Haryt ady boyunca gozle..." />
             </li>
             <li>
               <button className={styles.navButton}>

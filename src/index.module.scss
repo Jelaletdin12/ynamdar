@@ -55,3 +55,11 @@ body {
   right: 9px !important;
   align-items: center !important;
 }
+
+.searchWrapper{
+  input{
+    &:focus-visible{
+      border: none !important;
+    }
+  }
+}
