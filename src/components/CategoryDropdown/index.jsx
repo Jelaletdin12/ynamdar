@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./DropdownMenu.module.scss";
 
 const DropdownMenu = () => {
@@ -10,13 +10,35 @@ const DropdownMenu = () => {
       id: 1,
       icon: "🎁",
       title: "Hoş geldin, bäbek! (-50%)",
-      items: [],
+      items: [
+        {
+          title: "Çörek önümleri, tort",
+          subcategories: [
+            "Çörek",
+            "Simit, bulka, kruassan",
+            "Desert, süýjüliklier",
+          ],
+        },
+        {
+          title: "Un, kulinariya",
+          subcategories: ["Bugdaý uny", "Lawas", "Duz, burç", "Spesiyalar"],
+        },
+        {
+          title: "Süýji, marmelad, zefir",
+          subcategories: ["Süýjiler", "Yumsak süýjiler", "Lokum, baklawa"],
+        },
+      ],
     },
     {
       id: 2,
       icon: "⭐",
       title: "Maslahat berilýän harytlar",
-      items: [],
+      items: [
+        {
+          title: "Maslahat berilýän harytlar",
+          subcategories: ["Popular item 1", "Popular item 2", "Popular item 3"],
+        },
+      ],
     },
     {
       id: 3,
@@ -45,12 +67,45 @@ const DropdownMenu = () => {
       id: 4,
       icon: "🍖",
       title: "Et, towuk, balyk",
-      items: [],
+      items: [
+        {
+          title: "Çörek önümleri, tort",
+          subcategories: [
+            "Çörek",
+            "Simit, bulka, kruassan",
+            "Desert, süýjüliklier",
+          ],
+        },
+        {
+          title: "Un, kulinariya",
+          subcategories: ["Bugdaý uny", "Lawas", "Duz, burç", "Spesiyalar"],
+        },
+        {
+          title: "Süýji, marmelad, zefir",
+          subcategories: ["Süýjiler", "Yumsak süýjiler", "Lokum, baklawa"],
+        },
+      ],
     },
   ];
 
+  // Set default category when component mounts
+  useEffect(() => {
+    const defaultCategory = categories.find(
+      (cat) => cat.title === "Maslahat berilýän harytlar"
+    );
+    setActiveCategory(defaultCategory);
+  }, []);
+
   const handleToggle = () => {
     setIsOpen(!isOpen);
+  };
+
+  // If no category is hovered, return to default category
+  const handleMouseLeave = () => {
+    const defaultCategory = categories.find(
+      (cat) => cat.title === "Maslahat berilýän harytlar"
+    );
+    setActiveCategory(defaultCategory);
   };
 
   return (
@@ -58,10 +113,10 @@ const DropdownMenu = () => {
       <button onClick={handleToggle} className={styles.navButton}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          fill-rule="evenodd"
-          stroke-linejoin="round"
-          stroke-miterlimit="2"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          strokeLinejoin="round"
+          strokeMiterlimit="2"
+          clipRule="evenodd"
           viewBox="0 0 32 32"
           id="category"
         >
@@ -71,7 +126,7 @@ const DropdownMenu = () => {
       </button>
       {isOpen && (
         <div className={styles.dropdownWrapper}>
-          <div className={styles.dropdownPanel}>
+          <div className={styles.dropdownPanel} onMouseLeave={handleMouseLeave}>
             <div className={styles.categoriesList}>
               {categories.map((category) => (
                 <div

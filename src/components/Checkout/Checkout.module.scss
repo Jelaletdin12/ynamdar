@@ -55,10 +55,10 @@
     display: inline-block;
     width: 12px;
     height: 12px;
-    border: 2px solid #ccc;
+    border: 2px solid #d1d5db;
     border-radius: 50%;
     margin-right: 8px;
-    background-color: white;
+    background-color: #d1d5db;
     transition: background-color 0.2s, border-color 0.2s;
   }
 
@@ -70,13 +70,12 @@
     display: none;
   }
 
-  /* Checkbox'u gizle */
   .customCheckbox {
     width: 18px;
     height: 18px;
     margin-right: 8px;
     border-radius: 4px;
-    background-color: gray;
+    background-color: #d1d5db;
     position: relative;
     transition: background-color 0.2s, border-color 0.2s;
     display: flex;
@@ -92,7 +91,7 @@
   }
 
   input[type="checkbox"]:checked + .customCheckbox {
-    background-color: gray;
+    background-color: #d1d5db;
   }
 
   input[type="checkbox"]:checked + .customCheckbox .checkIcon {
@@ -136,7 +135,7 @@
 }
 
 .deliveryForm {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 
   .formGroup {
     margin-bottom: 15px;
@@ -147,7 +146,7 @@
       margin-bottom: 8px;
       color: #666;
       font-size: 12px;
-      transform: translateY(10px);
+      transform: translateY(8px);
       background-color: #fff;
       width: min-content;
       z-index: 99;
@@ -182,15 +181,17 @@
 }
 
 .deliveryInfo {
-  color: #666;
-  font-size: 0.9rem;
+  color: #000;
+  font-size: 16px;
   line-height: 1.5;
+  border-top: 0.5px solid rgb(156 163 175);
+  padding-top: 10px;
 
-  p {
-    margin-bottom: 10px;
+  li {
+    margin-bottom: 20px;
   }
 
   strong {
-    color: #333;
+    color: #000;
   }
 }

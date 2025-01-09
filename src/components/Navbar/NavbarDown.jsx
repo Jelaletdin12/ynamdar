@@ -2,15 +2,42 @@ import React from "react";
 import styles from "./Navbar.module.scss";
 import logo from "../../assets/logo.png";
 import { FaGlobe } from "react-icons/fa6";
-import { Input, Badge } from "antd";
+import { Input, Badge, Menu, Dropdown } from "antd";
 const { Search } = Input;
 import DropdownMenu from "../CategoryDropdown/index";
 import LoginModal from "../LogIn/index";
 import SignUpModal from "../SignUp/index";
 import { Link, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
+import tm from "../../assets/tm.png";
+import ru from "../../assets/ru.png";
+import en from "../../assets/en.png";
 
 const NavbarDown = () => {
+  const menuItems = [
+    { key: "1", img: tm, label: "Türkmençe" },
+    { key: "2", img: ru, label: "Русский" },
+    { key: "3", img: en, label: "English" },
+  ];
+
+  const globeMenu = (
+    <Menu
+      items={menuItems.map((item) => ({
+        key: item.key,
+        label: (
+          <span>
+            <img
+              src={item.img}
+              alt={item.label}
+              style={{ width: "20px", marginRight: "10px" }}
+            />
+            {item.label}
+          </span>
+        ),
+      }))}
+    />
+  );
+
   return (
     <header className={styles.navbar}>
       <div className={styles.navbarDown} style={{ position: "sticky" }}>
@@ -49,9 +76,11 @@ const NavbarDown = () => {
               <input type="text" placeholder="Haryt ady boyunca gozle..." />
             </li>
             <li>
-              <button className={styles.navButton}>
-                <FaGlobe />
-              </button>
+              <Dropdown overlay={globeMenu} trigger={["click"]}>
+                <button className={styles.navButton}>
+                  <FaGlobe />
+                </button>
+              </Dropdown>
             </li>
             <div className={styles.stick}></div>
 

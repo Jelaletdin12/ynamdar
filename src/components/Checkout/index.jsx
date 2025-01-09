@@ -135,46 +135,30 @@ const Checkout = ({ cartItems, onBackToCart }) => {
         </div>
 
         <div className={styles.deliveryInfo}>
-          <p>
+          <ul>
+
+          </ul>
+          <li>
             Eltip bermek hyzmaty Aşgabat şäheriniň çägi bilen bir hatarda
             Büzmeýine we Änew şäherine hem elýeterlidir;
-          </p>
-          <p>
+          </li>
+          <li>
             Sargydyň iň pes çägi <strong>50 manat</strong> bolmaly; sargydyňyz{" "}
             <strong>150 manatdan</strong> geçse eltip bermek hyzmaty mugt;
-          </p>
-          <p>
+          </li>
+          <li>
             Saýtdan sargyt edeniňizden soňra operator size jaň edip sargydy
             tassyklar (eger hemişelik müşderi bolsaňyz sargytlaryňyz islegiňize
             göra awtomatik usulda hem tassyklanýar);
-          </p>
-          <p>
+          </li>
+          <li>
             Sargydy barlap alanyňyzdan soňra töleg amala aşyrylyar. Eltip
             berijiniň size gowşurýan töleg resminamasynda siziň tölemeli puluňyz
             bellenenddir. Töleg nagt we nagt däl görnüşde milli manatda amala
             aşyrylyar. Kabul edip tölegini geçiren harydyňyz yzyna alynmayar.
-          </p>
+          </li>
         </div>
       </div>
-
-      {/* <div className={styles.orderSummary}>
-        <h3>Sebedim:</h3>
-        <div className={styles.summaryRow}>
-          <span>Bahasy:</span>
-          <span>{calculateTotal().toFixed(2)} m.</span>
-        </div>
-        <div className={styles.summaryRow}>
-          <span>Eltip berme:</span>
-          <span>0.00 m.</span>
-        </div>
-        <div className={styles.summaryRow}>
-          <span>Jemi:</span>
-          <span>{calculateTotal().toFixed(2)} m.</span>
-        </div>
-        <button className={styles.submitButton}>
-          Sargyt et
-        </button>
-      </div> */}
     </div>
   );
 };

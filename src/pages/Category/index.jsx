@@ -195,17 +195,10 @@ const CategoryPage = () => {
               <li>Gury iýmişler, çigit</li>
               <li>Süýji, marmelad, zefir</li>
               <li>Köke önümleri, keks</li>
-              <li>Köke önümleri, keks</li>
-              <li>Köke önümleri, keks</li>
-              <li>Köke önümleri, keks</li>
-              <li>Köke önümleri, keks</li>
-              <li>Köke önümleri, keks</li>
+            
               <li>Şokolad</li>
               <li>Şokolad</li>
-              <li>Şokolad</li>
-              <li>Şokolad</li>
-              <li>Şokolad</li>
-              <li>Şokolad</li>
+              
               <li>Kofe</li>
               <li>Çay, gyzgyn içgiler</li>
             </ul>
@@ -236,13 +229,7 @@ const CategoryPage = () => {
                 <label>
                   <input type="checkbox" />
                   <span className={styles.customCheckbox}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      className={styles.checkIcon}
-                    >
-                      <path d="M9 16.2l-4.2-4.2-1.4 1.4L9 19l12-12-1.4-1.4z" />
-                    </svg>
+                  <TiTick className={styles.checkIcon} />
                   </span>
                   Mahmood Rice
                 </label>
