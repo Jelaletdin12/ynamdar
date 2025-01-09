@@ -4,6 +4,7 @@ import temp1 from "../../assets/temp1.jpg";
 import temp2 from "../../assets/temp2.jpg";
 import temp3 from "../../assets/temp3.jpg";
 import ProductCard from "../../components/ProductCard/index";
+import { TiTick } from "react-icons/ti";
 
 const CategoryPage = () => {
   const products = [
@@ -228,42 +229,35 @@ const CategoryPage = () => {
             </label>
           </div>
           <div className={styles.filterSection}>
-  <h3>Brend</h3>
-  <input type="text" placeholder="Gözleg" />
-  <ul>
-    <li>
-      <label>
-        <input type="checkbox" />
-        <span className={styles.customCheckbox}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            className={styles.checkIcon}
-          >
-            <path d="M9 16.2l-4.2-4.2-1.4 1.4L9 19l12-12-1.4-1.4z" />
-          </svg>
-        </span>
-        Mahmood Rice
-      </label>
-    </li>
-    <li>
-      <label>
-        <input type="checkbox" />
-        <span className={styles.customCheckbox}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            className={styles.checkIcon}
-          >
-            <path d="M9 16.2l-4.2-4.2-1.4 1.4L9 19l12-12-1.4-1.4z" />
-          </svg>
-        </span>
-        Mahmood Tea
-      </label>
-    </li>
-  </ul>
-</div>
-
+            <h3>Brend</h3>
+            <input type="text" placeholder="Gözleg" />
+            <ul>
+              <li>
+                <label>
+                  <input type="checkbox" />
+                  <span className={styles.customCheckbox}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      className={styles.checkIcon}
+                    >
+                      <path d="M9 16.2l-4.2-4.2-1.4 1.4L9 19l12-12-1.4-1.4z" />
+                    </svg>
+                  </span>
+                  Mahmood Rice
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input type="checkbox" />
+                  <span className={styles.customCheckbox}>
+                    <TiTick className={styles.checkIcon} />
+                  </span>
+                  Mahmood Tea
+                </label>
+              </li>
+            </ul>
+          </div>
         </aside>
 
         {/* Main Content */}

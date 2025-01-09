@@ -5,8 +5,12 @@ import temp1 from "../../assets/temp1.jpg";
 import temp2 from "../../assets/temp2.jpg";
 import temp3 from "../../assets/temp3.jpg";
 import { FaTrashAlt } from "react-icons/fa";
+import Checkout from "../../components/Checkout";
 
 const CartPage = () => {
+  const [isCheckout, setIsCheckout] = useState(false);
+  const handleCheckout = () => setIsCheckout(true);
+  const handleBackToCart = () => setIsCheckout(false);
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -80,75 +84,79 @@ const CartPage = () => {
             gap: "10px",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              backgroundColor: "#fff",
-              borderRadius: "10px",
-            }}
-          >
-            {cartItems.map((item) => (
-              <div key={item.id} className={styles.cartItem}>
-                <div className={styles.itemImage}>
-                  <img src={item.image} alt={item.name} />
-                </div>
-                <div className={styles.itemInfo}>
-                  <div style={{ flex: "1" }}>
-                    <h3>{item.name}</h3>
-                    <p>{item.description}</p>
+          {isCheckout ? (
+            <Checkout cartItems={cartItems} onBackToCart={handleBackToCart} />
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                backgroundColor: "#fff",
+                borderRadius: "10px",
+              }}
+            >
+              {cartItems.map((item) => (
+                <div key={item.id} className={styles.cartItem}>
+                  <div className={styles.itemImage}>
+                    <img src={item.image} alt={item.name} />
                   </div>
-                  <div className={styles.priceQuantity}>
-                    <span className={styles.price}>
-                      {item.price.toFixed(2)} m.
-                    </span>
-                    <div className={styles.quantityControls}>
-                      <button
-                        onClick={() =>
-                          updateQuantity(item.id, item.quantity - 1)
-                        }
-                        className={styles.quantityBtn}
-                      >
-                        <svg
-                          viewBox="0 0 9 11"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                  <div className={styles.itemInfo}>
+                    <div style={{ flex: "1" }}>
+                      <h3>{item.name}</h3>
+                      <p>{item.description}</p>
+                    </div>
+                    <div className={styles.priceQuantity}>
+                      <span className={styles.price}>
+                        {item.price.toFixed(2)} m.
+                      </span>
+                      <div className={styles.quantityControls}>
+                        <button
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity - 1)
+                          }
+                          className={styles.quantityBtn}
                         >
-                          <path
-                            d="M1.41422 6.86246C0.633166 6.08141 0.633165 4.81508 1.41421 4.03403L4.61487 0.833374C5.8748 -0.426555 8.02908 0.465776 8.02908 2.24759V8.6489C8.02908 10.4307 5.8748 11.323 4.61487 10.0631L1.41422 6.86246Z"
-                            fill="white"
-                          ></path>
-                        </svg>
-                      </button>
-                      <span>{item.quantity}</span>
-                      <button
-                        onClick={() =>
-                          updateQuantity(item.id, item.quantity + 1)
-                        }
-                        className={styles.quantityBtn}
-                      >
-                        <svg
-                          viewBox="0 0 9 11"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                          <svg
+                            viewBox="0 0 9 11"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M1.41422 6.86246C0.633166 6.08141 0.633165 4.81508 1.41421 4.03403L4.61487 0.833374C5.8748 -0.426555 8.02908 0.465776 8.02908 2.24759V8.6489C8.02908 10.4307 5.8748 11.323 4.61487 10.0631L1.41422 6.86246Z"
+                              fill="white"
+                            ></path>
+                          </svg>
+                        </button>
+                        <span>{item.quantity}</span>
+                        <button
+                          onClick={() =>
+                            updateQuantity(item.id, item.quantity + 1)
+                          }
+                          className={styles.quantityBtn}
                         >
-                          <path
-                            d="M6.64389 4.03427C7.42494 4.81532 7.42494 6.08165 6.64389 6.8627L3.44324 10.0634C2.18331 11.3233 0.0290222 10.431 0.0290226 8.64914V2.24783C0.0290226 0.466021 2.18331 -0.426312 3.44324 0.833617L6.64389 4.03427Z"
-                            fill="white"
-                          ></path>
-                        </svg>
+                          <svg
+                            viewBox="0 0 9 11"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M6.64389 4.03427C7.42494 4.81532 7.42494 6.08165 6.64389 6.8627L3.44324 10.0634C2.18331 11.3233 0.0290222 10.431 0.0290226 8.64914V2.24783C0.0290226 0.466021 2.18331 -0.426312 3.44324 0.833617L6.64389 4.03427Z"
+                              fill="white"
+                            ></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <button className={styles.deleteBtn}>
+                        <FaTrashAlt />
                       </button>
                     </div>
                   </div>
-                  <div>
-                    <button className={styles.deleteBtn}>
-                      <FaTrashAlt />
-                    </button>
-                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
           <div className={styles.cartSummary}>
             <div className={styles.cartContent}>
               <h3>Sebedim:</h3>
@@ -165,7 +173,9 @@ const CartPage = () => {
                 <span>{calculateTotal().toFixed(2)} m.</span>
               </div>
             </div>
-            <button className={styles.checkoutBtn}>Sargydy tayyarlamak</button>
+            <button onClick={handleCheckout} className={styles.checkoutBtn}>
+              Sargydy tayyarlamak
+            </button>
           </div>
         </div>
       </div>

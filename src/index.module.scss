@@ -56,10 +56,8 @@ body {
   align-items: center !important;
 }
 
-.searchWrapper{
-  input{
-    &:focus-visible{
-      border: none !important;
-    }
-  }
+:global(.ant-back-top ){
+  right: 10px;
+  bottom: 15px; 
 }
+
