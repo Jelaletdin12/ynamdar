@@ -4,7 +4,7 @@ import playstore from "../../assets/playstore.png";
 import appstore from "../../assets/appstore.png";
 import apk from "../../assets/apk.png";
 import logo from "../../assets/logoFooter.png";
-
+import FooterBar from "./FooterMobile";
 const Footer = () => {
   return (
     <footer className={styles.footer}>
@@ -56,6 +56,7 @@ const Footer = () => {
       <div className={styles.bottom}>
         <p> © 2019-2024 ynamdar.com. Ähli hukuklary goraglydyr.</p>
       </div>
+      <FooterBar />
     </footer>
   );
 };

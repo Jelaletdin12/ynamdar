@@ -5,6 +5,9 @@ import temp2 from "../../assets/temp2.jpg";
 import temp3 from "../../assets/temp3.jpg";
 import ProductCard from "../../components/ProductCard/index";
 import { TiTick } from "react-icons/ti";
+import { TiArrowUnsorted } from "react-icons/ti";
+import arrow from "../../assets/icons/topBottom.svg";
+import brand from "../../assets/icons/brand.svg";
 
 const CategoryPage = () => {
   const products = [
@@ -173,12 +176,10 @@ const CategoryPage = () => {
   ];
 
   const handleAddToCart = (product) => {
-    // Implement cart logic here
     console.log("Adding to cart:", product);
   };
 
   const handleToggleFavorite = (product) => {
-    // Implement favorite toggle logic here
     console.log("Toggling favorite:", product);
   };
 
@@ -186,7 +187,26 @@ const CategoryPage = () => {
     <div className={styles.categoryPage} style={{ flexDirection: "column" }}>
       {/* Left Sidebar */}
       <h2>Iymit, kulinariýa</h2>
-      <p>Jemi: 2291 haryt</p>
+      <p className={styles.sum}>Jemi: 2291 haryt</p>
+      <div className={styles.bars}>
+        <button>
+          {" "}
+          <strong>Jemi:</strong> <br /> 2291 haryt
+        </button>
+        <button>
+          {" "}
+          <img src={brand} alt="" /> Brand
+        </button>
+        <button>
+          {" "}
+          <img src={arrow} alt="" /> Suzguc
+        </button>
+      </div>
+      <div className={styles.subCategories}>
+        <button>Miweler</button>
+        <button>Gok otlar</button>
+        <button>Gok Onumler</button>
+      </div>
       <div className={styles.Container}>
         <aside className={styles.sidebar}>
           <div className={styles.filterSection}>
@@ -195,10 +215,10 @@ const CategoryPage = () => {
               <li>Gury iýmişler, çigit</li>
               <li>Süýji, marmelad, zefir</li>
               <li>Köke önümleri, keks</li>
-            
+
               <li>Şokolad</li>
               <li>Şokolad</li>
-              
+
               <li>Kofe</li>
               <li>Çay, gyzgyn içgiler</li>
             </ul>
@@ -229,7 +249,7 @@ const CategoryPage = () => {
                 <label>
                   <input type="checkbox" />
                   <span className={styles.customCheckbox}>
-                  <TiTick className={styles.checkIcon} />
+                    <TiTick className={styles.checkIcon} />
                   </span>
                   Mahmood Rice
                 </label>

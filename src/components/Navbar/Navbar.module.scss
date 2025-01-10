@@ -26,6 +26,10 @@
     padding-left: 1.375rem;
     padding-right: 1.375rem;
     box-sizing: border-box;
+    display: none;
+    @media screen and (min-width: 1024px) {
+      display: block;
+    }
   }
   .logo img {
     height: 50px;
@@ -34,6 +38,9 @@
     width: 0.5px !important;
     background-color: #4b5563;
     height: auto;
+    @media screen and (max-width: 1023px) {
+      height: 24px;
+    }
   }
 
   .navLinks ul {
@@ -41,13 +48,8 @@
     display: flex;
     justify-content: center;
     gap: 10px;
-    // padding-left: 0.75rem;
-    // padding-right: 0.75rem;
-    // padding-bottom: 0.5rem;
     margin: 0 auto 0 auto;
     box-sizing: border-box;
-    // padding-left: 1.75rem;
-    // padding-right: 1.75rem;
 
     li,
     a {
@@ -72,7 +74,6 @@
       align-items: center;
       flex: 1;
       flex-direction: row-reverse;
-      
 
       svg {
         position: absolute;
@@ -90,8 +91,8 @@
         background-color: #e5e7eb;
         box-sizing: border-box;
         border: 0 solid #e5e7eb;
-      
-        &:focus-visible{
+
+        &:focus-visible {
           border: 0 solid #e5e7eb !important;
         }
         &::placeholder {
@@ -138,3 +139,79 @@
     }
   }
 }
+
+
+// mobile
+.navbarContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 0;
+  width: 100%;
+  box-sizing: border-box;
+  position: sticky;
+  @media  screen and (min-width: 1024px) {
+    display: none;
+  }
+}
+
+.navbarContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1024px;
+  color: #4b5563;
+  font-size: 14px;
+  padding: 0 1.375rem;
+  box-sizing: border-box;
+}
+.categories, .location{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  svg{
+    width: 16px;
+    height: 16px;
+  }
+}
+.searchIcon{
+  min-width: 60px;
+  display: flex;
+  justify-content: center;
+  svg{
+    width: 24px;
+    height: 24px;
+  }
+}
+.searchInputWrapper {
+  margin-top: 10px;
+  width: 100%;
+  max-width: 1024px;
+  display: flex;
+  justify-content: center;
+  padding: 0 1.375rem;
+  box-sizing: border-box;
+}
+
+.searchInput {
+  width: 100%;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  padding: 4px 16px;
+  background-color: #e5e7eb;
+  box-sizing: border-box;
+  border: 0 solid #e5e7eb;
+
+  &:focus-visible {
+    border: 0 solid #e5e7eb !important;
+  }
+  &::placeholder {
+    color: #9ca3af;
+    font-size: 0.75rem;
+  }
+}
+

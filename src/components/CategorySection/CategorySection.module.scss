@@ -19,11 +19,18 @@
     &:hover {
       color: #ec6323;
     }
+    @media screen and (max-width: 1023px) {
+      font-size: 20px;
+      font-weight: 500;
+    }
   }
 
   .productList {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
+    @media screen and (max-width: 1024px) {
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    }
   }
 }
