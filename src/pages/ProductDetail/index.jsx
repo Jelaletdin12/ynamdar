@@ -71,12 +71,15 @@ const ProductPage = () => {
 
           <div className={styles.productActions}>
             <div className={styles.price}>{product.price} m.</div>
+            <div className={styles.Btn}>
+
             <button className={styles.wishlistButton}>
               <Heart className={styles.icon} />
             </button>
             <button className={styles.addToCartButton}>
               <ShoppingCart className={styles.icon} />
             </button>
+            </div>
           </div>
         </div>
       </div>

@@ -29,6 +29,9 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
+    @media screen and (max-width: 1230px) {
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    }
     @media screen and (max-width: 1024px) {
       grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     }

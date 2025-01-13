@@ -5,8 +5,13 @@ import IMask from "imask";
 import styles from "./LoginModal.module.scss";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
-const LoginModal = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const LoginModal = ({isVisible: propIsVisible, onClose: propOnClose }) => {
+
+  const [internalIsVisible, setInternalIsVisible] = useState(false);
+  
+  const isControlled = propIsVisible !== undefined;
+  const isVisible = isControlled ? propIsVisible : internalIsVisible;
+  
   const [activeTab, setActiveTab] = useState("phone");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -14,14 +19,16 @@ const LoginModal = () => {
   const [messageTitle, setMessageTitle] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Phone number mask configuration
+  
   const phoneMaskOptions = {
     mask: "+{993} 000 000000",
     lazy: false,
   };
 
   const showModal = () => {
-    setIsModalVisible(true);
+    if (!isControlled) {
+      setInternalIsVisible(true);
+    }
   };
 
   const handleCancel = () => {
@@ -32,12 +39,12 @@ const LoginModal = () => {
         okText: "Hawa",
         cancelText: "Ýok",
         onOk() {
-          setIsModalVisible(false);
+          closeModal();
           resetForm();
         },
       });
     } else {
-      setIsModalVisible(false);
+      closeModal();
       resetForm();
     }
   };
@@ -69,6 +76,13 @@ const LoginModal = () => {
         break;
     }
   };
+  const closeModal = () => {
+    if (isControlled) {
+      propOnClose?.();
+    } else {
+      setInternalIsVisible(false);
+    }
+  };
 
   const handleSubmit = () => {
     // Add your submit logic here
@@ -83,6 +97,7 @@ const LoginModal = () => {
 
   return (
     <>
+       {!isControlled && (
       <Button onClick={showModal} className={styles.navButton}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212">
           <path
@@ -113,10 +128,10 @@ const LoginModal = () => {
         </svg>
         Iceri gir
       </Button>
-
+    )}
       <Modal
         title="Iceri  gir"
-        open={isModalVisible}
+        open={isVisible}
         onCancel={handleCancel}
         footer={null}
         className={styles.modalWrapper}
@@ -211,6 +226,7 @@ const LoginModal = () => {
           </button>
         </div>
       </Modal>
+       
     </>
   );
 };

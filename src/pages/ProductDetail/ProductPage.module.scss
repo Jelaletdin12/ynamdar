@@ -3,7 +3,9 @@
 .container {
     max-width: 1366px;
     margin: 0 auto;
-    padding-top: 20px;
+    // padding-top: 20px;
+    padding: 20px 1.375rem 15px 1.375rem; 
+    box-sizing: border-box;
   }
   
   .breadcrumb {
@@ -18,19 +20,23 @@
   }
   
   .productSection {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    // display: grid;
+    // grid-template-columns: 1fr 1fr;
+    display: flex;
+    gap: 24px;
     margin-bottom: 48px;
     background-color: rgb(255, 255, 255);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
+    padding: 1.25rem;
+    box-sizing: border-box;
   }
   
   .productImage {
     background: #fff;
     padding: 20px;
     border-radius: 8px;
+    width: 40%;
     // box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
    
   
@@ -43,29 +49,32 @@
   }
   
   .productInfo {
+    width: 60%;
     .productTitle {
-      font-size: 24px;
+      font-size: 30px;
       font-weight: 600;
       margin-bottom: 12px;
+      color: #000000;
     }
   
     .productDescription {
-      color: #666;
+      font-size: 14px;
+      color: #000;
       margin-bottom: 24px;
     }
   }
   
   .productMeta {
     background: #f5f5f5;
-    padding: 16px;
+    // padding: 16px;
     border-radius: 8px;
     margin-bottom: 24px;
   
     .metaItem {
       display: flex;
       justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
+      padding: 8px 16px;
+      border-bottom: 2px solid #ffffff;
   
       &:last-child {
         border-bottom: none;
@@ -73,23 +82,31 @@
     }
   
     .metaLabel {
-      color: #666;
+      color: #000;
+      font-size: 14px;
     }
   
     .metaValue {
+      font-size: 14px;
       font-weight: 500;
     }
   }
-  
+  .Btn{
+    display: flex;
+    gap: 10px;
+  }
   .productActions {
     display: flex;
     align-items: center;
-    gap: 16px;
+    justify-content: space-between;
+    border-bottom: 1px solid #e5e7eb;
+    border-top: 1px solid #e5e7eb;
+    padding: 15px 16px;
   
     .price {
       font-size: 24px;
-      font-weight: 600;
-      color: #333;
+      font-weight: 700;
+      color: #000;
     }
   }
   

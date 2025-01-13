@@ -7,6 +7,7 @@ import logo from "../../assets/logoFooter.png";
 import FooterBar from "./FooterMobile";
 const Footer = () => {
   return (
+      <>
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.logo}>
@@ -41,7 +42,7 @@ const Footer = () => {
                   src={playstore}
                   alt="Google Play"
                   className={styles.appLogo}
-                />
+                  />
                 <img
                   src={appstore}
                   alt="App Store"
@@ -56,8 +57,9 @@ const Footer = () => {
       <div className={styles.bottom}>
         <p> © 2019-2024 ynamdar.com. Ähli hukuklary goraglydyr.</p>
       </div>
-      <FooterBar />
     </footer>
+      <FooterBar />
+                  </>
   );
 };
 

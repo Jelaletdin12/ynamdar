@@ -6,8 +6,11 @@ import styles from "./SignUpModal.module.scss";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 
-const SignUpModal = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
+  const [internalIsVisible, setInternalIsVisible] = useState(false);
+  
+  const isControlled = propIsVisible !== undefined;
+  const isVisible = isControlled ? propIsVisible : internalIsVisible;
   const [activeTab, setActiveTab] = useState("phone");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -22,8 +25,11 @@ const SignUpModal = () => {
   };
 
   const showModal = () => {
-    setIsModalVisible(true);
+    if (!isControlled) {
+      setInternalIsVisible(true);
+    }
   };
+
 
   const handleCancel = () => {
     if (hasChanges) {
@@ -33,12 +39,12 @@ const SignUpModal = () => {
         okText: "Hawa",
         cancelText: "Ýok",
         onOk() {
-          setIsModalVisible(false);
+          closeModal();
           resetForm();
         },
       });
     } else {
-      setIsModalVisible(false);
+      closeModal();
       resetForm();
     }
   };
@@ -70,6 +76,13 @@ const SignUpModal = () => {
         break;
     }
   };
+  const closeModal = () => {
+    if (isControlled) {
+      propOnClose?.();
+    } else {
+      setInternalIsVisible(false);
+    }
+  };
 
   const handleSubmit = () => {
     // Add your submit logic here
@@ -84,6 +97,7 @@ const SignUpModal = () => {
 
   return (
     <>
+     {!isControlled && (
       <Button onClick={showModal} className={styles.navButton}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212">
           <path
@@ -104,10 +118,10 @@ const SignUpModal = () => {
         </svg>
         Agza bol
       </Button>
-
+)}
       <Modal
         title="Agza bol"
-        open={isModalVisible}
+        open={isVisible}
         onCancel={handleCancel}
         footer={null}
         className={styles.modalWrapper}

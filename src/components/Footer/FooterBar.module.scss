@@ -33,7 +33,7 @@
     align-items: center;
     cursor: pointer;
     width: 100%;
-  
+    text-decoration: none;
     &:hover {
       .icon {
         color: darken(#f97316, 5%);
