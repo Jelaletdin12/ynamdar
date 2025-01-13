@@ -28,10 +28,10 @@ const ProductCard = ({
 
   return (
     <div key={product.id} className={styles.productCard}>
-      {product.discount && (
-        <span className={styles.discountBadge}>-{product.discount}%</span>
-      )}
       <div className={styles.imageContainer}>
+        {product.discount && (
+          <span className={styles.discountBadge}>-{product.discount}%</span>
+        )}
         <img
           src={product.image}
           alt={product.name}

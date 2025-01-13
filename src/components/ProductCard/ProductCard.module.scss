@@ -2,7 +2,6 @@
 
 
 .productCard {
-  position: relative;
   background: white;
   border-radius: 8px;
   padding: 1rem;
@@ -16,8 +15,8 @@
 
 .discountBadge {
   position: absolute;
-  bottom: 200px;
-  left: 25px;
+  bottom: 10px;
+  left: 10px;
   background: #ff0000;
   color: white;
   padding: 0.25rem 0.5rem;
@@ -32,6 +31,7 @@
   border-radius: 4px;
   margin-bottom: 1rem;
   border: 1px solid #eee;
+  position: relative;
 }
 
 .productImage {
