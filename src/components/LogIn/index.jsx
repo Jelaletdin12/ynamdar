@@ -5,6 +5,7 @@ import IMask from "imask";
 import styles from "./LoginModal.module.scss";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
+import login from "../../assets/icons/login.svg";
 const LoginModal = ({isVisible: propIsVisible, onClose: propOnClose }) => {
 
   const [internalIsVisible, setInternalIsVisible] = useState(false);

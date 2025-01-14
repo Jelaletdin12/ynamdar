@@ -7,7 +7,7 @@
   justify-content: center;
   position: sticky;
   top: 0;
-  z-index: 9999;
+  z-index: 99;
 
   .navbarUp {
     width: 100%;
@@ -63,8 +63,9 @@
       gap: 5px;
       margin: 0;
       svg {
-        stroke: #4b5563;
-        color: #4b5563;
+        // stroke: #4b5563;
+        // color: #4b5563;
+        fill: #4b5563;
         width: 20px;
         height: 20px;
       }

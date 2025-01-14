@@ -1,73 +1,89 @@
-
-
 .navbar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: white;
-    border-top: 1px solid #e5e7eb;
-    background-color: #fef2ec;
-    @media  screen and (min-width: 1024px) {
-      display: none;
-    }
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border-top: 1px solid #e5e7eb;
+  background-color: #fef2ec;
+  @media screen and (min-width: 1024px) {
+    display: none;
   }
-  
-  .container {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 1rem;
-  }
-  
-  .navItems {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
+}
 
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  @media screen and (max-width: 425px) {
+    padding: 0;
   }
-  
-  .navItem {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    width: 100%;
-    text-decoration: none;
-    &:hover {
-      .icon {
-        color: darken(#f97316, 5%);
-      }
+}
+
+.navItems {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  width: 100%;
+  text-decoration: none;
+  &:hover {
+    .icon {
+      color: darken(#f97316, 5%);
     }
   }
-  
-  .iconWrapper {
-    position: relative;
+}
+
+.iconWrapper {
+  position: relative;
+}
+
+.icon {
+  color: #f97316;
+  transition: color 0.2s ease;
+  svg {
+    @media screen and (max-width: 425px) {
+      width: 20px;
+      height: 20px;
+    }
+    @media screen and (max-width: 375px) {
+      width: 16px;
+      height: 16px;
+    }
   }
-  
-  .icon {
-    color: #f97316;
-    transition: color 0.2s ease;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ec6323;
+  color: white;
+  font-size: 0.75rem;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  margin-top: 0.25rem;
+  font-size: 12px;
+  color: #ec6323;
+  font-weight: 600;
+  @media screen and (max-width: 425px) {
+    font-size: 11px;
   }
-  
-  .badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: #ec6323;
-    color: white;
-    font-size: 0.75rem;
-    height: 16px;
-    width: 16px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  @media screen and (max-width: 375px) {
+    font-size: 10px;
   }
-  
-  .label {
-    margin-top: 0.25rem;
-    font-size: 12px;
-    color: #ec6323;
-    font-weight: 600;
-  }
+}

@@ -22,7 +22,20 @@
     }
   }
 }
-
+.cartProducts {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  @media screen and (max-width: 1023px) {
+    flex-direction: column;
+  }
+}
+.cartItemContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 10px;
+}
 .cartItem {
   display: flex;
   gap: 1.5rem;
@@ -115,6 +128,10 @@
   flex-direction: column;
   gap: 10px;
   min-width: 300px;
+  @media screen and (max-width: 1023px) {
+    width: 100%;
+    flex-direction: row;
+  }
 
   h3 {
     margin-bottom: -0.5rem;
@@ -131,6 +148,9 @@
   background: white;
   padding: 8px;
   border-radius: 8px;
+  @media screen and (max-width: 1023px) {
+    flex: 1;
+  }
 }
 
 .summaryRow {
@@ -163,6 +183,9 @@
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
+  @media screen and (max-width: 1023px) {
+    flex: 1;
+  }
 
   &:hover {
     background: rgb(126 210 111);

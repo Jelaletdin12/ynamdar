@@ -77,24 +77,11 @@ const CartPage = () => {
           </div>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            gap: "10px",
-          }}
-        >
+        <div className={styles.cartProducts}>
           {isCheckout ? (
             <Checkout cartItems={cartItems} onBackToCart={handleBackToCart} />
           ) : (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                backgroundColor: "#fff",
-                borderRadius: "10px",
-              }}
-            >
+            <div className={styles.cartItemContainer}>
               {cartItems.map((item) => (
                 <div key={item.id} className={styles.cartItem}>
                   <div className={styles.itemImage}>
@@ -157,6 +144,7 @@ const CartPage = () => {
               ))}
             </div>
           )}
+
           <div className={styles.cartSummary}>
             <div className={styles.cartContent}>
               <h3>Sebedim:</h3>

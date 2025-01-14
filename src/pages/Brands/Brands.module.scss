@@ -2,6 +2,9 @@
   padding: 1rem 4.4rem;
   max-width: 1336px;
   margin: 0 auto;
+  @media screen and (max-width: 1023px) {
+    padding: 1rem 1.25rem;
+  }
 }
 
 .searchWrapper {
@@ -24,6 +27,9 @@
     border-radius: 8px;
     font-size: 14px;
     padding-left: 40px;
+    @media screen and (max-width: 1023px) {
+      width: 100%;
+    }
 
     &::placeholder {
       color: #9ca3af;
@@ -50,6 +56,18 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 16px;
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+  @media screen and (max-width: 900px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 5px;
+  }
+  @media screen and (max-width: 798px) {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 5px;
+  }
 }
 
 .brandCard {
@@ -60,6 +78,9 @@
   transition: all 0.2s ease;
   border: 1px solid #e5e7eb;
   cursor: pointer;
+  @media screen and (max-width: 900px) {
+    padding: 5px;
+  }
 
   &:hover {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -67,7 +88,7 @@
   }
 
   .imageWrapper {
-    height: 120px;
+    // height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;

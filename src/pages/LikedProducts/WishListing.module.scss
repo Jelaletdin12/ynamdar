@@ -1,7 +1,7 @@
 // ProductListing.module.scss
 
 .container {
-  padding: 2rem;
+  padding: 2rem 1.375rem;
   max-width: 1366px;
   margin: 0 auto;
 }
@@ -15,7 +15,22 @@
 .productGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: 20px;
+  @media screen and (max-width: 1230px) {
+    grid-template-columns: repeat(auto-fill, minmax(227px, 1fr));
+  }
+  @media screen and (max-width: 1023px) {
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  }
+  @media screen and (max-width: 774px) {
+    grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+  }
+  @media screen and (max-width: 519px) {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  @media screen and (max-width: 510px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 }
 
 .productCard {
@@ -102,7 +117,7 @@
   justify-content: space-between;
   margin-top: 1rem;
   gap: 0.5rem;
-  svg{
+  svg {
     height: 20px;
     width: 20px;
   }
@@ -147,8 +162,5 @@
   }
 }
 
-@media (max-width: 768px) {
-  .productGrid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-}
+
+

@@ -1,3 +1,9 @@
+.dropdownContainer{
+  @media screen and (max-width: 1023px) {
+    display: none;
+  }
+}
+
 .navButton {
   display: flex;
   gap: 5px;
