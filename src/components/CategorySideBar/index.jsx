@@ -88,26 +88,6 @@ const Sidebar = () => {
             </div>
           ))}
         </div>
-
-        {/* {activeCategory && activeCategory.items.length > 0 && (
-          <div className={styles.contentPanel}>
-            <h2 className={styles.title}>{activeCategory.title}</h2>
-            {activeCategory.items.map((section, idx) => (
-              <div key={idx} className={styles.subcategoryList}>
-                <div className={styles.column}>
-                  <h3 className={styles.sectionTitle}>{section.title}</h3>
-                  <div>
-                    {section.subcategories.map((sub, subIdx) => (
-                      <div key={subIdx} className={styles.subcategoryItem}>
-                        {sub}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )} */}
       </Drawer>
     </div>
   );

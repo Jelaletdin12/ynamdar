@@ -8,6 +8,8 @@ import { TiTick } from "react-icons/ti";
 import { TiArrowUnsorted } from "react-icons/ti";
 import arrow from "../../assets/icons/topBottom.svg";
 import brand from "../../assets/icons/brand.svg";
+import BrandSidebar from "../../components/BrandsSidebar/index";
+import FilterSidebar from "../../components/FilterSidebar/index";
 
 const CategoryPage = () => {
   const products = [
@@ -189,18 +191,20 @@ const CategoryPage = () => {
       <h2>Iymit, kulinariýa</h2>
       <p className={styles.sum}>Jemi: 2291 haryt</p>
       <div className={styles.bars}>
-        <button>
+        <button className={styles.sum}>
           {" "}
           <strong>Jemi:</strong> <br /> 2291 haryt
         </button>
-        <button>
+        {/* <button>
           {" "}
           <img src={brand} alt="" /> Brand
-        </button>
-        <button>
+        </button> */}
+        <BrandSidebar />
+        <FilterSidebar />
+        {/* <button>
           {" "}
           <img src={arrow} alt="" /> Suzguc
-        </button>
+        </button> */}
       </div>
       <div className={styles.subCategories}>
         <button>Miweler</button>

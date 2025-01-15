@@ -1,0 +1,49 @@
+.sidebarContainer {
+  @media (max-width: 1023px) {
+    // display: block;
+  }
+}
+
+.mobileNavButton {
+    background-color: #ec6323;
+    border-radius: 0.5rem;
+    font-size: 14px;
+    border: none;
+    padding: 11px;
+    font-weight: 600;
+    color: #ffffffff;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 100%;
+    img {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+.sidebarDrawer {
+  :global(.ant-drawer-body) {
+    padding: 16px;
+  }
+}
+
+.radioGroup {
+    display: flex;
+    flex-direction: column;
+  
+    .radioItem {
+      margin-bottom: 12px;
+      font-size: 14px;
+  
+      .ant-radio-inner {
+        border-color: #ff4d4f;
+      }
+  
+      .ant-radio-checked .ant-radio-inner {
+        background-color: #ff4d4f;
+      }
+    }
+  }
+
+
