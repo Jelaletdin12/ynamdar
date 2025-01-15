@@ -13,8 +13,8 @@
   .cartHeader {
     display: flex;
     align-items: center;
-    gap: 55.5%;
     margin-bottom: 12px;
+    justify-content: space-between;
     h2 {
       font-size: 24px;
       font-weight: 700;

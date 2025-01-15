@@ -13,7 +13,7 @@ const FooterBar = () => {
   ];
 
   return (
-    <nav className={styles.navbar}>
+    <footer className={styles.navbar}>
       <div className={styles.container}>
         <div className={styles.navItems}>
           {navItems.map((item) => (
@@ -33,7 +33,7 @@ const FooterBar = () => {
           ))}
         </div>
       </div>
-    </nav>
+    </footer>
   );
 };
 

@@ -18,6 +18,11 @@ body {
 // :global(.ant-input) {
 //   min-width: 570px;
 // }
+main{
+  @media screen and (max-width: 1023px) {
+    padding-bottom: 45px;
+  }
+}
 
 :global(.swiper-pagination-bullet) {
   width: 15px !important;

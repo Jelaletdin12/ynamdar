@@ -34,7 +34,7 @@ const FilterSidebar = () => {
         onClose={handleFilterToggle}
         open={isOpen}
         className={styles.sidebarDrawer}
-        width={360}
+        width={320}
       >
         <Radio.Group
           onChange={handleOptionChange}

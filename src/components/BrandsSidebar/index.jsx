@@ -59,7 +59,7 @@ const Sidebar = () => {
         onClose={handleToggle}
         open={isOpen}
         className={styles.sidebarDrawer}
-        width={360}
+        width={320}
       >
         <Input
           placeholder="Gözleg"
