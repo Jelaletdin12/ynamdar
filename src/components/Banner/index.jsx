@@ -24,18 +24,18 @@ function Carousel() {
     <div className={styles.carouselContainer}>
       {/* Büyük Slider */}
       <Swiper
-      breakpoints={{
-        // when window width is >= 640px
-        640: {
-          width: 640,
-          slidesPerView: 1,
-        },
-        // when window width is >= 768px
-        768: {
-          width: 768,
-          slidesPerView: 1,
-        },
-      }}
+      // breakpoints={{
+      //   // when window width is >= 640px
+      //   640: {
+      //     width: 640,
+      //     slidesPerView: 1,
+      //   },
+      //   // when window width is >= 768px
+      //   768: {
+      //     width: 768,
+      //     slidesPerView: 1,
+      //   },
+      // }}
         modules={[Thumbs, Pagination, Navigation, Autoplay]}
         thumbs={{ swiper: thumbsSwiper }}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
