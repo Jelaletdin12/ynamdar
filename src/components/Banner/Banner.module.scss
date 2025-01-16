@@ -21,8 +21,9 @@
 
 .thumbSlider {
   flex: 0.7;
-  height: 550px;
-  overflow-y: scroll;
+  max-height: 550px;
+  overflow-y: auto;
+  height: auto;
   // scrollbar-width: thin;
 
   &::-webkit-scrollbar {

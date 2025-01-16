@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Thumbs, Pagination, Navigation } from "swiper/modules";
+import { Autoplay, Thumbs, Pagination, Navigation, Scrollbar } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/thumbs";
 import "swiper/css/navigation";
+import 'swiper/css/scrollbar';
 
 
 import styles from "./Banner.module.scss";
@@ -23,6 +24,18 @@ function Carousel() {
     <div className={styles.carouselContainer}>
       {/* Büyük Slider */}
       <Swiper
+      breakpoints={{
+        // when window width is >= 640px
+        640: {
+          width: 640,
+          slidesPerView: 1,
+        },
+        // when window width is >= 768px
+        768: {
+          width: 768,
+          slidesPerView: 1,
+        },
+      }}
         modules={[Thumbs, Pagination, Navigation, Autoplay]}
         thumbs={{ swiper: thumbsSwiper }}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -33,7 +46,8 @@ function Carousel() {
         }}
         navigation={true}
         className={styles.mainSlider}
-        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)} // Aktif slider değiştiğinde index güncelle
+        onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+         // Aktif slider değiştiğinde index güncelle
       >
         <SwiperSlide>
           <img src={temp1} alt="Slider 1" />
@@ -54,13 +68,16 @@ function Carousel() {
 
       {/* Küçük Slider */}
       <Swiper
-        modules={[Thumbs, Autoplay]}
+        modules={[Thumbs, Autoplay, Scrollbar]}
         onSwiper={setThumbsSwiper}
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         slidesPerView={4}
         spaceBetween={10}
         direction="vertical"
         loop={true}
+        // scrollbar={{
+        //   hide: true,
+        // }}
         className={styles.thumbSlider}
       >
         {[temp1, temp2, temp3, temp4, temp5].map((image, index) => (

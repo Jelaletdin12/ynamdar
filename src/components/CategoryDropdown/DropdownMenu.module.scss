@@ -155,6 +155,7 @@
 .subcategoryList {
   margin-bottom: 24px;
   display: flex;
+  
 }
 
 .subcategoryItem {
@@ -163,6 +164,7 @@
   padding: 4px 0;
   cursor: pointer;
   transition: color 0.2s;
+  
 
   &:hover {
     color: #ff6600;
