@@ -14,7 +14,7 @@
 .container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem;
+  // padding: 0 1rem;
   @media screen and (max-width: 425px) {
     padding: 0;
   }
@@ -24,7 +24,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0 0 0;
 }
 
 .navItem {
@@ -34,9 +34,20 @@
   cursor: pointer;
   width: 100%;
   text-decoration: none;
-  &:hover {
+  padding-bottom: 8px;
+
+  &:hover .icon {
+    color: darken(#f97316, 5%);
+  }
+
+  &.active {
+    border-bottom: 3px solid #ec6323;
+    .label {
+      font-weight: 600;
+    }
+
     .icon {
-      color: darken(#f97316, 5%);
+      color: #ec6323;
     }
   }
 }
@@ -79,7 +90,7 @@
   margin-top: 0.25rem;
   font-size: 12px;
   color: #ec6323;
-  font-weight: 600;
+  font-weight: 500;
   @media screen and (max-width: 425px) {
     font-size: 11px;
   }

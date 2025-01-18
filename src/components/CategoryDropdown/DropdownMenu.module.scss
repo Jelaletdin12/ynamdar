@@ -1,4 +1,4 @@
-.dropdownContainer{
+.dropdownContainer {
   @media screen and (max-width: 1023px) {
     display: none;
   }
@@ -109,8 +109,8 @@
 .contentPanel {
   flex: 3;
   padding: 16px;
-  max-height: 500px;
-  overflow-y: auto;
+  max-height: 300px;
+  overflow-y: hidden;
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -155,7 +155,6 @@
 .subcategoryList {
   margin-bottom: 24px;
   display: flex;
-  
 }
 
 .subcategoryItem {
@@ -164,7 +163,6 @@
   padding: 4px 0;
   cursor: pointer;
   transition: color 0.2s;
-  
 
   &:hover {
     color: #ff6600;

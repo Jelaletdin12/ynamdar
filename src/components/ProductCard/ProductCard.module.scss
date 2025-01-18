@@ -11,6 +11,9 @@
   &:hover {
     transform: translateY(-4px);
   }
+  @media screen and (max-width: 426px) {
+    padding: 8px;
+  }
 }
 
 .discountBadge {
@@ -23,6 +26,9 @@
   border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 600;
+  @media screen and (max-width: 426px) {
+    font-size: 12px;
+  }
 }
 
 .imageContainer {
@@ -51,6 +57,9 @@
   font-weight: 600;
   color: #333;
   margin: 0;
+  @media screen and (max-width: 426px) {
+    font-size: 14px;
+  }
 }
 
 .productDescription {
@@ -74,13 +83,17 @@
 .currentPrice {
   font-size: 18px;
   font-weight: 600;
-  color: #ff5722;
+  color: #000000;
+  @media screen and (max-width: 426px) {
+    font-size: 14px;
+  }
 }
 
 .oldPrice {
   font-size: 12px;
   color: #999;
   text-decoration: line-through;
+  font-weight: 600;
 }
 
 .actions {
@@ -97,7 +110,7 @@
 .favoriteButton {
   height: 36px;
   display: flex;
-  margin-right: 0.5rem;
+  // margin-right: 0.5rem;
   justify-content: center;
   align-items: center;
   border-radius: 0.375rem;
@@ -125,6 +138,10 @@
   border: none;
   svg {
     fill: #fff;
+    @media screen and (max-width: 426px) {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   &:hover {

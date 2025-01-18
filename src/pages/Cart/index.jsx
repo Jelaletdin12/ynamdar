@@ -63,25 +63,25 @@ const CartPage = () => {
   return (
     <div className={styles.cartContainer}>
       <div className={styles.cartItems}>
-        <div className={styles.cartHeader}>
-          <h2>
-            Sebedim ({cartItems.reduce((sum, item) => sum + item.quantity, 0)})
-          </h2>
-          <div>
-            <button
-              className={styles.deleteBtn}
-              style={{ padding: "4px 12px" }}
-            >
-              <FaTrashAlt /> Sebedi Bosat
-            </button>
-          </div>
-        </div>
-
         <div className={styles.cartProducts}>
           {isCheckout ? (
             <Checkout cartItems={cartItems} onBackToCart={handleBackToCart} />
           ) : (
             <div className={styles.cartItemContainer}>
+              <div className={styles.cartHeader}>
+                <h2>
+                  Sebedim (
+                  {cartItems.reduce((sum, item) => sum + item.quantity, 0)})
+                </h2>
+                <div>
+                  <button
+                    className={styles.deleteBtn}
+                    style={{ padding: "4px 12px" }}
+                  >
+                    <FaTrashAlt /> Sebedi Bosat
+                  </button>
+                </div>
+              </div>
               {cartItems.map((item) => (
                 <div key={item.id} className={styles.cartItem}>
                   <div className={styles.itemImage}>
@@ -134,7 +134,7 @@ const CartPage = () => {
                         </button>
                       </div>
                     </div>
-                    <div>
+                    <div className={styles.deleteBtnContainer}>
                       <button className={styles.deleteBtn}>
                         <FaTrashAlt />
                       </button>

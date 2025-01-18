@@ -37,12 +37,16 @@
     }
     @media screen and (max-width: 774px) {
       grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
+      gap: 10px;
     }
     @media screen and (max-width: 519px) {
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
     @media screen and (max-width: 510px) {
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    @media screen and (max-width: 425px) {
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     }
   }
 }

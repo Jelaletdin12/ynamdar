@@ -120,7 +120,10 @@ const DropdownMenu = () => {
           width={20}
           height={20}
         >
-          <path fill="#4b5563" d="M30 20c0-.796-.316-1.559-.879-2.121A2.996 2.996 0 0 0 27 17h-7c-.796 0-1.559.316-2.121.879A2.996 2.996 0 0 0 17 20v7c0 .796.316 1.559.879 2.121A2.996 2.996 0 0 0 20 30h7c.796 0 1.559-.316 2.121-.879A2.996 2.996 0 0 0 30 27v-7Zm-15 0c0-.796-.316-1.559-.879-2.121A2.996 2.996 0 0 0 12 17H5c-.796 0-1.559.316-2.121.879A2.996 2.996 0 0 0 2 20v7c0 .796.316 1.559.879 2.121A2.996 2.996 0 0 0 5 30h7c.796 0 1.559-.316 2.121-.879A2.996 2.996 0 0 0 15 27v-7Zm13 0v7a.997.997 0 0 1-1 1h-7a.997.997 0 0 1-1-1v-7a.997.997 0 0 1 1-1h7a.997.997 0 0 1 1 1Zm-15 0v7a.997.997 0 0 1-1 1H5a.997.997 0 0 1-1-1v-7a.997.997 0 0 1 1-1h7a.997.997 0 0 1 1 1Zm2-15c0-.796-.316-1.559-.879-2.121A2.996 2.996 0 0 0 12 2H5c-.796 0-1.559.316-2.121.879A2.996 2.996 0 0 0 2 5v7c0 .796.316 1.559.879 2.121A2.996 2.996 0 0 0 5 15h7c.796 0 1.559-.316 2.121-.879A2.996 2.996 0 0 0 15 12V5Zm15 0c0-.796-.316-1.559-.879-2.121A2.996 2.996 0 0 0 27 2h-7c-.796 0-1.559.316-2.121.879A2.996 2.996 0 0 0 17 5v7c0 .796.316 1.559.879 2.121A2.996 2.996 0 0 0 20 15h7c.796 0 1.559-.316 2.121-.879A2.996 2.996 0 0 0 30 12V5ZM13 5v7a.997.997 0 0 1-1 1H5a.997.997 0 0 1-1-1V5a.997.997 0 0 1 1-1h7a.997.997 0 0 1 1 1Zm15 0v7a.997.997 0 0 1-1 1h-7a.997.997 0 0 1-1-1V5a.997.997 0 0 1 1-1h7a.997.997 0 0 1 1 1Z"></path>
+          <path
+            fill="#4b5563"
+            d="M30 20c0-.796-.316-1.559-.879-2.121A2.996 2.996 0 0 0 27 17h-7c-.796 0-1.559.316-2.121.879A2.996 2.996 0 0 0 17 20v7c0 .796.316 1.559.879 2.121A2.996 2.996 0 0 0 20 30h7c.796 0 1.559-.316 2.121-.879A2.996 2.996 0 0 0 30 27v-7Zm-15 0c0-.796-.316-1.559-.879-2.121A2.996 2.996 0 0 0 12 17H5c-.796 0-1.559.316-2.121.879A2.996 2.996 0 0 0 2 20v7c0 .796.316 1.559.879 2.121A2.996 2.996 0 0 0 5 30h7c.796 0 1.559-.316 2.121-.879A2.996 2.996 0 0 0 15 27v-7Zm13 0v7a.997.997 0 0 1-1 1h-7a.997.997 0 0 1-1-1v-7a.997.997 0 0 1 1-1h7a.997.997 0 0 1 1 1Zm-15 0v7a.997.997 0 0 1-1 1H5a.997.997 0 0 1-1-1v-7a.997.997 0 0 1 1-1h7a.997.997 0 0 1 1 1Zm2-15c0-.796-.316-1.559-.879-2.121A2.996 2.996 0 0 0 12 2H5c-.796 0-1.559.316-2.121.879A2.996 2.996 0 0 0 2 5v7c0 .796.316 1.559.879 2.121A2.996 2.996 0 0 0 5 15h7c.796 0 1.559-.316 2.121-.879A2.996 2.996 0 0 0 15 12V5Zm15 0c0-.796-.316-1.559-.879-2.121A2.996 2.996 0 0 0 27 2h-7c-.796 0-1.559.316-2.121.879A2.996 2.996 0 0 0 17 5v7c0 .796.316 1.559.879 2.121A2.996 2.996 0 0 0 20 15h7c.796 0 1.559-.316 2.121-.879A2.996 2.996 0 0 0 30 12V5ZM13 5v7a.997.997 0 0 1-1 1H5a.997.997 0 0 1-1-1V5a.997.997 0 0 1 1-1h7a.997.997 0 0 1 1 1Zm15 0v7a.997.997 0 0 1-1 1h-7a.997.997 0 0 1-1-1V5a.997.997 0 0 1 1-1h7a.997.997 0 0 1 1 1Z"
+          ></path>
         </svg>
         Categories desk
       </button>
@@ -144,30 +147,38 @@ const DropdownMenu = () => {
             {activeCategory && activeCategory.items.length > 0 && (
               <div className={styles.contentPanel}>
                 <h2 className={styles.title}>{activeCategory.title}</h2>
-                {activeCategory.items.map((section, idx) => (
-                  <div key={idx} className={styles.subcategoryList}>
-                    <div className={styles.column}>
-                      <h3 className={styles.sectionTitle}>{section.title}</h3>
-                      <div>
-                        {section.subcategories.map((sub, subIdx) => (
-                          <div key={subIdx} className={styles.subcategoryItem}>
-                            {sub}
-                          </div>
-                        ))}
+                <div style={{ overflowY: "scroll", height: "100%" }}>
+                  {activeCategory.items.map((section, idx) => (
+                    <div key={idx} className={styles.subcategoryList}>
+                      <div className={styles.column}>
+                        <h3 className={styles.sectionTitle}>{section.title}</h3>
+                        <div>
+                          {section.subcategories.map((sub, subIdx) => (
+                            <div
+                              key={subIdx}
+                              className={styles.subcategoryItem}
+                            >
+                              {sub}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className={styles.column}>
+                        <h3 className={styles.sectionTitle}>{section.title}</h3>
+                        <div>
+                          {section.subcategories.map((sub, subIdx) => (
+                            <div
+                              key={subIdx}
+                              className={styles.subcategoryItem}
+                            >
+                              {sub}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <div className={styles.column}>
-                      <h3 className={styles.sectionTitle}>{section.title}</h3>
-                      <div>
-                        {section.subcategories.map((sub, subIdx) => (
-                          <div key={subIdx} className={styles.subcategoryItem}>
-                            {sub}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
           </div>

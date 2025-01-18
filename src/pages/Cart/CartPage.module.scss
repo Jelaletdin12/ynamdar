@@ -6,6 +6,9 @@
   margin: 0 auto;
   padding: 2.1rem;
   box-sizing: border-box;
+  @media screen and (max-width: 720px) {
+    padding: 0.5rem;
+  }
 }
 
 .cartItems {
@@ -15,10 +18,16 @@
     align-items: center;
     margin-bottom: 12px;
     justify-content: space-between;
+    background-color: #f3f4f6;
+    padding-bottom: 15px;
     h2 {
       font-size: 24px;
       font-weight: 700;
       margin: 0;
+      @media screen and (max-width: 768px) {
+        font-size: 16px;
+        font-weight: 500;
+      }
     }
   }
 }
@@ -43,6 +52,10 @@
   padding-bottom: 20px;
   border-bottom: 1px solid #f0f1f3;
 
+  @media screen and (max-width: 720px)  {
+    gap: 0.5rem;
+    margin: 0.5rem;
+  }
   .itemImage {
     width: 144px;
     height: 144px;
@@ -52,6 +65,10 @@
       height: 100%;
       object-fit: contain;
     }
+    @media screen and (max-width: 340px)  {
+      width: 95px;
+      height: 95px;
+    }
   }
 
   .itemInfo {
@@ -59,14 +76,24 @@
     display: flex;
     justify-content: space-between;
     gap: 15px;
+    @media screen and (max-width: 720px) {
+      flex-direction: column;
+      position: relative;
+    }
     h3 {
       font-size: 1.2rem;
       margin-bottom: 0.5rem;
+      @media screen and (max-width: 720px)  {
+        font-size: 18px;
+      }
     }
 
     p {
       color: #666;
       margin-bottom: 1rem;
+      @media screen and (max-width: 720px)  {
+        font-size: 12px;
+      }
     }
   }
 }
@@ -76,11 +103,19 @@
   align-items: center;
   flex-direction: column;
   justify-content: center;
+  @media screen and (max-width: 720px) {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+  }
 
   .price {
     font-weight: 700;
     font-size: 18px;
     margin-bottom: 8px;
+    @media screen and (max-width: 720px)  {
+      font-size: 12px;
+      font-weight: 500;
+    }
   }
 }
 
@@ -91,6 +126,7 @@
   background-color: rgb(236 99 35);
   border-radius: 5px;
   min-width: 160px;
+
   span {
     color: #fff;
     font-weight: 700;
@@ -109,13 +145,25 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    @media screen and (max-width: 720px) {
+     
+      width: auto;
+    }
     svg {
       fill: #fff;
+      @media screen and (max-width: 720px) {
+        width: 14px;
+      }
     }
 
     &:hover {
       background: rgb(243 147 87);
     }
+  }
+  @media screen and (max-width: 720px) {
+    min-width: 110px;
+    gap: 0.5rem;
+    min-height: 33px;
   }
 }
 
@@ -128,6 +176,7 @@
   flex-direction: column;
   gap: 10px;
   min-width: 300px;
+  margin-top: 44.6px;
   @media screen and (max-width: 1023px) {
     width: 100%;
     flex-direction: row;
@@ -189,6 +238,14 @@
 
   &:hover {
     background: rgb(126 210 111);
+  }
+}
+
+.deleteBtnContainer {
+  @media screen and (max-width: 720px) {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 }
 

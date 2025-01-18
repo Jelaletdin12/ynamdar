@@ -54,7 +54,7 @@
 
 .brandsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 180px));
   gap: 16px;
   @media screen and (max-width: 1023px) {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -97,9 +97,9 @@
     aspect-ratio: 4/3;
 
     img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+    //  width: 100%;
+       height: 100%;
+      object-fit:contain;
       
       @media screen and (max-width: 1023px) {
       

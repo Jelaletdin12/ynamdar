@@ -7,7 +7,6 @@
   font-family: Montserrat;
 }
 
-
 body {
   margin: 0;
   overflow-x: hidden;
@@ -18,7 +17,7 @@ body {
 // :global(.ant-input) {
 //   min-width: 570px;
 // }
-main{
+main {
   @media screen and (max-width: 1023px) {
     padding-bottom: 45px;
   }
@@ -39,33 +38,35 @@ main{
 }
 :global(.swiper-button-next),
 :global(.swiper-button-prev) {
-  color: #fff !important; 
+  color: #fff !important;
   font-size: 20px;
   z-index: 10;
   &:after {
     font-size: 20px;
   }
+  @media screen and (max-width: 1024px) {
+    display: none !important;
+  }
 }
 
-:global(.ant-modal-wrap){
+:global(.ant-modal-wrap) {
   z-index: 999999 !important;
 }
 
-:global(.ant-scroll-number){
+:global(.ant-scroll-number) {
   margin-top: 30px !important;
   font-size: 10px !important;
-  background-color: #ec6323!important;
+  background-color: #ec6323 !important;
   min-width: 18px !important;
   height: 18px !important;
   right: 9px !important;
   align-items: center !important;
 }
 
-:global(.ant-back-top ){
+:global(.ant-back-top) {
   right: 10px;
-  bottom: 15px; 
+  bottom: 15px;
   @media screen and (max-width: 1023px) {
     bottom: 70px;
   }
 }
-
