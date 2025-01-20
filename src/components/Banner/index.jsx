@@ -104,8 +104,9 @@ function Carousel() {
         slidesPerView={4}
         spaceBetween={10}
         direction="vertical"
-        watchSlidesProgress={true}
+        // watchSlidesProgress={true}
         slideToClickedSlide={true}
+        // draggable={true}
         loop={true}
         className={styles.thumbSlider}
       >

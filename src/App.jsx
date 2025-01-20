@@ -3,6 +3,7 @@ import { BackTop } from "antd";
 import Router from "./routes";
 import { Provider } from "react-redux"; 
 import store from "./app/store"; 
+import './i18n/i18n';
 
 import "./App.css";
 

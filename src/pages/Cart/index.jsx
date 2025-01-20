@@ -1,16 +1,23 @@
 // CartPage.jsx
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./CartPage.module.scss";
 import temp1 from "../../assets/temp1.jpg";
 import temp2 from "../../assets/temp2.jpg";
 import temp3 from "../../assets/temp3.jpg";
 import { FaTrashAlt } from "react-icons/fa";
 import Checkout from "../../components/Checkout";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { Modal } from "antd";
 
 const CartPage = () => {
   const [isCheckout, setIsCheckout] = useState(false);
   const handleCheckout = () => setIsCheckout(true);
   const handleBackToCart = () => setIsCheckout(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const expandedRef = useRef(null);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [emptyCartModalVisible, setEmptyCartModalVisible] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -48,6 +55,13 @@ const CartPage = () => {
     },
   ]);
 
+  const modalProps = {
+    centered: true,
+    className: styles.cartDeleteModal,
+    maskClosable: false,
+    width: 400,
+  };
+
   const updateQuantity = (id, newQuantity) => {
     setCartItems((items) =>
       items.map((item) =>
@@ -60,8 +74,67 @@ const CartPage = () => {
     return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (expandedRef.current && !expandedRef.current.contains(event.target)) {
+        setIsExpanded(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const showDeleteConfirm = (itemId) => {
+    setItemToDelete(itemId);
+    setDeleteModalVisible(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (itemToDelete) {
+      setCartItems(cartItems.filter(item => item.id !== itemToDelete));
+    }
+    setDeleteModalVisible(false);
+    setItemToDelete(null);
+  };
+
+  const showEmptyCartConfirm = () => {
+    setEmptyCartModalVisible(true);
+  };
+
+  const handleEmptyCartConfirm = () => {
+    setCartItems([]);
+    setEmptyCartModalVisible(false);
+  };
+  // const handleCheckout = () => setIsCheckout(true);
+  // const handleBackToCart = () => setIsCheckout(false);
+
   return (
     <div className={styles.cartContainer}>
+       <Modal
+       {...modalProps}
+        title="Tassyklaň"
+        open={deleteModalVisible}
+        onOk={handleDeleteConfirm}
+        onCancel={() => setDeleteModalVisible(false)}
+        okText="Hawa"
+        cancelText="Ýok"
+      >
+        <p>Siz bu harydyňyzy sebetiňizden aýyrmak isleýärsiňizmi?</p>
+      </Modal>
+
+      {/* Empty Cart Modal */}
+      <Modal
+      {...modalProps}
+        title="Tassyklaň"
+        open={emptyCartModalVisible}
+        onOk={handleEmptyCartConfirm}
+        onCancel={() => setEmptyCartModalVisible(false)}
+        okText="Hawa"
+        cancelText="Ýok"
+      >
+        <p>Siz sebetiňizi doly boşatmak isleýärsiňizmi?</p>
+      </Modal>
       <div className={styles.cartItems}>
         <div className={styles.cartProducts}>
           {isCheckout ? (
@@ -77,6 +150,7 @@ const CartPage = () => {
                   <button
                     className={styles.deleteBtn}
                     style={{ padding: "4px 12px" }}
+                    onClick={showEmptyCartConfirm}
                   >
                     <FaTrashAlt /> Sebedi Bosat
                   </button>
@@ -135,7 +209,7 @@ const CartPage = () => {
                       </div>
                     </div>
                     <div className={styles.deleteBtnContainer}>
-                      <button className={styles.deleteBtn}>
+                      <button className={styles.deleteBtn}  onClick={() => showDeleteConfirm(item.id)}>
                         <FaTrashAlt />
                       </button>
                     </div>
@@ -164,6 +238,52 @@ const CartPage = () => {
             <button onClick={handleCheckout} className={styles.checkoutBtn}>
               Sargydy tayyarlamak
             </button>
+          </div>
+
+          <div className={styles.container}>
+            <div className={styles.summaryCard} ref={expandedRef}>
+              {/* Expanded Content - Appears above the header when expanded */}
+              <div
+                className={`${styles.expandedContent} ${
+                  isExpanded ? styles.visible : ""
+                }`}
+              >
+                <div className={styles.details}>
+                  <div className={styles.row}>
+                    <span>Bahasy:</span>
+                    <span className={styles.amount}>2124.00 m.</span>
+                  </div>
+                  <div className={styles.row}>
+                    <span>Eltip berme:</span>
+                    <span className={styles.amount}>0.00 m.</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Header - Always visible */}
+              <div className={styles.header}>
+                <div
+                  className={styles.titleWrapper}
+                  onClick={(e) => {
+                    setIsExpanded(!isExpanded);
+                    e.target.style.outline = "none";
+                  }}
+                >
+                  <span>
+                    {isExpanded ? (
+                      <ChevronUp size={20} />
+                    ) : (
+                      <ChevronDown size={20} />
+                    )}
+                    Jemi:
+                  </span>
+                  <span className={styles.amount}>2124.00 m.</span>
+                </div>
+                <div className={styles.actionWrapper}>
+                  <button className={styles.button}>Sargydy taýýarlamak</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

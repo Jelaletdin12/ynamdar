@@ -14,35 +14,42 @@ import ru from "../../assets/ru.png";
 import en from "../../assets/en.png";
 import { CiLocationOn } from "react-icons/ci";
 import Sidebar from "../CategorySideBar";
+import { useTranslation } from "react-i18next";
 
 const NavbarDown = () => {
   const [isSearchVisible, setSearchVisible] = useState(false);
+  const { t, i18n } = useTranslation();
 
   const toggleSearch = () => {
     setSearchVisible(!isSearchVisible);
   };
+  const changeLanguage = (langCode) => {
+    i18n.changeLanguage(langCode);
+    // Optionally save to localStorage
+    localStorage.setItem('preferredLanguage', langCode);
+  };
   const menuItems = [
-    { key: "1", img: tm, label: "Türkmençe" },
-    { key: "2", img: ru, label: "Русский" },
-    { key: "3", img: en, label: "English" },
+    { key: "tm", img: tm, label: t('navbar.languages.tm') },
+    { key: "ru", img: ru, label: t('navbar.languages.ru') },
+    { key: "en", img: en, label: t('navbar.languages.en') }
   ];
 
   const globeMenu = (
     <Menu
-      items={menuItems.map((item) => ({
-        key: item.key,
-        label: (
-          <span>
-            <img
-              src={item.img}
-              alt={item.label}
-              style={{ width: "20px", marginRight: "10px" }}
-            />
-            {item.label}
-          </span>
-        ),
-      }))}
-    />
+    items={menuItems.map((item) => ({
+      key: item.key,
+      label: (
+        <span onClick={() => changeLanguage(item.key)}>
+          <img
+            src={item.img}
+            alt={item.label}
+            style={{ width: "20px", marginRight: "10px" }}
+          />
+          {item.label}
+        </span>
+      ),
+    }))}
+  />
   );
 
   return (
@@ -75,7 +82,7 @@ const NavbarDown = () => {
                       data-v-4940fd39=""
                     ></path>
                   </svg>
-                  Brands
+                  {t('navbar.brands')}
                 </button>
               </Link>
             </li>

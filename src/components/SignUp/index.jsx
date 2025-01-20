@@ -20,7 +20,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
 
   // Phone number mask configuration
   const phoneMaskOptions = {
-    mask: "+{993} 000 000000",
+    mask: "+{993} 00 000000",
     lazy: false,
   };
 
@@ -34,6 +34,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
   const handleCancel = () => {
     if (hasChanges) {
       Modal.confirm({
+      
         title: "Siz hakykatdanam modaly yapmakçymy?",
         icon: <ExclamationCircleOutlined />,
         okText: "Hawa",
@@ -85,7 +86,6 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
   };
 
   const handleSubmit = () => {
-    // Add your submit logic here
     console.log({
       type: activeTab,
       phone,
