@@ -5,13 +5,13 @@ import {
   Thumbs,
   Pagination,
   Navigation,
-
+  Mousewheel,
+  FreeMode,
 } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/thumbs";
 import "swiper/css/navigation";
-
 
 import styles from "./Banner.module.scss";
 
@@ -26,11 +26,11 @@ import temp8 from "../../assets/slider/temp5.jpg";
 import temp9 from "../../assets/slider/temp5.jpg";
 import temp10 from "../../assets/slider/temp5.jpg";
 
-
 function Carousel() {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
+  
 
   useEffect(() => {
     setIsAnimating(false);
@@ -40,15 +40,11 @@ function Carousel() {
   const handleSlideChange = (swiper) => {
     setActiveIndex(swiper.realIndex);
     if (thumbsSwiper) {
-      const thumbSlide = document.querySelector(
-        `.${styles.thumbSlider} .swiper-slide[data-index="${swiper.realIndex}"]`
-      );
-      if (thumbSlide) {
-        thumbSlide.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }
+      const targetIndex = Math.floor(swiper.realIndex / 4) * 4;
+      thumbsSwiper.slideToLoop(targetIndex, 300, false);
     }
   };
-
+  
   return (
     <div className={styles.carouselContainer}>
       {/* Büyük Slider */}
@@ -61,74 +57,68 @@ function Carousel() {
           clickable: true,
         }}
         navigation={true}
+        
         className={styles.mainSlider}
         onSlideChange={handleSlideChange}
       >
-        <SwiperSlide>
-          <img src={temp1} alt="Slider 1" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={temp2} alt="Slider 2" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={temp3} alt="Slider 3" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={temp4} alt="Slider 4" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={temp5} alt="Slider 5" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={temp6} alt="Slider 5" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={temp7} alt="Slider 5" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={temp8} alt="Slider 5" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={temp9} alt="Slider 5" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src={temp10} alt="Slider 5" />
-        </SwiperSlide>
+        {[temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10].map((image, index) => (
+          <SwiperSlide key={index}>
+            <img src={image} alt={`Slider ${index + 1}`} />
+          </SwiperSlide>
+        ))}
       </Swiper>
 
       {/* Küçük Slider */}
       <Swiper
-        modules={[Thumbs, Autoplay]}
+        modules={[Thumbs, Autoplay, FreeMode, Mousewheel]}
         onSwiper={setThumbsSwiper}
         autoplay={{ delay: 3000 }}
-        slidesPerView={4}
+       slidesPerView="auto"
         spaceBetween={10}
         direction="vertical"
-        // watchSlidesProgress={true}
+        watchSlidesProgress={true}
         slideToClickedSlide={true}
-        // draggable={true}
-        loop={true}
+        mousewheel={{
+          forceToAxis: true,
+          sensitivity: 1,
+        }}
+        freeMode={{
+          enabled: true,
+          sticky: false,
+        }}
+        cssMode={true}
+        loop={false}
+        allowTouchMove={true}
         className={styles.thumbSlider}
       >
-        {[temp1, temp2, temp3, temp4, temp5, temp7, temp8, temp9, temp10].map(
-          (image, index) => (
-            <SwiperSlide key={index}>
-              <div
-                className={`${styles.thumbWrapper} ${
-                  index === activeIndex ? styles.active : ""
-                }`}
-              >
-                <img src={image} alt={`Thumbnail ${index + 1}`} />
-                {index === activeIndex && isAnimating && (
-                  <>
-                    <div className={styles.progressBarImg}></div>
-                    <div className={styles.progressBar}></div>
-                  </>
-                )}
-              </div>
-            </SwiperSlide>
-          )
-        )}
+        {[
+          temp1,
+          temp2,
+          temp3,
+          temp4,
+          temp5,
+          temp6,
+          temp7,
+          temp8,
+          temp9,
+          temp10,
+        ].map((image, index) => (
+          <SwiperSlide key={index}>
+            <div
+              className={`${styles.thumbWrapper} ${
+                index === activeIndex ? styles.active : ""
+              }`}
+            >
+              <img src={image} alt={`Thumbnail ${index + 1}`} />
+              {index === activeIndex && isAnimating && (
+                <>
+                  <div className={styles.progressBarImg}></div>
+                  <div className={styles.progressBar}></div>
+                </>
+              )}
+            </div>
+          </SwiperSlide>
+        ))}
       </Swiper>
     </div>
   );

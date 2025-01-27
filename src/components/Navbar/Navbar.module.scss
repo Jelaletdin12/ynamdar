@@ -8,8 +8,6 @@
   position: sticky;
   top: 0;
   z-index: 99;
-  
-  
 
   .navbarUp {
     width: 100%;
@@ -94,8 +92,6 @@
       gap: 5px;
       margin: 0;
       svg {
-        // stroke: #4b5563;
-        // color: #4b5563;
         fill: #4b5563;
         width: 20px;
         height: 20px;
@@ -185,7 +181,7 @@
     display: none;
   }
   @media screen and (max-width: 426px) {
-   padding: 8px 0;
+    padding: 9px 0;
   }
 }
 

@@ -92,7 +92,7 @@ const CartPage = () => {
 
   const handleDeleteConfirm = () => {
     if (itemToDelete) {
-      setCartItems(cartItems.filter(item => item.id !== itemToDelete));
+      setCartItems(cartItems.filter((item) => item.id !== itemToDelete));
     }
     setDeleteModalVisible(false);
     setItemToDelete(null);
@@ -111,8 +111,8 @@ const CartPage = () => {
 
   return (
     <div className={styles.cartContainer}>
-       <Modal
-       {...modalProps}
+      <Modal
+        {...modalProps}
         title="Tassyklaň"
         open={deleteModalVisible}
         onOk={handleDeleteConfirm}
@@ -125,7 +125,7 @@ const CartPage = () => {
 
       {/* Empty Cart Modal */}
       <Modal
-      {...modalProps}
+        {...modalProps}
         title="Tassyklaň"
         open={emptyCartModalVisible}
         onOk={handleEmptyCartConfirm}
@@ -209,7 +209,10 @@ const CartPage = () => {
                       </div>
                     </div>
                     <div className={styles.deleteBtnContainer}>
-                      <button className={styles.deleteBtn}  onClick={() => showDeleteConfirm(item.id)}>
+                      <button
+                        className={styles.deleteBtn}
+                        onClick={() => showDeleteConfirm(item.id)}
+                      >
                         <FaTrashAlt />
                       </button>
                     </div>
@@ -280,7 +283,9 @@ const CartPage = () => {
                   <span className={styles.amount}>2124.00 m.</span>
                 </div>
                 <div className={styles.actionWrapper}>
-                  <button className={styles.button}>Sargydy taýýarlamak</button>
+                  <button onClick={handleCheckout} className={styles.button}>
+                    Sargydy taýýarlamak
+                  </button>
                 </div>
               </div>
             </div>

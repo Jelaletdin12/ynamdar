@@ -18,7 +18,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
   const [messageTitle, setMessageTitle] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
 
-  // Phone number mask configuration
+
   const phoneMaskOptions = {
     mask: "+{993} 00 000000",
     lazy: false,

@@ -12,7 +12,9 @@ const WishList = lazy(() => import("./pages/LikedProducts/index.jsx"));
 const Category = lazy(() => import("./pages/Category/index.jsx"));
 const ProductDetail = lazy(() => import("./pages/ProductDetail/index.jsx"));
 const ProfileMenu = lazy(() => import("./components/Profile/index.jsx"));
-// const Product = lazy(() => import("./pages/product/index"));
+const Orders = lazy(() => import("./pages/Orders/index.jsx"));
+const OrderDetail = lazy(() => import("./pages/OrderDetail/index.jsx"));
+
 
 export default function Router() {
   const routes = useRoutes([
@@ -31,6 +33,8 @@ export default function Router() {
         { path: "/category", element: <Category /> },
         { path: "/product", element: <ProductDetail /> },
         { path: "/profile", element: <ProfileMenu /> },
+        { path: "/orders", element: <Orders /> },
+        { path: "/orderdetail", element: <OrderDetail /> },
       
       ],
     },

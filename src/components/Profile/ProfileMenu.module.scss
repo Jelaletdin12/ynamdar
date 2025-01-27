@@ -32,7 +32,7 @@
     box-shadow: inset 0 0 0 2px #d9d9d9;
   }
   &:active {
-    background-color: rgba(0, 0, 0, 0.03); // Very light gray when clicked
+    background-color: rgba(0, 0, 0, 0.03); 
   }
 
   &:hover {
@@ -45,7 +45,7 @@
 .icon {
   display: flex;
   align-items: center;
-  color: #ec6323; // Orange color matching the design
+  color: #ec6323; 
   width: 24px;
   height: 24px;
 }
@@ -61,6 +61,10 @@
     padding: 0;
     border-radius: 8px;
     overflow: hidden;
+    top: 50%;
+    transform: translateY(50%);
+    width: 300px;
+    margin: auto;
   }
 
   :global(.ant-modal-header) {

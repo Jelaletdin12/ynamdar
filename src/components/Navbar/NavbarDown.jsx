@@ -108,6 +108,8 @@ const NavbarDown = () => {
             </li>
             <div className={styles.stick}></div>
             <li>
+              <Link to={"/orders"}>
+              
               <button className={styles.navButton}>
                 <svg
                   data-name="Layer 1"
@@ -121,10 +123,13 @@ const NavbarDown = () => {
                   ></path>
                 </svg>
               </button>
+              </Link>
             </li>
             <div className={styles.stick}></div>
             <li>
               <Link to={"/wishlist"}>
+              <Badge style={{marginRight: "4px"}} count={8} offset={[10, 0]} showZero>
+
                 <button className={styles.navButton}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -144,6 +149,7 @@ const NavbarDown = () => {
                     ></path>
                   </svg>
                 </button>
+              </Badge>
               </Link>
             </li>
             <div className={styles.stick}></div>
