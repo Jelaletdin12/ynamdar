@@ -19,7 +19,7 @@ const AddressSelect = ({
   };
 
   const handleClear = (e) => {
-    e.stopPropagation(); // Bu, modalın açılmasını engeller
+    e.stopPropagation(); 
     handleClearAddress();
   };
   const handleCancel = () => {

@@ -94,7 +94,12 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
       messageTitle,
     });
   };
-
+  const handleFocus = (event) => {
+    event.target.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  };
   return (
     <>
      {!isControlled && (
@@ -149,6 +154,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
         <div className={styles.inputGroup}>
           <label>{activeTab === "phone" ? "Telefon" : "Email"}</label>
           <Input
+           onFocus={handleFocus}
             value={activeTab === "phone" ? phone : email}
             onChange={(e) => handleInputChange(activeTab, e.target.value)}
             {...(activeTab === "phone"
@@ -166,6 +172,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
         <div className={styles.inputGroup}>
           <label>Açar söz</label>
           <Input
+           onFocus={handleFocus}
             value={message}
             onChange={(e) => handleInputChange("message", e.target.value)}
           />
@@ -174,6 +181,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
         <div className={styles.inputGroup}>
           <label>Açar söz tassykla</label>
           <Input
+           onFocus={handleFocus}
             value={messageTitle}
             onChange={(e) => handleInputChange("messageTitle", e.target.value)}
           />
