@@ -5,8 +5,11 @@ import { Heart, ShoppingCart } from "lucide-react";
 import temp3 from "../../assets/temp3.jpg";
 import { FaShoppingCart } from "react-icons/fa";
 import ProductCard from "../../components/ProductCard/index";
+import { useTranslation } from "react-i18next";
+
 
 const ProductPage = () => {
+    const { t, i18n } = useTranslation();
   const product = {
     id: "EMK990007",
     name: "Ermak",
@@ -83,11 +86,11 @@ const ProductPage = () => {
 
           <div className={styles.productMeta}>
             <div className={styles.metaItem}>
-              <span className={styles.metaLabel}>Haryt kody</span>
+              <span className={styles.metaLabel}>{t("product.productCode")}</span>
               <span className={styles.metaValue}>{product.id}</span>
             </div>
             <div className={styles.metaItem}>
-              <span className={styles.metaLabel}>Barkod</span>
+              <span className={styles.metaLabel}>{t("product.barCode")}</span>
               <span className={styles.metaValue}>{product.barcode}</span>
             </div>
             <div className={styles.metaItem}>
@@ -217,7 +220,7 @@ const ProductPage = () => {
 
       {/* Similar Products */}
       <div className={styles.similarProducts}>
-        <h2 className={styles.sectionTitle}>Meňzeş harytlar</h2>
+        <h2 className={styles.sectionTitle}>{t("product.similarProducts")}</h2>
         <div className={styles.productsGrid}>
           {similarProducts.map((product) => (
             <ProductCard

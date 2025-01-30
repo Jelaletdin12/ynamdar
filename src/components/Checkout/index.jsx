@@ -5,6 +5,7 @@ import { Select } from "antd";
 import { X } from "lucide-react";
 const { Option } = Select;
 import AddressSelect from "../AddressSelect(CheckOut)/index";
+import { useTranslation } from "react-i18next";
 
 const useDeviceType = () => {
   const [deviceType, setDeviceType] = useState("desktop");
@@ -22,6 +23,7 @@ const useDeviceType = () => {
 };
 
 const Checkout = ({ cartItems, onBackToCart }) => {
+  const { t, i18n } = useTranslation();
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -32,7 +34,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
 
   const [deliveryOptionsVisible, setDeliveryOptionsVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  const [deliveryTime, setDeliveryTime] = useState("shugun");
+  const [deliveryTime, setDeliveryTime] = useState("today");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [selectedDeliveryType, setSelectedDeliveryType] = useState("standard");
   const [availableTimeSlots, setAvailableTimeSlots] = useState([
@@ -75,10 +77,10 @@ const Checkout = ({ cartItems, onBackToCart }) => {
       getTimeSlotsByDeliveryType(selectedDeliveryType, selectedTime)
     );
   };
-  const getTimeSlotsByDeliveryType = (type, day = "shugun") => {
+  const getTimeSlotsByDeliveryType = (type, day = "today") => {
     switch (type) {
       case "standard":
-        return day === "shugun"
+        return day === "today"
           ? ["10:00-12:00", "13:00-15:00"]
           : ["10:00-12:00", "13:00-15:00", "16:00-18:00"];
       case "express":
@@ -97,7 +99,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
   const handleDeliveryTypeChange = (type) => {
     setSelectedDeliveryType(type);
     setSelectedTimeSlot(null);
-    setDeliveryTime("shugun");
+    setDeliveryTime("today");
     setAvailableTimeSlots(getTimeSlotsByDeliveryType(type));
   };
   const handleFocus = (event) => {
@@ -136,12 +138,12 @@ const Checkout = ({ cartItems, onBackToCart }) => {
           <div className={styles.timeOptionRowDay}>
             <button
               type="button"
-              onClick={() => handleDeliveryTimeChange("shugun")}
+              onClick={() => handleDeliveryTimeChange("today")}
               className={`${styles.timeOption} ${
-                deliveryTime === "shugun" ? styles.selected : ""
+                deliveryTime === "today" ? styles.selected : ""
               }`}
             >
-              <label>Şu gün</label>
+              <label>{t("checkout.today")}</label>
               <span>27.01.2025</span>
             </button>
           </div>
@@ -168,22 +170,22 @@ const Checkout = ({ cartItems, onBackToCart }) => {
         <div className={styles.timeOptionRowDay}>
           <button
             type="button"
-            onClick={() => handleDeliveryTimeChange("shugun")}
+            onClick={() => handleDeliveryTimeChange("today")}
             className={`${styles.timeOption} ${
-              deliveryTime === "shugun" ? styles.selected : ""
+              deliveryTime === "today" ? styles.selected : ""
             }`}
           >
-            <label>Şu gün</label>
+            <label>{t("checkout.today")}</label>
             <span>27.01.2025</span>
           </button>
           <button
             type="button"
-            onClick={() => handleDeliveryTimeChange("ertir")}
+            onClick={() => handleDeliveryTimeChange("tomorrow")}
             className={`${styles.timeOption} ${
-              deliveryTime === "ertir" ? styles.selected : ""
+              deliveryTime === "tomorrow" ? styles.selected : ""
             }`}
           >
-            <label>Ertir</label>
+            <label>{t("checkout.tomorrow")}</label>
             <span>28.01.2025</span>
           </button>
         </div>
@@ -207,17 +209,17 @@ const Checkout = ({ cartItems, onBackToCart }) => {
 
   return (
     <div className={styles.checkoutContainer}>
-      <h2>Sebedim (2)</h2>
+      <h2>{t("cart.basket")} (2)</h2>
       <div className={styles.formSection}>
         <div className={styles.paymentOptions}>
-          <h3>Töleg şekili:</h3>
+          <h3>{t("checkout.paymentMethod")}:</h3>
           <div className={styles.option}>
             <input type="radio" id="nagt" name="paymentType" defaultChecked />
             <label htmlFor="nagt" className={styles.customRadio}></label>
             <div className={styles.text}>
-              <span className={styles.optionTitle}>Nagt</span>
+              <span className={styles.optionTitle}>{t("checkout.inCash")}</span>
               <span className={styles.optionDesc}>
-                Sargyt galan wagtynyz nagt hasaplaşmak
+              {t("checkout.payment_in_cash_upon_delivery_of_the_order")}
               </span>
             </div>
           </div>
@@ -226,9 +228,11 @@ const Checkout = ({ cartItems, onBackToCart }) => {
             <input type="radio" id="terminal" name="paymentType" />
             <label htmlFor="terminal" className={styles.customRadio}></label>
             <div className={styles.text}>
-              <span className={styles.optionTitle}>Töleg Terminaly</span>
+              <span className={styles.optionTitle}>
+                {t("checkout.paymentTerminal")}
+              </span>
               <span className={styles.optionDesc}>
-                Töleg terminalyndan kart arkaly hasaplaşmak
+              {t("checkout.payment_by_card")}
               </span>
             </div>
           </div>
@@ -244,7 +248,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
             </label>
             <div className={styles.text}>
               <span style={{ color: "#6b7280" }}>
-                Keşbek balansynyz:{" "}
+                 {t("checkout.cashback")}:{" "}
                 <span className={styles.amount}>0.00 m.</span>
               </span>
               <span className={styles.description}>
@@ -255,10 +259,10 @@ const Checkout = ({ cartItems, onBackToCart }) => {
         </div>
 
         <div className={styles.deliveryForm}>
-          <h3>Salgynyz:</h3>
+          <h3>{t("checkout.adress")}:</h3>
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label>Doly adynyz*</label>
+              <label>{t("checkout.fullName")}*</label>
               <input
                 type="text"
                 name="fullName"
@@ -270,7 +274,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label>Telefon*</label>
+              <label>{t("checkout.telephone")}*</label>
               <input
                 type="tel"
                 name="phone"
@@ -285,7 +289,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
 
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label>Salgynyz*</label>
+              <label>{t("checkout.address")}*</label>
               <AddressSelect
                 selectedAddress={selectedAddress}
                 handleAddressSelect={handleAddressSelect}
@@ -295,7 +299,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label>Salgynyz barada giňişleýin*</label>
+              <label>{t("checkout.moreAboutYourAddress")}*</label>
               <input
                 type="text"
                 name="deliveryAddress"
@@ -308,7 +312,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
           </div>
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label>Belik</label>
+              <label>{t("checkout.note")}</label>
               <input
                 type="text"
                 name="notes"
@@ -321,7 +325,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
 
           {deliveryOptionsVisible && (
             <div className={styles.deliveryOptions}>
-              <h4>Eltip bermek görnüşi:</h4>
+              <h4>{t("checkout.deliveryType")}:</h4>
               <div className={styles.deliveryOptionRow}>
                 <div className={styles.deliveryOption}>
                   <input
@@ -334,7 +338,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
                   <label className={styles.customRadio}></label>
                   <label htmlFor="standard">
                     <div className={styles.optionTitle}>
-                      Standart eltip bermek
+                      {t("checkout.standardShipping")}
                     </div>
                     <div className={styles.optionCost}>00 manat</div>
                   </label>
@@ -350,7 +354,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
                   <label className={styles.customRadio}></label>
                   <label htmlFor="express">
                     <div className={styles.optionTitle}>
-                      Express eltip bermek
+                    {t("checkout.expressDelivery")}
                     </div>
                     <div className={styles.optionCost}>20 manat</div>
                   </label>
@@ -365,7 +369,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
                   />
                   <label className={styles.customRadio}></label>
                   <label htmlFor="pickup">
-                    <div className={styles.optionTitle}>Ozum baryp aljak</div>
+                    <div className={styles.optionTitle}>  {t("checkout.pickup")}</div>
                     <div className={styles.optionCost}>Garassyzlyk Shayoly</div>
                   </label>
                 </div>
@@ -374,8 +378,10 @@ const Checkout = ({ cartItems, onBackToCart }) => {
               <div className={styles.deliveryTimeOptions}>
                 <h4>
                   {selectedDeliveryType === "pickup"
-                    ? "Alyp gitjek wagtyňyzy saýlaň"
-                    : "Eltip bermek wagty:"}
+                    ? 
+                    t("checkout.selectPickupTime")
+                    : t("checkout.selectDeliveryTime")
+                    }
                 </h4>
                 {renderDeliveryTimeSection()}
               </div>
@@ -386,24 +392,24 @@ const Checkout = ({ cartItems, onBackToCart }) => {
         <div className={styles.deliveryInfo}>
           <ul>
             <li>
-              Eltip bermek hyzmaty Aşgabat şäheriniň çägi bilen bir hatarda
-              Büzmeýine we Änew şäherine hem elýeterlidir;
+              {t(
+                "checkout.Delivery_is_carried_out_in_the_cities_of_Ashgabat_Buzmein_and_Anau"
+              )}
             </li>
             <li>
-              Sargydyň iň pes çägi <strong>50 manat</strong> bolmaly; sargydyňyz
-              <strong>150 manatdan</strong> geçse eltip bermek hyzmaty mugt;
+              {t(
+                "checkout.The_minimum_order_amount_must_be_at_least_50_manat_for_orders_over_150_manat_delivery_is_free"
+              )}
             </li>
             <li>
-              Saýtdan sargyt edeniňizden soňra operator size jaň edip sargydy
-              tassyklar (eger hemişelik müşderi bolsaňyz sargytlaryňyz
-              islegiňize göra awtomatik usulda hem tassyklanýar);
+              {t(
+                "checkout.After_you_place_an_order_on_the_website_the_operator_will_call_you_to_confirm_the_order_for_regular_customers_confirmation_is_carried_out_automatically_at_their_request"
+              )}
             </li>
             <li>
-              Sargydy barlap alanyňyzdan soňra töleg amala aşyrylyar. Eltip
-              berijiniň size gowşurýan töleg resminamasynda siziň tölemeli
-              puluňyz bellenenddir. Töleg nagt we nagt däl görnüşde milli
-              manatda amala aşyrylyar. Kabul edip tölegini geçiren harydyňyz
-              yzyna alynmayar.
+              {t(
+                "checkout.Payment_is_made_after_you_check_and_accept_the_order_The_amount_of_your_payment_is_indicated_on_the_delivery_persons_payment_document_Payment_is_made_in_cash_and_by_card_in_national_currency_Accepted_and_paid_goods_are_not_subject_to_return"
+              )}
             </li>
           </ul>
         </div>

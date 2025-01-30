@@ -7,8 +7,9 @@ import temp3 from "../../assets/temp3.jpg";
 import { FaHeart } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import ProductCard from "../../components/ProductCard/index";
-
+import { useTranslation } from "react-i18next";
 const WishtList = () => {
+   const { t, i18n } = useTranslation();
   const products = [
     {
       id: 1,
@@ -74,7 +75,7 @@ const WishtList = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Halanlarym</h1>
+      <h1 className={styles.title}>{t("wishtList.likedProducts")}</h1>
       <div className={styles.productGrid}>
         {products.map((product) => (
            <ProductCard

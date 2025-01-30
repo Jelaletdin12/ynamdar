@@ -3,6 +3,7 @@ import styles from "./ProductCard.module.scss";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { FaShoppingCart } from "react-icons/fa";
 
+
 const ProductCard = ({
   product,
   showAddToCart = true,

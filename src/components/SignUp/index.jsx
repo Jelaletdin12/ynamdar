@@ -5,10 +5,11 @@ import IMask from "imask";
 import styles from "./SignUpModal.module.scss";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
   const [internalIsVisible, setInternalIsVisible] = useState(false);
-  
+  const { t, i18n } = useTranslation();
   const isControlled = propIsVisible !== undefined;
   const isVisible = isControlled ? propIsVisible : internalIsVisible;
   const [activeTab, setActiveTab] = useState("phone");
@@ -35,10 +36,10 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
     if (hasChanges) {
       Modal.confirm({
       
-        title: "Siz hakykatdanam modaly yapmakçymy?",
+        title: t("common.Are_you_sure_you_want_to_close_the_modal"),
         icon: <ExclamationCircleOutlined />,
-        okText: "Hawa",
-        cancelText: "Ýok",
+        okText: t("common.yes"),
+        cancelText: t("common.no"),
         onOk() {
           closeModal();
           resetForm();
@@ -121,11 +122,11 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
             fill="currentColor"
           ></path>
         </svg>
-        Agza bol
+        {t("profile.registration")}
       </Button>
 )}
       <Modal
-        title="Agza bol"
+        title={t("profile.registration")}
         open={isVisible}
         onCancel={handleCancel}
         footer={null}
@@ -139,7 +140,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
             }`}
             onClick={() => setActiveTab("phone")}
           >
-            Telefon
+           {t("profile.telephone")}
           </div>
           <div
             className={`${styles.tab} ${
@@ -147,7 +148,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
             }`}
             onClick={() => setActiveTab("email")}
           >
-            Email
+               {t("profile.email")}
           </div>
         </div>
 
@@ -170,7 +171,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
         </div>
 
         <div className={styles.inputGroup}>
-          <label>Açar söz</label>
+          <label>{t("profile.password")}</label>
           <Input
            onFocus={handleFocus}
             value={message}
@@ -179,7 +180,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
         </div>
 
         <div className={styles.inputGroup}>
-          <label>Açar söz tassykla</label>
+          <label>{t("profile.confirmPassword")}</label>
           <Input
            onFocus={handleFocus}
             value={messageTitle}
@@ -205,10 +206,10 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
               fill="currentColor"
             ></path>
           </svg>
-          Agza bol
+          {t("profile.registration")}
         </button>
 
-        <div className={styles.divider}>ýa-da</div>
+        <div className={styles.divider}>{t("common.or")}</div>
 
         <div className={styles.socialLogin}>
           <button>

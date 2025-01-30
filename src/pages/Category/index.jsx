@@ -10,8 +10,9 @@ import arrow from "../../assets/icons/topBottom.svg";
 import brand from "../../assets/icons/brand.svg";
 import BrandSidebar from "../../components/BrandsSidebar/index";
 import FilterSidebar from "../../components/FilterSidebar/index";
-
+import { useTranslation } from "react-i18next";
 const CategoryPage = () => {
+  const { t, i18n } = useTranslation();
   const products = [
     {
       id: 1,
@@ -189,11 +190,11 @@ const CategoryPage = () => {
     <div className={styles.categoryPage} style={{ flexDirection: "column" }}>
       {/* Left Sidebar */}
       <h2>Iymit, kulinariýa</h2>
-      <p className={styles.sum}>Jemi: 2291 haryt</p>
+      <p className={styles.sum}>  {t("category.total")}: 2291  {t("category.items")}</p>
       <div className={styles.bars}>
         <button className={styles.sum}>
           {" "}
-          <strong>Jemi:</strong> <br /> 2291 haryt
+          <strong>  {t("category.total")}:</strong> <br /> 2291  {t("category.items")}
         </button>
         {/* <button>
           {" "}
@@ -214,7 +215,7 @@ const CategoryPage = () => {
       <div className={styles.Container}>
         <aside className={styles.sidebar}>
           <div className={styles.filterSection}>
-            <h3>Önümler</h3>
+            <h3> {t("category.subCategories")}</h3>
             <ul>
               <li>Gury iýmişler, çigit</li>
               <li>Süýji, marmelad, zefir</li>
@@ -228,25 +229,25 @@ const CategoryPage = () => {
             </ul>
           </div>
           <div className={styles.filterSection}>
-            <h3>Tertip</h3>
+            <h3> {t("category.composition")}</h3>
             <label>
               <input type="radio" name="sort" />
               <span className={styles.customRadio}></span>
-              Hiç hili
+              {t("category.neverMind")}
             </label>
             <label>
               <input type="radio" name="sort" />
               <span className={styles.customRadio}></span>
-              Arzandan gymmada
+              {t("category.From_cheap_to_expensive")}
             </label>
             <label>
               <input type="radio" name="sort" />
               <span className={styles.customRadio}></span>
-              Gymmatdan arzana
+              {t("category.From_expensive_to_cheap")}
             </label>
           </div>
           <div className={styles.filterSection}>
-            <h3>Brend</h3>
+            <h3>v{t("navbar.brands")}</h3>
             <input type="text" placeholder="Gözleg" />
             <ul>
               <li>

@@ -5,9 +5,9 @@ import IMask from "imask";
 import styles from "./LoginModal.module.scss";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
-import login from "../../assets/icons/login.svg";
+import { useTranslation } from "react-i18next";
 const LoginModal = ({isVisible: propIsVisible, onClose: propOnClose }) => {
-
+ const { t, i18n } = useTranslation();
   const [internalIsVisible, setInternalIsVisible] = useState(false);
   
   const isControlled = propIsVisible !== undefined;
@@ -35,10 +35,10 @@ const LoginModal = ({isVisible: propIsVisible, onClose: propOnClose }) => {
   const handleCancel = () => {
     if (hasChanges) {
       Modal.confirm({
-        title: "Siz hakykatdanam modaly yapmakçymy?",
+        title: t("common.Are_you_sure_you_want_to_close_the_modal"),
         icon: <ExclamationCircleOutlined />,
-        okText: "Hawa",
-        cancelText: "Ýok",
+        okText: t("common.yes"),
+        cancelText: t("common.no"),
         onOk() {
           closeModal();
           resetForm();
@@ -86,7 +86,6 @@ const LoginModal = ({isVisible: propIsVisible, onClose: propOnClose }) => {
   };
 
   const handleSubmit = () => {
-    // Add your submit logic here
     console.log({
       type: activeTab,
       phone,
@@ -127,11 +126,11 @@ const LoginModal = ({isVisible: propIsVisible, onClose: propOnClose }) => {
             fill="currentColor"
           ></path>
         </svg>
-        Iceri gir
+        {t("profile.login")}
       </Button>
     )}
       <Modal
-        title="Iceri  gir"
+        title={t("profile.login")}
         open={isVisible}
         onCancel={handleCancel}
         footer={null}
@@ -145,7 +144,7 @@ const LoginModal = ({isVisible: propIsVisible, onClose: propOnClose }) => {
             }`}
             onClick={() => setActiveTab("phone")}
           >
-            Telefon
+             {t("profile.telephone")}
           </div>
           <div
             className={`${styles.tab} ${
@@ -153,7 +152,7 @@ const LoginModal = ({isVisible: propIsVisible, onClose: propOnClose }) => {
             }`}
             onClick={() => setActiveTab("email")}
           >
-            Email
+             {t("profile.email")}
           </div>
         </div>
 
@@ -175,14 +174,14 @@ const LoginModal = ({isVisible: propIsVisible, onClose: propOnClose }) => {
         </div>
 
         <div className={styles.inputGroup}>
-          <label>Açar söz</label>
+          <label> {t("profile.password")}</label>
           <Input
             value={message}
             onChange={(e) => handleInputChange("message", e.target.value)}
           />
         </div>
         <div className={styles.forgotPassword}>
-          <p>Acar sozi unutdum</p>
+          <p> {t("profile.forgotPass")}</p>
         </div>
 
         <button className={styles.submitButton} onClick={handleSubmit}>
@@ -213,10 +212,10 @@ const LoginModal = ({isVisible: propIsVisible, onClose: propOnClose }) => {
               fill="currentColor"
             ></path>
           </svg>
-          Iceri gir
+          {t("profile.login")}
         </button>
 
-        <div className={styles.divider}>ýa-da</div>
+        <div className={styles.divider}> {t("common.or")}</div>
 
         <div className={styles.socialLogin}>
           <button>

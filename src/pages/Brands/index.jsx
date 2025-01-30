@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { useTranslation } from "react-i18next";
 import styles from "./Brands.module.scss";
 import temp1 from "../../assets/brands/5401.png";
 import temp2 from "../../assets/brands/5417.png";
@@ -14,7 +14,7 @@ import { CiSearch } from "react-icons/ci";
 const BrandsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loadedImages, setLoadedImages] = useState({});
-
+const { t, i18n } = useTranslation();
   const brandCategories = [
     {
       title: "Gök we bakja önümleri",
@@ -64,7 +64,7 @@ const BrandsPage = () => {
         <CiSearch />
         <input
           type="text"
-          placeholder="Gözleg"
+          placeholder={t("common.search")}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

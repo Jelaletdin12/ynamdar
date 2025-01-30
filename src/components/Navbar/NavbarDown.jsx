@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import styles from "./Navbar.module.scss";
-import logo from "../../assets/logo.png";
+
 import { FaGlobe } from "react-icons/fa6";
 import { Input, Badge, Menu, Dropdown } from "antd";
 const { Search } = Input;
 import DropdownMenu from "../CategoryDropdown/index";
 import LoginModal from "../LogIn/index";
 import SignUpModal from "../SignUp/index";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import tm from "../../assets/tm.png";
 import ru from "../../assets/ru.png";
@@ -15,6 +15,7 @@ import en from "../../assets/en.png";
 import { CiLocationOn } from "react-icons/ci";
 import Sidebar from "../CategorySideBar";
 import { useTranslation } from "react-i18next";
+
 
 const NavbarDown = () => {
   const [isSearchVisible, setSearchVisible] = useState(false);
@@ -25,7 +26,6 @@ const NavbarDown = () => {
   };
   const changeLanguage = (langCode) => {
     i18n.changeLanguage(langCode);
-    // Optionally save to localStorage
     localStorage.setItem('preferredLanguage', langCode);
   };
   const menuItems = [

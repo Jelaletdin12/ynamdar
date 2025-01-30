@@ -8,8 +8,10 @@ import { FaTrashAlt } from "react-icons/fa";
 import Checkout from "../../components/Checkout";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Modal } from "antd";
+import { useTranslation } from "react-i18next";
 
 const CartPage = () => {
+  const { t, i18n } = useTranslation();
   const [isCheckout, setIsCheckout] = useState(false);
   const handleCheckout = () => setIsCheckout(true);
   const handleBackToCart = () => setIsCheckout(false);
@@ -113,27 +115,27 @@ const CartPage = () => {
     <div className={styles.cartContainer}>
       <Modal
         {...modalProps}
-        title="Tassyklaň"
+        title={t("common.confirm")}
         open={deleteModalVisible}
         onOk={handleDeleteConfirm}
         onCancel={() => setDeleteModalVisible(false)}
-        okText="Hawa"
-        cancelText="Ýok"
+        okText={t("common.yes")}
+        cancelText={t("common.no")}
       >
-        <p>Siz bu harydyňyzy sebetiňizden aýyrmak isleýärsiňizmi?</p>
+        <p>{t("common.Do_you_really_want_to_remove_the_item_from_the_cart")}</p>
       </Modal>
 
       {/* Empty Cart Modal */}
       <Modal
         {...modalProps}
-        title="Tassyklaň"
+        title={t("common.confirm")}
         open={emptyCartModalVisible}
         onOk={handleEmptyCartConfirm}
         onCancel={() => setEmptyCartModalVisible(false)}
-        okText="Hawa"
-        cancelText="Ýok"
+        okText={t("common.yes")}
+        cancelText={t("common.no")}
       >
-        <p>Siz sebetiňizi doly boşatmak isleýärsiňizmi?</p>
+        <p>{t("common.Are_you_sure_you_want_to_empty_the_cart")}</p>
       </Modal>
       <div className={styles.cartItems}>
         <div className={styles.cartProducts}>
@@ -143,7 +145,7 @@ const CartPage = () => {
             <div className={styles.cartItemContainer}>
               <div className={styles.cartHeader}>
                 <h2>
-                  Sebedim (
+                {t("cart.basket")} (
                   {cartItems.reduce((sum, item) => sum + item.quantity, 0)})
                 </h2>
                 <div>
@@ -152,7 +154,7 @@ const CartPage = () => {
                     style={{ padding: "4px 12px" }}
                     onClick={showEmptyCartConfirm}
                   >
-                    <FaTrashAlt /> Sebedi Bosat
+                    <FaTrashAlt />  {t("cart.clearCart")}
                   </button>
                 </div>
               </div>
@@ -224,22 +226,22 @@ const CartPage = () => {
 
           <div className={styles.cartSummary}>
             <div className={styles.cartContent}>
-              <h3>Sebedim:</h3>
+              <h3>  {t("cart.basket")}:</h3>
               <div className={styles.summaryRow}>
-                <span>Bahasy::</span>
+                <span>  {t("cart.price")}:</span>
                 <span>{calculateTotal().toFixed(2)} m.</span>
               </div>
               <div className={styles.summaryRow}>
-                <span>Eltip berme :</span>
+                <span>  {t("cart.delivery")} :</span>
                 <span>0.00 m.</span>
               </div>
               <div className={styles.summaryRow}>
-                <span>Jemi:</span>
+                <span>  {t("cart.total")}:</span>
                 <span>{calculateTotal().toFixed(2)} m.</span>
               </div>
             </div>
             <button onClick={handleCheckout} className={styles.checkoutBtn}>
-              Sargydy tayyarlamak
+            {t("cart.prepareOrders")}
             </button>
           </div>
 
@@ -253,11 +255,11 @@ const CartPage = () => {
               >
                 <div className={styles.details}>
                   <div className={styles.row}>
-                    <span>Bahasy:</span>
+                    <span>  {t("cart.price")}:</span>
                     <span className={styles.amount}>2124.00 m.</span>
                   </div>
                   <div className={styles.row}>
-                    <span>Eltip berme:</span>
+                    <span>  {t("cart.delivery")}:</span>
                     <span className={styles.amount}>0.00 m.</span>
                   </div>
                 </div>
@@ -278,13 +280,13 @@ const CartPage = () => {
                     ) : (
                       <ChevronDown size={20} />
                     )}
-                    Jemi:
+                      {t("cart.total")}:
                   </span>
                   <span className={styles.amount}>2124.00 m.</span>
                 </div>
                 <div className={styles.actionWrapper}>
                   <button onClick={handleCheckout} className={styles.button}>
-                    Sargydy taýýarlamak
+                  {t("cart.prepareOrders")}
                   </button>
                 </div>
               </div>
