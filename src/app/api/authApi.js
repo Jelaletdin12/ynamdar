@@ -72,3 +72,6 @@ export const {
   useRegisterMutation,
   useVerifyTokenQuery,
 } = authApi;
+import { useRegisterMutation } from '../store/authApi';
+
+

@@ -1,101 +1,31 @@
 import React, { useState, useEffect } from "react";
-import styles from "./DropdownMenu.module.scss";
+import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
+import styles from "./DropdownMenu.module.scss";
+import { useGetCategoriesQuery } from "../../app/api/categories";
+import {
+  selectCategories,
+  setSelectedCategory,
+  setSelectedSubCategory,
+} from "../../features/categorySlice";
 
 const DropdownMenu = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const { data: categoriesData, isLoading } = useGetCategoriesQuery("tree");
+
+  const categories = useSelector(selectCategories);
   const [isOpen, setIsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
 
-  const categories = [
-    {
-      id: 1,
-      icon: "🎁",
-      title: "Hoş geldin, bäbek! (-50%)",
-      items: [
-        {
-          title: "Çörek önümleri, tort",
-          subcategories: [
-            "Çörek",
-            "Simit, bulka, kruassan",
-            "Desert, süýjüliklier",
-          ],
-        },
-        {
-          title: "Un, kulinariya",
-          subcategories: ["Bugdaý uny", "Lawas", "Duz, burç", "Spesiyalar"],
-        },
-        {
-          title: "Süýji, marmelad, zefir",
-          subcategories: ["Süýjiler", "Yumsak süýjiler", "Lokum, baklawa"],
-        },
-      ],
-    },
-    {
-      id: 2,
-      icon: "⭐",
-      title: "Maslahat berilýän harytlar",
-      items: [
-        {
-          title: "Maslahat berilýän harytlar",
-          subcategories: ["Popular item 1", "Popular item 2", "Popular item 3"],
-        },
-      ],
-    },
-    {
-      id: 3,
-      icon: "🎯",
-      title: "Iýmit, kulinariya",
-      items: [
-        {
-          title: "Çörek önümleri, tort",
-          subcategories: [
-            "Çörek",
-            "Simit, bulka, kruassan",
-            "Desert, süýjüliklier",
-          ],
-        },
-        {
-          title: "Un, kulinariya",
-          subcategories: ["Bugdaý uny", "Lawas", "Duz, burç", "Spesiyalar"],
-        },
-        {
-          title: "Süýji, marmelad, zefir",
-          subcategories: ["Süýjiler", "Yumsak süýjiler", "Lokum, baklawa"],
-        },
-      ],
-    },
-    {
-      id: 4,
-      icon: "🍖",
-      title: "Et, towuk, balyk",
-      items: [
-        {
-          title: "Çörek önümleri, tort",
-          subcategories: [
-            "Çörek",
-            "Simit, bulka, kruassan",
-            "Desert, süýjüliklier",
-          ],
-        },
-        {
-          title: "Un, kulinariya",
-          subcategories: ["Bugdaý uny", "Lawas", "Duz, burç", "Spesiyalar"],
-        },
-        {
-          title: "Süýji, marmelad, zefir",
-          subcategories: ["Süýjiler", "Yumsak süýjiler", "Lokum, baklawa"],
-        },
-      ],
-    },
-  ];
-
   useEffect(() => {
-    const defaultCategory = categories.find(
-      (cat) => cat.title === "Maslahat berilýän harytlar"
-    );
-    setActiveCategory(defaultCategory);
-  }, []);
+    if (categories.length > 0) {
+      const defaultCategory = categories.find(
+        (cat) => cat.name === "Aýallar üçin"
+      );
+      setActiveCategory(defaultCategory);
+    }
+  }, [categories]);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -103,10 +33,21 @@ const DropdownMenu = () => {
 
   const handleMouseLeave = () => {
     const defaultCategory = categories.find(
-      (cat) => cat.title === "Maslahat berilýän harytlar"
+      (cat) => cat.name === "Aýallar üçin"
     );
     setActiveCategory(defaultCategory);
   };
+
+  const handleCategorySelect = (category) => {
+    dispatch(setSelectedCategory(category));
+    dispatch(setSelectedSubCategory(null));
+  };
+
+  const handleSubcategorySelect = (subcategory) => {
+    dispatch(setSelectedSubCategory(subcategory));
+  };
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className={styles.dropdownContainer}>
@@ -139,47 +80,48 @@ const DropdownMenu = () => {
                   className={`${styles.categoryItem} ${
                     activeCategory?.id === category.id ? styles.active : ""
                   }`}
-                  onMouseEnter={() => setActiveCategory(category)}
+                  onMouseEnter={() => {
+                    setActiveCategory(category);
+                    handleCategorySelect(category);
+                  }}
                 >
-                  <span className={styles.icon}>{category.icon}</span>
-                  <span className={styles.title}>{category.title}</span>
+                  <span className={styles.title}>{category.name}</span>
                 </div>
               ))}
             </div>
-            {activeCategory && activeCategory.items.length > 0 && (
+            {activeCategory && activeCategory.children.length > 0 && (
               <div className={styles.contentPanel}>
-                <h2 className={styles.title}>{activeCategory.title}</h2>
+                <h2 className={styles.title}>{activeCategory.name}</h2>
                 <div style={{ overflowY: "scroll", height: "100%" }}>
-                  {activeCategory.items.map((section, idx) => (
-                    <div key={idx} className={styles.subcategoryList}>
-                      <div className={styles.column}>
-                        <h3 className={styles.sectionTitle}>{section.title}</h3>
-                        <div>
-                          {section.subcategories.map((sub, subIdx) => (
-                            <div
-                              key={subIdx}
-                              className={styles.subcategoryItem}
-                            >
-                              {sub}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div className={styles.column}>
-                        <h3 className={styles.sectionTitle}>{section.title}</h3>
-                        <div>
-                          {section.subcategories.map((sub, subIdx) => (
-                            <div
-                              key={subIdx}
-                              className={styles.subcategoryItem}
-                            >
-                              {sub}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                  {/* Assuming 2 column layout for subcategories */}
+                  <div className={styles.subcategoryList}>
+                    <div className={styles.column}>
+                      {activeCategory.children
+                        .slice(0, Math.ceil(activeCategory.children.length / 2))
+                        .map((subcategory) => (
+                          <div
+                            key={subcategory.id}
+                            className={styles.subcategoryItem}
+                            onClick={() => handleSubcategorySelect(subcategory)}
+                          >
+                            {subcategory.name}
+                          </div>
+                        ))}
                     </div>
-                  ))}
+                    <div className={styles.column}>
+                      {activeCategory.children
+                        .slice(Math.ceil(activeCategory.children.length / 2))
+                        .map((subcategory) => (
+                          <div
+                            key={subcategory.id}
+                            className={styles.subcategoryItem}
+                            onClick={() => handleSubcategorySelect(subcategory)}
+                          >
+                            {subcategory.name}
+                          </div>
+                        ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}

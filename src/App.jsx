@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import { BackTop } from "antd";
 import Router from "./routes";
-import { Provider } from "react-redux"; 
-import store from "./app/store"; 
-import './i18n/i18n';
+import { Provider } from "react-redux";
+import store from "./app/store";
+import "./i18n/i18n";
 
 import "./App.css";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true); 
-  const [isVisible, setIsVisible] = useState(false); 
+  const [isLoading, setIsLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
 
- 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
@@ -20,7 +19,6 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
     if (scrollPosition > 200) {
@@ -30,7 +28,6 @@ function App() {
     }
   };
 
-  
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -41,13 +38,11 @@ function App() {
       {isLoading ? (
         <div className="loading-container">
           <p>Loading...</p>
-         
         </div>
       ) : (
         <>
-          
           <Router />
-        
+
           {isVisible && (
             <BackTop visibilityHeight={500} duration={800}>
               <div

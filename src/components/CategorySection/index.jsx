@@ -3,7 +3,7 @@ import ProductCard from "../ProductCard/index";
 import styles from "./CategorySection.module.scss";
 import { IoIosArrowRoundForward } from "react-icons/io"
 
-const CategorySection = ({ title, products }) => {
+const CategorySection = ({ products }) => {
   return (
     <section className={styles.categorySection}>
       <h2 className={styles.title}>{title} <IoIosArrowRoundForward /></h2>
