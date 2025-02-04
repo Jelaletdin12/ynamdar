@@ -61,7 +61,10 @@ ul {
 ul li {
   margin-bottom: 10px;
   font-size: 14px;
-  color: #4b5563;
+  a{
+    color: #4b5563;
+    text-decoration: none;
+  }
 }
 
 .appLinks {

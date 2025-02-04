@@ -6,7 +6,7 @@ import { IoIosArrowRoundForward } from "react-icons/io"
 const CategorySection = ({ products }) => {
   return (
     <section className={styles.categorySection}>
-      <h2 className={styles.title}>{title} <IoIosArrowRoundForward /></h2>
+      <h2 className={styles.title}> <IoIosArrowRoundForward /></h2>
       <div className={styles.productList}>
         {products.map((product) => (
           <ProductCard key={product.id} product={product} />

@@ -14,6 +14,9 @@ const ProductDetail = lazy(() => import("./pages/ProductDetail/index.jsx"));
 const ProfileMenu = lazy(() => import("./components/Profile/index.jsx"));
 const Orders = lazy(() => import("./pages/Orders/index.jsx"));
 const OrderDetail = lazy(() => import("./pages/OrderDetail/index.jsx"));
+const ContactUs = lazy(() => import("./pages/ContactUs/index.jsx"));
+const DeliveryTerms = lazy(() => import("./pages/DeliveryTerms/index.jsx"));
+const AboutUs = lazy(() => import("./pages/AboutUs/index.jsx"));
 
 
 export default function Router() {
@@ -35,6 +38,9 @@ export default function Router() {
         { path: "/profile", element: <ProfileMenu /> },
         { path: "/orders", element: <Orders /> },
         { path: "/orderdetail", element: <OrderDetail /> },
+        { path: "/contactus", element: <ContactUs /> },
+        { path: "/delivery-and-payment", element: <DeliveryTerms /> },
+        { path: "/about-us", element: <AboutUs /> },
       
       ],
     },

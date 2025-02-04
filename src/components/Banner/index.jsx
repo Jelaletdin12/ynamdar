@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
   Autoplay,
@@ -30,21 +30,41 @@ function Carousel() {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
-  
+  const thumbSliderRef = useRef(null);
 
   useEffect(() => {
     setIsAnimating(false);
     setTimeout(() => setIsAnimating(true), 50);
   }, [activeIndex]);
 
+  const updateScrollPosition = (targetIndex) => {
+    if (!thumbSliderRef.current) return;
+
+    const container = thumbSliderRef.current.querySelector(".swiper-wrapper");
+    const slideHeight = container.children[0]?.offsetHeight || 0;
+    const spaceBetween = 15;
+    const scrollPosition = targetIndex * (slideHeight + spaceBetween);
+
+    container.parentNode.scrollTop = scrollPosition;
+  };
+
   const handleSlideChange = (swiper) => {
-    setActiveIndex(swiper.realIndex);
-    if (thumbsSwiper) {
-      const targetIndex = Math.floor(swiper.realIndex / 4) * 4;
-      thumbsSwiper.slideToLoop(targetIndex, 300, false);
+    const newActiveIndex = swiper.realIndex;
+    setActiveIndex(newActiveIndex);
+
+    if (thumbsSwiper?.slides) {
+      const slidesPerView = 4;
+      let targetIndex = newActiveIndex - Math.floor(slidesPerView / 2);
+      targetIndex = Math.max(
+        0,
+        Math.min(targetIndex, thumbsSwiper.slides.length - slidesPerView)
+      );
+
+      thumbsSwiper.slideTo(targetIndex, 300);
+      updateScrollPosition(targetIndex); // Scrollbar'ı güncelle
     }
   };
-  
+
   return (
     <div className={styles.carouselContainer}>
       {/* Büyük Slider */}
@@ -57,11 +77,21 @@ function Carousel() {
           clickable: true,
         }}
         navigation={true}
-        
         className={styles.mainSlider}
         onSlideChange={handleSlideChange}
       >
-        {[temp1, temp2, temp3, temp4, temp5, temp6, temp7, temp8, temp9, temp10].map((image, index) => (
+        {[
+          temp1,
+          temp2,
+          temp3,
+          temp4,
+          temp5,
+          temp6,
+          temp7,
+          temp8,
+          temp9,
+          temp10,
+        ].map((image, index) => (
           <SwiperSlide key={index}>
             <img src={image} alt={`Slider ${index + 1}`} />
           </SwiperSlide>
@@ -70,22 +100,15 @@ function Carousel() {
 
       {/* Küçük Slider */}
       <Swiper
+        ref={thumbSliderRef}
         modules={[Thumbs, Autoplay, FreeMode, Mousewheel]}
         onSwiper={setThumbsSwiper}
         autoplay={{ delay: 3000 }}
-       slidesPerView="auto"
+        slidesPerView={4}
         spaceBetween={10}
         direction="vertical"
         watchSlidesProgress={true}
         slideToClickedSlide={true}
-        mousewheel={{
-          forceToAxis: true,
-          sensitivity: 1,
-        }}
-        freeMode={{
-          enabled: true,
-          sticky: false,
-        }}
         cssMode={true}
         loop={false}
         allowTouchMove={true}
