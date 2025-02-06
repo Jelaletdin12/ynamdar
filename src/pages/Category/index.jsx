@@ -247,7 +247,7 @@ const CategoryPage = () => {
             </label>
           </div>
           <div className={styles.filterSection}>
-            <h3>v{t("navbar.brands")}</h3>
+            <h3>{t("navbar.brands")}</h3>
             <input type="text" placeholder="Gözleg" />
             <ul>
               <li>
