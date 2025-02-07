@@ -2,34 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Drawer } from "antd";
 import styles from "./Sidebar.module.scss";
 import { useTranslation } from "react-i18next";
+import { useGetCategoriesQuery } from "../../app/api/categories";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
   const { t, i18n } = useTranslation();
-  const categories = [
-    {
-      id: 1,
-      icon: "🎁",
-      title: "Hoş geldin, bäbek! (-50%)",
-    },
-    {
-      id: 2,
-      icon: "⭐",
-      title: "Maslahat berilýän harytlar",
-    
-    },
-    {
-      id: 3,
-      icon: "🎯",
-      title: "Iýmit, kulinariya",
-    },
-    {
-      id: 4,
-      icon: "🍖",
-      title: "Et, towuk, balyk",
-    },
-  ];
+  const { data: categoriesData, isLoading, error } = useGetCategoriesQuery("tree");
+  
+  const categories = categoriesData?.data || []; 
+ 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading categories</div>;
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -40,12 +24,7 @@ const Sidebar = () => {
     setActiveCategory(category);
   };
 
-  useEffect(() => {
-    const defaultCategory = categories.find(
-      (cat) => cat.title === "Maslahat berilýän harytlar"
-    );
-    setActiveCategory(defaultCategory);
-  }, []);
+  
 
   return (
     <div className={styles.sidebarContainer}>
@@ -84,8 +63,8 @@ const Sidebar = () => {
               }`}
               onClick={() => handleCategoryClick(category)}
             >
-              <span className={styles.icon}>{category.icon}</span>
-              <span className={styles.title}>{category.title}</span>
+              {/* <span className={styles.icon}>{category.icon}</span> */}
+              <span className={styles.title}>{category.name}</span>
             </div>
           ))}
         </div>

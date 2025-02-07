@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styles from "./ProductCard.module.scss";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { FaShoppingCart } from "react-icons/fa";
-
+import { Link } from "react-router-dom";
 
 const ProductCard = ({
   product,
@@ -27,29 +27,25 @@ const ProductCard = ({
     }
   };
 
+  const { name, price_amount, old_price_amount, media } = product;
+
+  const imageUrl = media[0]?.images_400x400 || "";
+
   return (
-    <div key={product.id} className={styles.productCard}>
+    <Link to={`/product/${product.id}`} className={styles.productCard}>
       <div className={styles.imageContainer}>
         {product.discount && (
           <span className={styles.discountBadge}>-{product.discount}%</span>
         )}
-        <img
-          src={product.image}
-          alt={product.name}
-          className={styles.productImage}
-        />
+        <img src={imageUrl} alt={name} className={styles.productImage} />
       </div>
       <div className={styles.productInfo}>
-        <h3 className={styles.productName}>{product.name}</h3>
+        <h3 className={styles.productName}>{name}</h3>
         <p className={styles.productDescription}>{product.description}</p>
         <div className={styles.priceContainer}>
-          <span className={styles.currentPrice}>
-            {product.price.toFixed(2)} m.
-          </span>
-          {product.oldPrice && (
-            <span className={styles.oldPrice}>
-              {product.oldPrice.toFixed(2)} m.
-            </span>
+          <span className={styles.currentPrice}>{price_amount} m.</span>
+          {old_price_amount && (
+            <span className={styles.oldPrice}>{old_price_amount} m.</span>
           )}
         </div>
         <div className={styles.actions}>
@@ -109,7 +105,7 @@ const ProductCard = ({
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

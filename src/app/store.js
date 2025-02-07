@@ -1,18 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { baseApi } from './api/baseApi';
-import authReducer from '../features/auth/authSlice';
-import categoryReducer from '../features/categorySlice';
-import brandsReducer from '../features/brandsSlice';
+import { categoriesApi } from './api/categories'; 
+import { searchApi } from './api/searchApi'; 
+
 
 const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
-    auth: authReducer,
-    category: categoryReducer,
-    brands: brandsReducer,
+    [categoriesApi.reducerPath]: categoriesApi.reducer,
+    [searchApi.reducerPath]: searchApi.reducer, 
+   
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(baseApi.middleware),
+    getDefaultMiddleware().concat(baseApi.middleware, categoriesApi.middleware, searchApi.middleware), 
 });
 
 export default store;

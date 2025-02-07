@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import styles from "./DropdownMenu.module.scss";
 import { useGetCategoriesQuery } from "../../app/api/categories";
-import {
-  selectCategories,
-  setSelectedCategory,
-  setSelectedSubCategory,
-} from "../../features/categorySlice";
 
 const DropdownMenu = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const { data: categoriesData, isLoading } = useGetCategoriesQuery("tree");
+  const {
+    data: categoriesData,
+    isLoading,
+    error,
+  } = useGetCategoriesQuery("tree");
 
-  const categories = useSelector(selectCategories);
+  const categories = categoriesData?.data || [];
   const [isOpen, setIsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
 
@@ -38,16 +35,8 @@ const DropdownMenu = () => {
     setActiveCategory(defaultCategory);
   };
 
-  const handleCategorySelect = (category) => {
-    dispatch(setSelectedCategory(category));
-    dispatch(setSelectedSubCategory(null));
-  };
-
-  const handleSubcategorySelect = (subcategory) => {
-    dispatch(setSelectedSubCategory(subcategory));
-  };
-
   if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading categories</div>;
 
   return (
     <div className={styles.dropdownContainer}>
@@ -82,49 +71,57 @@ const DropdownMenu = () => {
                   }`}
                   onMouseEnter={() => {
                     setActiveCategory(category);
-                    handleCategorySelect(category);
                   }}
                 >
                   <span className={styles.title}>{category.name}</span>
                 </div>
               ))}
             </div>
-            {activeCategory && activeCategory.children.length > 0 && (
-              <div className={styles.contentPanel}>
-                <h2 className={styles.title}>{activeCategory.name}</h2>
-                <div style={{ overflowY: "scroll", height: "100%" }}>
-                  {/* Assuming 2 column layout for subcategories */}
-                  <div className={styles.subcategoryList}>
-                    <div className={styles.column}>
-                      {activeCategory.children
-                        .slice(0, Math.ceil(activeCategory.children.length / 2))
-                        .map((subcategory) => (
-                          <div
-                            key={subcategory.id}
-                            className={styles.subcategoryItem}
-                            onClick={() => handleSubcategorySelect(subcategory)}
-                          >
-                            {subcategory.name}
-                          </div>
-                        ))}
-                    </div>
-                    <div className={styles.column}>
-                      {activeCategory.children
-                        .slice(Math.ceil(activeCategory.children.length / 2))
-                        .map((subcategory) => (
-                          <div
-                            key={subcategory.id}
-                            className={styles.subcategoryItem}
-                            onClick={() => handleSubcategorySelect(subcategory)}
-                          >
-                            {subcategory.name}
-                          </div>
-                        ))}
+            {activeCategory &&
+              activeCategory.children &&
+              activeCategory.children.length > 0 && (
+                <div className={styles.contentPanel}>
+                  <h2 className={styles.title}>{activeCategory.name}</h2>
+                  <div style={{ overflowY: "scroll", height: "100%" }}>
+                    {/* Assuming 2 column layout for subcategories */}
+                    <div className={styles.subcategoryList}>
+                      <div className={styles.column}>
+                        {activeCategory.children
+                          .slice(
+                            0,
+                            Math.ceil(activeCategory.children.length / 2)
+                          )
+                          .map((subcategory) => (
+                            <div
+                              key={subcategory.id}
+                              className={styles.subcategoryItem}
+                              onClick={() =>
+                                handleSubcategorySelect(subcategory)
+                              }
+                            >
+                              {subcategory.name}
+                            </div>
+                          ))}
+                      </div>
+                      <div className={styles.column}>
+                        {activeCategory.children
+                          .slice(Math.ceil(activeCategory.children.length / 2))
+                          .map((subcategory) => (
+                            <div
+                              key={subcategory.id}
+                              className={styles.subcategoryItem}
+                              onClick={() =>
+                                handleSubcategorySelect(subcategory)
+                              }
+                            >
+                              {subcategory.name}
+                            </div>
+                          ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         </div>
       )}

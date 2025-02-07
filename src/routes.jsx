@@ -18,7 +18,6 @@ const ContactUs = lazy(() => import("./pages/ContactUs/index.jsx"));
 const DeliveryTerms = lazy(() => import("./pages/DeliveryTerms/index.jsx"));
 const AboutUs = lazy(() => import("./pages/AboutUs/index.jsx"));
 
-
 export default function Router() {
   const routes = useRoutes([
     {
@@ -34,14 +33,14 @@ export default function Router() {
         { path: "/cart", element: <CartPage /> },
         { path: "/wishlist", element: <WishList /> },
         { path: "/category", element: <Category /> },
-        { path: "/product", element: <ProductDetail /> },
+        { path: "/search", element: <Category /> },
+        { path: "/product/:productId", element: <ProductDetail /> },
         { path: "/profile", element: <ProfileMenu /> },
         { path: "/orders", element: <Orders /> },
         { path: "/orderdetail", element: <OrderDetail /> },
         { path: "/contactus", element: <ContactUs /> },
         { path: "/delivery-and-payment", element: <DeliveryTerms /> },
         { path: "/about-us", element: <AboutUs /> },
-      
       ],
     },
   ]);
