@@ -3,15 +3,20 @@ import { Drawer } from "antd";
 import styles from "./Sidebar.module.scss";
 import { useTranslation } from "react-i18next";
 import { useGetCategoriesQuery } from "../../app/api/categories";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
   const { t, i18n } = useTranslation();
-  const { data: categoriesData, isLoading, error } = useGetCategoriesQuery("tree");
-  
-  const categories = categoriesData?.data || []; 
- 
+  const {
+    data: categoriesData,
+    isLoading,
+    error,
+  } = useGetCategoriesQuery("tree");
+  const navigate = useNavigate();
+  const categories = categoriesData?.data || [];
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading categories</div>;
 
@@ -21,10 +26,9 @@ const Sidebar = () => {
   };
 
   const handleCategoryClick = (category) => {
-    setActiveCategory(category);
+    navigate(`/category/${category.id}`, { state: { category } });
+    setIsOpen(!isOpen);
   };
-
-  
 
   return (
     <div className={styles.sidebarContainer}>

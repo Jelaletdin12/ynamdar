@@ -1,0 +1,148 @@
+.root {
+  margin: 15px 0 15px;
+}
+
+.header {
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+
+}
+.ratingStar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  svg {
+    color: #facc15;
+    fill: #facc15;
+  }
+}
+.container {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+.form {
+  width: 45%;
+  background-color: #fff;
+  padding: 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  @media screen and (max-width: 768px) {
+    width: auto;
+  }
+
+  &Title {
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  &Rating {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+
+  &Textarea {
+    width: 100%;
+    min-height: 120px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: #f97316;
+    }
+  }
+
+  &Submit {
+    background-color: #f97316;
+    color: white;
+    padding: 8px 32px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #ea580c;
+    }
+  }
+}
+
+.starRating {
+  display: flex;
+  gap: 4px;
+}
+
+.star {
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &Filled {
+    color: #facc15;
+    fill: #facc15;
+  }
+
+  &Empty {
+    color: #d1d5db;
+  }
+}
+
+.reviews {
+  background-color: #fff;
+  width: 45%;
+  padding: 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  max-height: 400px;
+  overflow-y: auto;
+  @media screen and (max-width: 768px) {
+    width: auto;
+  }
+  &List {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &Item {
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &Text {
+    margin: 8px 0;
+    color: #4b5563;
+  }
+
+  &Date {
+    font-size: 14px;
+    color: #6b7280;
+  }
+
+  &Empty {
+    text-align: center;
+    color: #6b7280;
+    padding: 32px 0;
+  }
+}

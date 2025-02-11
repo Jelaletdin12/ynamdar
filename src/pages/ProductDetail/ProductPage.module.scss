@@ -8,9 +8,10 @@
 }
 
 .breadcrumb {
-  margin-bottom: 24px;
+  margin-bottom: 15px;
   color: #666;
   font-size: 14px;
+  cursor: pointer;
 
   .separator {
     margin: 0 8px;
@@ -21,14 +22,13 @@
 .productSection {
   display: flex;
   gap: 24px;
-  margin-bottom: 48px;
   background-color: rgb(255, 255, 255);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   padding: 1.25rem;
   box-sizing: border-box;
   @media screen and (max-width: 639px) {
-   flex-direction: column;
+    flex-direction: column;
   }
 }
 
@@ -42,7 +42,7 @@
   }
   @media screen and (max-width: 639px) {
     width: 100%;
-   }
+  }
 
   img {
     width: 100%;
@@ -58,11 +58,11 @@
 .productInfo {
   width: 60%;
   @media screen and (max-width: 639px) {
-    width: 100%
-   }
+    width: 100%;
+  }
   @media screen and (max-width: 520px) {
     border-bottom: 1px solid #e5e7eb;
-   }
+  }
   .productTitle {
     font-size: 30px;
     font-weight: 600;
@@ -108,11 +108,11 @@
   display: flex;
   gap: 10px;
 }
-.priceContainer{
+.priceContainer {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  @media screen and  (max-width: 639px){
+  @media screen and (max-width: 639px) {
     flex-direction: column;
     gap: 5px;
     width: 100%;
@@ -120,20 +120,21 @@
   }
 }
 
-.productActions{
-  @media screen and  (max-width: 639px){
+.productActions {
+  @media screen and (max-width: 639px) {
     display: none !important;
-  };
+  }
 }
-.productActionsMobile{
-  @media screen and  (min-width: 639px){
+.productActionsMobile {
+  @media screen and (min-width: 639px) {
     background-color: #fff;
     display: none !important;
     position: sticky !important;
     bottom: 60px !important;
-  };
+  }
 }
-.productActions, .productActionsMobile {
+.productActions,
+.productActionsMobile {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -141,7 +142,7 @@
   border-top: 1px solid #e5e7eb;
   background-color: #fff;
   padding: 15px 16px;
-  @media screen and  (max-width: 520px){
+  @media screen and (max-width: 520px) {
     border-bottom: none;
     border-top: none;
     padding: 0;
@@ -151,7 +152,7 @@
     font-size: 24px;
     font-weight: 700;
     color: #000;
-    @media screen and  (max-width: 520px){
+    @media screen and (max-width: 520px) {
       font-size: 20px;
     }
   }
@@ -226,15 +227,10 @@
   }
 }
 
-
-
-
 @media (max-width: 768px) {
   .productSection {
     grid-template-columns: 1fr;
   }
-
-  
 }
 
 .addToCartButton {

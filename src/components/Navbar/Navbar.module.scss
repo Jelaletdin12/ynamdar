@@ -102,6 +102,7 @@
       align-items: center;
       flex: 1;
       flex-direction: row-reverse;
+      
 
       svg {
         position: absolute;
@@ -118,11 +119,8 @@
         padding: 4px 16px;
         background-color: #e5e7eb;
         box-sizing: border-box;
-        border: 0 solid #e5e7eb;
-
-        &:focus-visible {
-          border: 0 solid #e5e7eb !important;
-        }
+        border: none;
+        outline: none;
         &::placeholder {
           color: #9ca3af;
           font-size: 0.75rem;
@@ -235,11 +233,10 @@
   padding: 4px 16px;
   background-color: #e5e7eb;
   box-sizing: border-box;
-  border: 0 solid #e5e7eb;
+  border: none;
+  outline: none;
 
-  &:focus-visible {
-    border: 0 solid #e5e7eb !important;
-  }
+ 
   &::placeholder {
     color: #9ca3af;
     font-size: 0.75rem;

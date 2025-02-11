@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Modal, Input, Button } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import IMask from "imask";
@@ -13,17 +13,44 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
   const isControlled = propIsVisible !== undefined;
   const isVisible = isControlled ? propIsVisible : internalIsVisible;
   const [activeTab, setActiveTab] = useState("phone");
-  const [phone, setPhone] = useState("");
+  
+  const [phone, setPhone] = useState("+993");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [messageTitle, setMessageTitle] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
+  const phoneInputRef = useRef(null);
+  const maskRef = useRef(null);
 
 
-  const phoneMaskOptions = {
-    mask: "+{993} 00 000000",
-    lazy: false,
-  };
+useEffect(() => {
+    if (activeTab === "phone" && phoneInputRef.current) {
+      
+      const inputElement = phoneInputRef.current.input;
+      
+      if (inputElement) {
+        const maskOptions = {
+          mask: '+{993} 00 000000',
+          lazy: false,
+          placeholderChar: '_'
+        };
+        
+        maskRef.current = IMask(inputElement, maskOptions);
+        maskRef.current.value = phone;
+        
+        maskRef.current.on('accept', () => {
+          setPhone(maskRef.current.value);
+        });
+
+        return () => {
+          if (maskRef.current) {
+            maskRef.current.destroy();
+            maskRef.current = null;
+          }
+        };
+      }
+    }
+  }, [activeTab]);
 
   const showModal = () => {
     if (!isControlled) {
@@ -52,7 +79,7 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
   };
 
   const resetForm = () => {
-    setPhone("");
+    setPhone("+993 ");  
     setEmail("");
     setMessage("");
     setMessageTitle("");
@@ -152,23 +179,22 @@ const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
           </div>
         </div>
 
-        <div className={styles.inputGroup}>
-          <label>{activeTab === "phone" ? "Telefon" : "Email"}</label>
-          <Input
-           onFocus={handleFocus}
-            value={activeTab === "phone" ? phone : email}
-            onChange={(e) => handleInputChange(activeTab, e.target.value)}
-            {...(activeTab === "phone"
-              ? {
-                  onInput: (e) => {
-                    const maskOptions = IMask.createMask(phoneMaskOptions);
-                    const masked = maskOptions.resolve(e.target.value);
-                    setPhone(masked);
-                  },
-                }
-              : {})}
-          />
-        </div>
+     <div className={styles.inputGroup}>
+           <label>{activeTab === "phone" ? "Telefon" : "Email"}</label>
+           {activeTab === "phone" ? (
+             <Input
+               ref={phoneInputRef}
+               value={phone}
+               onChange={(e) => handleInputChange("phone", e.target.value)}
+               className={styles.phoneInput}
+             />
+           ) : (
+             <Input
+               value={email}
+               onChange={(e) => handleInputChange("email", e.target.value)}
+             />
+           )}
+         </div>
 
         <div className={styles.inputGroup}>
           <label>{t("profile.password")}</label>

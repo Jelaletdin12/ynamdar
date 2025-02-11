@@ -4,7 +4,7 @@ import Router from "./routes";
 import { Provider } from "react-redux";
 import store from "./app/store";
 import "./i18n/i18n";
-
+import PageLoader from "./components/Loader/pageLoader.jsx"
 import "./App.css";
 
 function App() {
@@ -37,7 +37,7 @@ function App() {
     <Provider store={store}>
       {isLoading ? (
         <div className="loading-container">
-          <p>Loading...</p>
+          <PageLoader/>
         </div>
       ) : (
         <>

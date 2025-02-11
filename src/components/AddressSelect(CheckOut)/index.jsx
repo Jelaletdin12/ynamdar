@@ -1,6 +1,6 @@
-// AddressSelect.js
 import React, { useState } from "react";
 import { Select, Modal, Button } from "antd";
+import { useGetLocationsQuery } from "../../app/api/locationApi";
 import { X } from "lucide-react";
 import styles from "./AddressSelect.module.scss";
 
@@ -14,14 +14,17 @@ const AddressSelect = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  // Fetch locations data from the API
+  const { data: locations, isLoading } = useGetLocationsQuery();
   const showModal = () => {
     setIsModalVisible(true);
   };
 
   const handleClear = (e) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     handleClearAddress();
   };
+
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -48,18 +51,23 @@ const AddressSelect = ({
             footer={null}
           >
             <ul className={styles.optionList}>
-              {["Aşgabat", "Büzmeýin", "Änew"].map((address) => (
-                <li
-                  key={address}
-                  onClick={() => {
-                    handleAddressSelect(address);
-                    setIsModalVisible(false);
-                  }}
-                  className={styles.optionItem}
-                >
-                  {address}
-                </li>
-              ))}
+              {isLoading ? (
+                <li>Loading...</li>
+              ) : (
+                Array.isArray(locations?.data) &&
+                locations.data.map((location) => (
+                  <li
+                    key={location.id}
+                    onClick={() => {
+                      handleAddressSelect(location.name);
+                      setIsModalVisible(false);
+                    }}
+                    className={styles.optionItem}
+                  >
+                    {location.name}
+                  </li>
+                ))
+              )}
             </ul>
           </Modal>
         </>
@@ -75,13 +83,11 @@ const AddressSelect = ({
           }}
           onClear={handleClearAddress}
           className={styles.addressSelect}
-          //   suffixIcon={!selectedAddress}
           showArrow={!selectedAddress}
           dropdownRender={(menu) => (
             <div
               style={{
                 maxHeight: "150px",
-                overflowY: "auto",
                 fontSize: "16px",
               }}
             >
@@ -89,8 +95,16 @@ const AddressSelect = ({
             </div>
           )}
         >
-          <Option value="Aşgabat">Aşgabat</Option>
-          <Option value="Büzmeýin">Büzmeýin</Option>
+          {isLoading ? (
+            <Option disabled>Loading...</Option>
+          ) : (
+            Array.isArray(locations?.data) &&
+            locations.data.map((location) => (
+              <Option key={location.id} value={location.name}>
+                {location.name}
+              </Option>
+            ))
+          )}
         </Select>
       )}
     </div>

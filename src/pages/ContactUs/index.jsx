@@ -1,26 +1,32 @@
-import React, { useState } from 'react';
-import styles from './contactUs.module.scss';
+import React, { useState } from "react";
+import styles from "./contactUs.module.scss";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
-    phone: '',
-    email: '',
-    message: ''
+    fullName: "",
+    phone: "",
+    email: "",
+    message: "",
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    console.log("Form submitted:", formData);
   };
 
   return (
     <div className={styles.formContainer}>
+      <div className={styles.contactInfo}>
+        <div><h3>Telefon: </h3><span>+99361097651</span></div>
+        <div><h3>Imo: </h3><span>+99361097651</span></div>
+        <div><h3>E-mail: </h3><span>+99361097651</span></div>
+        <div><h3>Instagram: </h3><span>+99361097651</span></div>
+      </div>
       <form className={styles.contactForm} onSubmit={handleSubmit}>
         <div className={styles.formField}>
           <label htmlFor="fullName">Doly adyňyz</label>

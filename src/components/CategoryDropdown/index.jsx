@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import styles from "./DropdownMenu.module.scss";
 import { useGetCategoriesQuery } from "../../app/api/categories";
 
 const DropdownMenu = () => {
   const { t } = useTranslation();
-  const {
-    data: categoriesData,
-    isLoading,
-    error,
-  } = useGetCategoriesQuery("tree");
+  const navigate = useNavigate();
+  const { data: categoriesData, isLoading, error } = useGetCategoriesQuery("tree");
 
   const categories = categoriesData?.data || [];
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +31,11 @@ const DropdownMenu = () => {
       (cat) => cat.name === "Aýallar üçin"
     );
     setActiveCategory(defaultCategory);
+  };
+
+  const handleCategorySelect = (category) => {
+    navigate(`/category/${category.id}`, { state: { category } });
+    setIsOpen(false);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -69,9 +72,8 @@ const DropdownMenu = () => {
                   className={`${styles.categoryItem} ${
                     activeCategory?.id === category.id ? styles.active : ""
                   }`}
-                  onMouseEnter={() => {
-                    setActiveCategory(category);
-                  }}
+                  onMouseEnter={() => setActiveCategory(category)}
+                  onClick={() => handleCategorySelect(category)}
                 >
                   <span className={styles.title}>{category.name}</span>
                 </div>
@@ -83,7 +85,6 @@ const DropdownMenu = () => {
                 <div className={styles.contentPanel}>
                   <h2 className={styles.title}>{activeCategory.name}</h2>
                   <div style={{ overflowY: "scroll", height: "100%" }}>
-                    {/* Assuming 2 column layout for subcategories */}
                     <div className={styles.subcategoryList}>
                       <div className={styles.column}>
                         {activeCategory.children
@@ -95,9 +96,7 @@ const DropdownMenu = () => {
                             <div
                               key={subcategory.id}
                               className={styles.subcategoryItem}
-                              onClick={() =>
-                                handleSubcategorySelect(subcategory)
-                              }
+                              onClick={() => handleCategorySelect(subcategory)}
                             >
                               {subcategory.name}
                             </div>
@@ -110,9 +109,7 @@ const DropdownMenu = () => {
                             <div
                               key={subcategory.id}
                               className={styles.subcategoryItem}
-                              onClick={() =>
-                                handleSubcategorySelect(subcategory)
-                              }
+                              onClick={() => handleCategorySelect(subcategory)}
                             >
                               {subcategory.name}
                             </div>

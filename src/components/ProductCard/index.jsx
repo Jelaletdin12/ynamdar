@@ -3,6 +3,7 @@ import styles from "./ProductCard.module.scss";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { Star } from "lucide-react";
 
 const ProductCard = ({
   product,
@@ -27,7 +28,7 @@ const ProductCard = ({
     }
   };
 
-  const { name, price_amount, old_price_amount, media } = product;
+  const { name, price_amount, old_price_amount, media, reviews } = product;
 
   const imageUrl = media[0]?.images_400x400 || "";
 
@@ -43,10 +44,16 @@ const ProductCard = ({
         <h3 className={styles.productName}>{name}</h3>
         <p className={styles.productDescription}>{product.description}</p>
         <div className={styles.priceContainer}>
+          <div>
+
           <span className={styles.currentPrice}>{price_amount} m.</span>
           {old_price_amount && (
             <span className={styles.oldPrice}>{old_price_amount} m.</span>
           )}
+          </div>
+          {/* <div className={styles.rating}>
+             {product.reviews.rating} <Star/>
+          </div> */}
         </div>
         <div className={styles.actions}>
           {showFavoriteButton && (

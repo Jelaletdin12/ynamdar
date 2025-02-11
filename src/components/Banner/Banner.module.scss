@@ -48,15 +48,15 @@
     margin-bottom: 8px;
   }
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 7px;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: #e5e7eb;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #d1d5db;
     border-radius: 3px;
   }
   .thumbWrapper {
@@ -91,6 +91,7 @@
       background: rgba(207, 12, 12, 0.5);
       animation: progress 3s linear infinite;
       border-end-end-radius: 10px;
+      border-end-start-radius: 10px;
     }
   }
 }

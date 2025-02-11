@@ -24,6 +24,10 @@ export default {
     confirmDelete: "Are you sure you want to remove this item from your cart?",
     the_Chosen_Ones: "The Chosen Ones",
     clearCart: "Clear Cart",
+    emptyCartTitle: "Your cart is empty",
+    emptyCartMessage: "Looks like you haven't added any items to your cart yet",
+    continueShopping: "Continue Shopping",
+  
   },
   checkout: {
     paymentMethod: "Payment Method",
@@ -33,7 +37,6 @@ export default {
     paymentTerminal: "Payment Terminal",
     payment_by_card: "Payment By Card via Payment Terminal",
     cashback: "Cashback balance",
-
     address: "Address",
     fullName: "Full Name",
     note: "Note",
@@ -72,6 +75,10 @@ export default {
       "Do you really want to remove the item from the cart?",
     Are_you_sure_you_want_to_close_the_modal:
       "Are you sure you want to close the modal?",
+  },
+  search:{
+    resultsFor: "Search results for",
+    noResults: "No results",
   },
   profile: {
     registration: "Registration",

@@ -5,6 +5,7 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
+    margin-bottom: 15px;
   }
   
   .title {
@@ -35,7 +36,7 @@
         content: "•";
         position: absolute;
         left: 0;
-        color: #ff5722; // Orange color matching the brand
+        color: #ff5722; 
       }
     }
   }

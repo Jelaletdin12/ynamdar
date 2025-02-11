@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styles from "./ProductPage.module.scss";
 import { Heart, ShoppingCart } from "lucide-react";
 import { FaShoppingCart } from "react-icons/fa";
@@ -9,8 +9,10 @@ import {
   useGetProductByIdQuery,
   useGetRelatedProductsQuery,
 } from "../../app/api/categories";
+import ReviewSection from "../../components/Review/index";
 
 const ProductPage = () => {
+  const navigate = useNavigate();
   const { productId } = useParams();
   const { t, i18n } = useTranslation();
   const {
@@ -47,12 +49,18 @@ const ProductPage = () => {
   if (!product) return <div>Can not find product</div>;
 
   const imageUrl = product.media?.[0]?.thumbnail || "";
-
+  const categoryName = product.categories?.[0]?.name || "Category";
+  const categoryId = product.categories?.[0]?.id;
+  const handleCategoryClick = (categoryId) => {
+    navigate(`/category/${categoryId}`);
+  };
   return (
     <div className={styles.container}>
       {/* Breadcrumb */}
       <div className={styles.breadcrumb}>
-        <span>{product?.category?.name || "Category"}</span>
+        <span onClick={() => handleCategoryClick(categoryId)}>
+          {categoryName}
+        </span>
         <span className={styles.separator}>/</span>
         <span>{product?.name || "Product"}</span>
       </div>
@@ -142,6 +150,7 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+      <ReviewSection productId="7786" />
 
       {/* Similar Products */}
       <div className={styles.similarProducts}>

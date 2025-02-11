@@ -1,44 +1,120 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./CategoryPage.module.scss";
 import ProductCard from "../../components/ProductCard/index";
 import { TiTick } from "react-icons/ti";
 import BrandSidebar from "../../components/BrandsSidebar/index";
 import FilterSidebar from "../../components/FilterSidebar/index";
 import { useTranslation } from "react-i18next";
-import { useLocation, useSearchParams } from "react-router-dom";
+import {
+  useParams,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+  data,
+} from "react-router-dom";
+import {
+  useGetCategoriesQuery,
+  useGetAllCategoryProductsQuery,
+} from "../../app/api/categories";
+import {
+  useGetCollectionByIdQuery,
+  useGetCollectionProductsQuery,
+} from "../../app/api/collectionsApi";
 
 const CategoryPage = () => {
   const { t } = useTranslation();
+  const { categoryId, collectionId } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const searchResults = location.state?.searchData?.data || [];
   const searchQuery = location.state?.searchQuery || null;
   const [searchParams] = useSearchParams();
+  const { data: categoriesData } = useGetCategoriesQuery("tree");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isSubCategory, setIsSubCategory] = useState(false);
 
-  // Bu örnek kategori ürünleridir, gerçek verilerle değiştirin
-  const categoryProducts = [
-    {
-      id: 1,
-      name: "Ankara",
-      description: "Makaron Ankara 'Mantı' 500 gr",
-      price_amount: "19.5",
-      oldPrice: "19.9",
-      discount: "2",
-      thumbnail: "path/to/image1.jpg",
-    },
-    {
-      id: 2,
-      name: "Carte Noire",
-      description: "Kofe Carte Noir 'White' 3x1 kiçi paket 17.4 gr",
-      price_amount: "4.4",
-      oldPrice: "5.5",
-      discount: "20",
-      thumbnail: "path/to/image2.jpg",
-    },
-    // Diğer kategori ürünleri
-  ];
+  useEffect(() => {
+    if (categoriesData && categoryId) {
+      const category = findCategoryById(
+        categoriesData.data,
+        parseInt(categoryId)
+      );
+      setSelectedCategory(category);
 
-  const products = searchQuery ? searchResults : categoryProducts;
-  const totalItems = products.length;
+      const isSubCat = isSelectedCategoryASubCategory(
+        categoriesData.data,
+        parseInt(categoryId)
+      );
+      setIsSubCategory(isSubCat);
+    }
+  }, [categoriesData, categoryId]);
+
+  const isSelectedCategoryASubCategory = (categories, targetId) => {
+    for (const category of categories) {
+      if (category.children) {
+        for (const subCategory of category.children) {
+          if (subCategory.id === targetId) {
+            return true;
+          }
+        }
+        const foundInNested = isSelectedCategoryASubCategory(
+          category.children,
+          targetId
+        );
+        if (foundInNested) return true;
+      }
+    }
+    return false;
+  };
+
+  const findCategoryById = (categories, id) => {
+    for (const category of categories) {
+      if (category.id === id) return category;
+      if (category.children) {
+        const found = findCategoryById(category.children, id);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
+  const {
+    data: categoryProducts,
+    error: categoryError,
+    isLoading: categoryLoading,
+  } = useGetAllCategoryProductsQuery(selectedCategory, {
+    skip: !selectedCategory,
+  });
+
+  const {
+    data: collectionData,
+    error: collectionError,
+    isLoading: collectionLoading,
+  } = useGetCollectionByIdQuery(collectionId, {
+    skip: !collectionId,
+  });
+
+  const {
+    data: collectionProducts,
+    error: collectionProductsError,
+    isLoading: collectionProductsLoading,
+  } = useGetCollectionProductsQuery(collectionId, {
+    skip: !collectionId,
+  });
+
+  const isLoading =
+    categoryLoading || collectionLoading || collectionProductsLoading;
+  const error = categoryError || collectionError || collectionProductsError;
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error</div>;
+
+  const products = searchQuery
+    ? searchResults
+    : categoryId
+    ? categoryProducts || []
+    : collectionProducts?.data || [];
+  const totalItems = products.length || 0;
 
   const handleAddToCart = (product) => {
     console.log("Adding to cart:", product);
@@ -48,13 +124,64 @@ const CategoryPage = () => {
     console.log("Toggling favorite:", product);
   };
 
+  const handleSubCategorySelect = (subCategoryId) => {
+    const subCategory = findCategoryById(categoriesData.data, subCategoryId);
+    setSelectedCategory(subCategory);
+    setIsSubCategory(true);
+    navigate(`/category/${subCategoryId}`, {
+      state: { category: subCategory },
+    });
+  };
+  const handleCategoryClick = (categoryId) => {
+    navigate(`/category/${categoryId}`);
+  };
+  const renderBreadcrumbs = () => {
+    if (!isSubCategory) return null;
+
+    const breadcrumbs = [];
+    let currentCategory = selectedCategory;
+
+    while (currentCategory) {
+      breadcrumbs.unshift(currentCategory);
+      currentCategory = findCategoryById(
+        categoriesData.data,
+        currentCategory.parent_id
+      );
+    }
+
+    return (
+      <div className={styles.breadcrumb}>
+        {breadcrumbs.map((category, index) => (
+          <React.Fragment key={category.id}>
+            <span
+              className={styles.breadcrumbItem}
+              onClick={() => handleCategoryClick(category.id)}
+            >
+              {category.name}
+            </span>
+            {index < breadcrumbs.length - 1 && (
+              <span className={styles.separator}>/</span>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className={styles.categoryPage} style={{ flexDirection: "column" }}>
-      {/* Left Sidebar */}
+      {/* Breadcrumb */}
+      {renderBreadcrumbs()}
       <h2>
         {searchQuery
           ? `${t("search.resultsFor")}: "${searchQuery}"`
-          : "Iymit, kulinariýa"}
+          : categoryId
+          ? selectedCategory
+            ? selectedCategory.name
+            : "Category"
+          : collectionData
+          ? collectionData?.data?.name
+          : "Collection"}
       </h2>
       <p className={styles.sum}>
         {t("category.total")}: {totalItems} {t("category.items")}
@@ -67,25 +194,41 @@ const CategoryPage = () => {
         <BrandSidebar />
         <FilterSidebar />
       </div>
-      <div className={styles.subCategories}>
-        <button>Miweler</button>
-        <button>Gok otlar</button>
-        <button>Gok Onumler</button>
-      </div>
+      {selectedCategory &&
+        selectedCategory.children &&
+        !searchQuery &&
+        !isSubCategory && (
+          <div className={styles.subCategories}>
+            {selectedCategory.children.map((subCategory) => (
+              <button
+                key={subCategory.id}
+                onClick={() => handleSubCategorySelect(subCategory.id)}
+              >
+                {subCategory.name}
+              </button>
+            ))}
+          </div>
+        )}
       <div className={styles.Container}>
         <aside className={styles.sidebar}>
-          <div className={styles.filterSection}>
-            <h3>{t("category.subCategories")}</h3>
-            <ul>
-              <li>Gury iýmişler, çigit</li>
-              <li>Süýji, marmelad, zefir</li>
-              <li>Köke önümleri, keks</li>
-              <li>Şokolad</li>
-              <li>Şokolad</li>
-              <li>Kofe</li>
-              <li>Çay, gyzgyn içgiler</li>
-            </ul>
-          </div>
+          {!searchQuery &&
+            selectedCategory &&
+            selectedCategory.children &&
+            !isSubCategory && (
+              <div className={styles.filterSection}>
+                <h3>{t("category.subCategories")}</h3>
+                <ul>
+                  {selectedCategory.children.map((subCategory) => (
+                    <li
+                      key={subCategory.id}
+                      onClick={() => handleSubCategorySelect(subCategory.id)}
+                    >
+                      {subCategory.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           <div className={styles.filterSection}>
             <h3>{t("category.composition")}</h3>
             <label>
@@ -130,7 +273,6 @@ const CategoryPage = () => {
           </div>
         </aside>
 
-        {/* Main Content */}
         <main className={styles.productsContainer}>
           <div className={styles.productGrid}>
             {products.length > 0 ? (

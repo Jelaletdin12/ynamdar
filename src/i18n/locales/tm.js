@@ -65,6 +65,10 @@ export default {
     Do_you_really_want_to_remove_the_item_from_the_cart: "Harytlary sebetden aýyrmak isleýärsiňizmi?",
     Are_you_sure_you_want_to_close_the_modal: "Penjireni ýapmak isleýärsiňizmi?",
   },
+  search:{
+    resultsFor: "Gozleg netijesi",
+    noResults: "Haryt tapylmady",
+  },
   profile: {
     registration: "Hasaba durmak",
     login: "Giriş",
@@ -105,7 +109,7 @@ export default {
   category: {
     total: "Jemi",
     items: "haryt",
-    subCategories: "kiçi kategoriýalar",
+    subCategories: "Içki kategoriýalar",
     order: "Tertip",
     notSelected: "Saýlanmadyk",
     lowestPrice: "Iň arzan baha",
