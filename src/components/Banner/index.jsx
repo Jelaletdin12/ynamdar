@@ -14,19 +14,10 @@ import "swiper/css/thumbs";
 import "swiper/css/navigation";
 
 import styles from "./Banner.module.scss";
-
-import temp1 from "../../assets/slider/temp1.jpg";
-import temp2 from "../../assets/slider/temp2.jpg";
-import temp3 from "../../assets/slider/temp3.jpg";
-import temp4 from "../../assets/slider/temp4.jpg";
-import temp5 from "../../assets/slider/temp5.jpg";
-import temp6 from "../../assets/slider/temp5.jpg";
-import temp7 from "../../assets/slider/temp5.jpg";
-import temp8 from "../../assets/slider/temp5.jpg";
-import temp9 from "../../assets/slider/temp5.jpg";
-import temp10 from "../../assets/slider/temp5.jpg";
+import { useGetCarouselsQuery } from "../../app/api/bannersApi.js";
 
 function Carousel() {
+  const { data, isLoading, isError } = useGetCarouselsQuery();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(true);
@@ -61,13 +52,21 @@ function Carousel() {
       );
 
       thumbsSwiper.slideTo(targetIndex, 300);
-      updateScrollPosition(targetIndex); // Scrollbar'ı güncelle
+      updateScrollPosition(targetIndex);
     }
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError || !data || !data.data || data.data.length === 0) {
+    return <div>No images available</div>;
+  }
+
   return (
     <div className={styles.carouselContainer}>
-      {/* Büyük Slider */}
+      {/* Main Slider */}
       <Swiper
         modules={[Thumbs, Pagination, Navigation, Autoplay]}
         thumbs={{ swiper: thumbsSwiper }}
@@ -80,25 +79,17 @@ function Carousel() {
         className={styles.mainSlider}
         onSlideChange={handleSlideChange}
       >
-        {[
-          temp1,
-          temp2,
-          temp3,
-          temp4,
-          temp5,
-          temp6,
-          temp7,
-          temp8,
-          temp9,
-          temp10,
-        ].map((image, index) => (
-          <SwiperSlide key={index}>
-            <img src={image} alt={`Slider ${index + 1}`} />
+        {data.data.map((item) => (
+          <SwiperSlide key={item.id}>
+            <img
+              src={item.image}
+              alt={item.title || `Carousel Image ${item.id}`}
+            />
           </SwiperSlide>
         ))}
       </Swiper>
 
-      {/* Küçük Slider */}
+      {/* Thumbnail Slider */}
       <Swiper
         ref={thumbSliderRef}
         modules={[Thumbs, Autoplay, FreeMode, Mousewheel]}
@@ -114,25 +105,17 @@ function Carousel() {
         allowTouchMove={true}
         className={styles.thumbSlider}
       >
-        {[
-          temp1,
-          temp2,
-          temp3,
-          temp4,
-          temp5,
-          temp6,
-          temp7,
-          temp8,
-          temp9,
-          temp10,
-        ].map((image, index) => (
-          <SwiperSlide key={index}>
+        {data.data.map((item, index) => (
+          <SwiperSlide key={item.id}>
             <div
               className={`${styles.thumbWrapper} ${
                 index === activeIndex ? styles.active : ""
               }`}
             >
-              <img src={image} alt={`Thumbnail ${index + 1}`} />
+              <img
+                src={item.thumbnail}
+                alt={item.title || `Thumbnail ${index + 1}`}
+              />
               {index === activeIndex && isAnimating && (
                 <>
                   <div className={styles.progressBarImg}></div>

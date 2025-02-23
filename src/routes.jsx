@@ -4,7 +4,7 @@ import { useRoutes } from "react-router-dom";
 // Layout
 import MainLayout from "./components/Layout/index.jsx";
 
-import Loader from "./components/Loader/index.jsx"
+import Loader from "./components/Loader/pageLoader.jsx"
 
 // Pages
 const Home = lazy(() => import("./pages/home/index.jsx"));
