@@ -3,20 +3,37 @@ import styles from "./WishListing.module.scss";
 import ProductCard from "../../components/ProductCard/index";
 import { useTranslation } from "react-i18next";
 import EmptyWishListState from "./emptyWishlist";
-import { useGetFavoritesQuery } from "../../app/api/favoritesApi";
+import {
+  useGetFavoritesQuery,
+  useRemoveFavoriteMutation,
+} from "../../app/api/favoritesApi";
 
-const WishtList = () => {
-  const { t, i18n } = useTranslation();
-  const { data: products = [], isFetching, error } = useGetFavoritesQuery();
+const WishList = () => {
+  const { t } = useTranslation();
+  const {
+    data: products = [],
+    isFetching,
+    error,
+    refetch,
+  } = useGetFavoritesQuery();
+  const [removeFavorite] = useRemoveFavoriteMutation();
 
   const handleAddToCart = (product) => {
     // Implement cart logic here
     console.log("Adding to cart:", product);
   };
 
-  const handleToggleFavorite = (product) => {
-    // Implement favorite toggle logic here
-    console.log("Toggling favorite:", product);
+  const handleToggleFavorite = async (product) => {
+    try {
+      // Call removeFavorite with the product ID in the body format as required by the API
+      await removeFavorite(product.id);
+      console.log(product.id);
+
+      // Refetch the favorites list to update the UI
+      refetch();
+    } catch (err) {
+      console.error("Error removing from wishlist:", err);
+    }
   };
 
   if (isFetching) {
@@ -40,8 +57,7 @@ const WishtList = () => {
                 key={product.id}
                 product={product}
                 onAddToCart={handleAddToCart}
-                onToggleFavorite={handleToggleFavorite}
-                isFavorite={true} // Since this is wishlist, all items are favorites
+                onToggleFavorite={() => handleToggleFavorite(product)}
                 showFavoriteButton={true}
                 showAddToCart={true}
               />
@@ -53,4 +69,4 @@ const WishtList = () => {
   );
 };
 
-export default WishtList;
+export default WishList;

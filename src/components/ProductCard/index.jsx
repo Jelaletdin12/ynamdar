@@ -4,8 +4,15 @@ import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Star } from "lucide-react";
-import { useAddFavoriteMutation, useRemoveFavoriteMutation } from '../../app/api/favoritesApi';
+import {
+  useAddFavoriteMutation,
+  useRemoveFavoriteMutation,
+} from "../../app/api/favoritesApi";
 import { useGetFavoritesQuery } from "../../app/api/favoritesApi";
+import {
+  useAddToCartMutation,
+  useUpdateCartItemMutation,
+} from "../../app/api/cartApi";
 
 const ProductCard = ({
   product,
@@ -19,23 +26,67 @@ const ProductCard = ({
   const navigate = useNavigate();
   const [addFavorite] = useAddFavoriteMutation();
   const [removeFavorite] = useRemoveFavoriteMutation();
-  const { data: favoriteProducts = [] } = useGetFavoritesQuery();
+  const { data: favoriteProducts = [], refetch } = useGetFavoritesQuery();
+  // const { data: favoriteProducts = [] } = useGetFavoritesQuery();
   const [isLoading, setIsLoading] = useState(false);
-  const [localIsFavorite, setLocalIsFavorite] = useState(favoriteProducts.some(fav => fav.product.id === product.id));
+  const [localIsFavorite, setLocalIsFavorite] = useState(
+    favoriteProducts.some((fav) => fav.product.id === product.id)
+  );
+  const [addToCart] = useAddToCartMutation();
+  const [updateCartItem] = useUpdateCartItemMutation();
 
   useEffect(() => {
-    // Only update if we have valid favorite products data
+    // Component mount olduğunda ve favoriteProducts değiştiğinde çalışır
     if (Array.isArray(favoriteProducts)) {
-      setLocalIsFavorite(favoriteProducts.some(fav => fav.product?.id === product.id));
+      const isFav = favoriteProducts.some(
+        (fav) => fav.product?.id === product.id
+      );
+      setLocalIsFavorite(isFav);
     }
   }, [favoriteProducts, product.id]);
 
-  const handleAddToCart = (event) => {
+  const handleAddToCart = async (event) => {
     event.stopPropagation();
     if (onAddToCart) {
       onAddToCart(product);
     }
-    setQuantity(quantity + 1);
+    try {
+      await addToCart({
+        productId: product.id,
+        quantity: quantity + 1,
+      }).unwrap();
+      setQuantity(quantity + 1);
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+    }
+  };
+
+  const handleQuantityIncrease = async (event) => {
+    event.stopPropagation();
+    try {
+      await updateCartItem({
+        productId: product.id,
+        quantity: quantity + 1,
+      }).unwrap();
+      setQuantity(quantity + 1);
+    } catch (error) {
+      console.error("Failed to update cart item:", error);
+    }
+  };
+
+  const handleQuantityDecrease = async (event) => {
+    event.stopPropagation();
+    if (quantity > 0) {
+      try {
+        await updateCartItem({
+          productId: product.id,
+          quantity: quantity - 1,
+        }).unwrap();
+        setQuantity(quantity - 1);
+      } catch (error) {
+        console.error("Failed to update cart item:", error);
+      }
+    }
   };
 
   const handleToggleFavorite = async (event) => {
@@ -46,29 +97,23 @@ const ProductCard = ({
     try {
       if (localIsFavorite) {
         const result = await removeFavorite(product.id).unwrap();
-        // Check if the response is valid
-        if (result === "Removed" || (result?.status === 'success')) {
+        if (result === "Removed" || result?.status === "success") {
           setLocalIsFavorite(false);
         }
       } else {
         const result = await addFavorite(product.id).unwrap();
-        // Check if the response is valid
-        if (result === "Added" || (result?.status === 'success')) {
+        if (result === "Added" || result?.status === "success") {
           setLocalIsFavorite(true);
         }
       }
-      
-      if (onToggleFavorite) {
-        onToggleFavorite(product);
-      }
+      // Favori durumu değiştikten SONRA refetch yapın
+      await refetch();
     } catch (error) {
-      console.error('Failed to toggle favorite:', error);
-      // Optionally show user feedback here
+      console.error("Failed to toggle favorite:", error);
     } finally {
       setIsLoading(false);
     }
   };
-
 
   const handleCardClick = () => {
     navigate(`/product/${product.id}`);
@@ -96,9 +141,6 @@ const ProductCard = ({
               <span className={styles.oldPrice}>{old_price_amount} m.</span>
             )}
           </div>
-          {/* <div className={styles.rating}>
-             {product.reviews.rating} <Star/>
-          </div> */}
         </div>
         <div className={styles.actions}>
           {showFavoriteButton && (
@@ -114,10 +156,7 @@ const ProductCard = ({
               {quantity > 0 ? (
                 <div className={styles.quantityControls}>
                   <button
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setQuantity(quantity - 1);
-                    }}
+                    onClick={handleQuantityDecrease}
                     className={styles.quantityBtn}
                   >
                     <svg
@@ -133,10 +172,7 @@ const ProductCard = ({
                   </button>
                   <span>{quantity}</span>
                   <button
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setQuantity(quantity + 1);
-                    }}
+                    onClick={handleQuantityIncrease}
                     className={styles.quantityBtn}
                   >
                     <svg

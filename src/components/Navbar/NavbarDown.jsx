@@ -130,7 +130,7 @@ const NavbarDown = () => {
               />
             </li>
             <li>
-              <Dropdown overlay={globeMenu} trigger={["click"]}>
+              <Dropdown menu={globeMenu} trigger={["click"]}>
                 <button className={styles.navButton}>
                   <FaGlobe />
                 </button>
