@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Select, Modal, Button } from "antd";
-import { useGetLocationsQuery } from "../../app/api/locationApi";
 import { X } from "lucide-react";
 import styles from "./AddressSelect.module.scss";
 
@@ -11,11 +10,10 @@ const AddressSelect = ({
   handleAddressSelect,
   handleClearAddress,
   deviceType,
+  locations, // Prop olarak locations ekledik
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // Fetch locations data from the API
-  const { data: locations, isLoading } = useGetLocationsQuery();
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -51,11 +49,8 @@ const AddressSelect = ({
             footer={null}
           >
             <ul className={styles.optionList}>
-              {isLoading ? (
-                <li>Loading...</li>
-              ) : (
-                Array.isArray(locations?.data) &&
-                locations.data.map((location) => (
+              {Array.isArray(locations) && locations.length > 0 ? (
+                locations.map((location) => (
                   <li
                     key={location.id}
                     onClick={() => {
@@ -67,6 +62,8 @@ const AddressSelect = ({
                     {location.name}
                   </li>
                 ))
+              ) : (
+                <li>Loading...</li>
               )}
             </ul>
           </Modal>
@@ -95,15 +92,14 @@ const AddressSelect = ({
             </div>
           )}
         >
-          {isLoading ? (
-            <Option disabled>Loading...</Option>
-          ) : (
-            Array.isArray(locations?.data) &&
-            locations.data.map((location) => (
+          {Array.isArray(locations) && locations.length > 0 ? (
+            locations.map((location) => (
               <Option key={location.id} value={location.name}>
                 {location.name}
               </Option>
             ))
+          ) : (
+            <Option disabled>Loading...</Option>
           )}
         </Select>
       )}

@@ -7,7 +7,7 @@ const { Search } = Input;
 import DropdownMenu from "../CategoryDropdown/index";
 import LoginModal from "../LogIn/index";
 import SignUpModal from "../SignUp/index";
-import { Link, useNavigate } from "react-router-dom";
+import { data, Link, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import tm from "../../assets/tm.png";
 import ru from "../../assets/ru.png";
@@ -16,6 +16,9 @@ import { CiLocationOn } from "react-icons/ci";
 import Sidebar from "../CategorySideBar";
 import { useTranslation } from "react-i18next";
 import { useSearchProductQuery } from "../../app/api/searchApi";
+import { useGetCartQuery } from "../../app/api/cartApi";
+import { useGetOrdersQuery } from "../../app/api/orderApi";
+import { useGetFavoritesQuery } from "../../app/api/favoritesApi";
 
 const NavbarDown = () => {
   const [isSearchVisible, setSearchVisible] = useState(false);
@@ -25,6 +28,15 @@ const NavbarDown = () => {
   const { data: searchData, refetch } = useSearchProductQuery(searchQuery, {
     skip: !searchQuery,
   });
+  const { data: cartData } = useGetCartQuery();
+  const cartItemCount = cartData?.data?.length || 0;
+
+  const { data: ordersData } = useGetOrdersQuery();
+  const ordersItemCount = ordersData?.data?.length || 0;
+
+  const { data: favoritesData } = useGetFavoritesQuery();
+  const favoritesItemCount = favoritesData?.length || 0; 
+  
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -136,6 +148,12 @@ const NavbarDown = () => {
             <div className={styles.stick}></div>
             <li>
               <Link to={"/orders"}>
+              <Badge
+                  style={{ marginRight: "4px" }}
+                  count={ordersItemCount}
+                  offset={[10, 0]}
+                  showZero
+                >
                 <button className={styles.navButton}>
                   <svg
                     data-name="Layer 1"
@@ -149,6 +167,7 @@ const NavbarDown = () => {
                     ></path>
                   </svg>
                 </button>
+                </Badge>
               </Link>
             </li>
             <div className={styles.stick}></div>
@@ -156,7 +175,7 @@ const NavbarDown = () => {
               <Link to={"/wishlist"}>
                 <Badge
                   style={{ marginRight: "4px" }}
-                  count={8}
+                  count={favoritesItemCount}
                   offset={[10, 0]}
                   showZero
                 >
@@ -185,7 +204,7 @@ const NavbarDown = () => {
             <div className={styles.stick}></div>
             <li>
               <Link to={"/cart"}>
-                <Badge count={9} offset={[10, 0]} showZero>
+                <Badge count={cartItemCount} offset={[10, 0]} showZero>
                   <button className={styles.navButton}>
                     <svg
                       viewBox="0 0 19 16"
@@ -250,7 +269,7 @@ const NavbarDown = () => {
         {isSearchVisible && (
           <div className={styles.searchInputWrapper}>
             <input
-            className={styles.searchInput}
+              className={styles.searchInput}
               type="text"
               placeholder="Haryt ady boyunca gozle..."
               value={searchQuery}

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./ProductCard.module.scss";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { FaShoppingCart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Star } from "lucide-react";
+import { useAddFavoriteMutation, useRemoveFavoriteMutation } from '../../app/api/favoritesApi';
+import { useGetFavoritesQuery } from "../../app/api/favoritesApi";
 
 const ProductCard = ({
   product,
@@ -14,26 +16,70 @@ const ProductCard = ({
   isFavorite = false,
 }) => {
   const [quantity, setQuantity] = useState(0);
+  const navigate = useNavigate();
+  const [addFavorite] = useAddFavoriteMutation();
+  const [removeFavorite] = useRemoveFavoriteMutation();
+  const { data: favoriteProducts = [] } = useGetFavoritesQuery();
+  const [isLoading, setIsLoading] = useState(false);
+  const [localIsFavorite, setLocalIsFavorite] = useState(favoriteProducts.some(fav => fav.product.id === product.id));
 
-  const handleAddToCart = () => {
+  useEffect(() => {
+    // Only update if we have valid favorite products data
+    if (Array.isArray(favoriteProducts)) {
+      setLocalIsFavorite(favoriteProducts.some(fav => fav.product?.id === product.id));
+    }
+  }, [favoriteProducts, product.id]);
+
+  const handleAddToCart = (event) => {
+    event.stopPropagation();
     if (onAddToCart) {
       onAddToCart(product);
     }
     setQuantity(quantity + 1);
   };
 
-  const handleToggleFavorite = () => {
-    if (onToggleFavorite) {
-      onToggleFavorite(product);
+  const handleToggleFavorite = async (event) => {
+    event.stopPropagation();
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      if (localIsFavorite) {
+        const result = await removeFavorite(product.id).unwrap();
+        // Check if the response is valid
+        if (result === "Removed" || (result?.status === 'success')) {
+          setLocalIsFavorite(false);
+        }
+      } else {
+        const result = await addFavorite(product.id).unwrap();
+        // Check if the response is valid
+        if (result === "Added" || (result?.status === 'success')) {
+          setLocalIsFavorite(true);
+        }
+      }
+      
+      if (onToggleFavorite) {
+        onToggleFavorite(product);
+      }
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+      // Optionally show user feedback here
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const { name, price_amount, old_price_amount, media, reviews } = product;
+
+  const handleCardClick = () => {
+    navigate(`/product/${product.id}`);
+  };
+
+  const { name, price_amount, old_price_amount, media = [], reviews } = product;
 
   const imageUrl = media[0]?.images_400x400 || "";
 
   return (
-    <Link to={`/product/${product.id}`} className={styles.productCard}>
+    <div className={styles.productCard} onClick={handleCardClick}>
       <div className={styles.imageContainer}>
         {product.discount && (
           <span className={styles.discountBadge}>-{product.discount}%</span>
@@ -45,11 +91,10 @@ const ProductCard = ({
         <p className={styles.productDescription}>{product.description}</p>
         <div className={styles.priceContainer}>
           <div>
-
-          <span className={styles.currentPrice}>{price_amount} m.</span>
-          {old_price_amount && (
-            <span className={styles.oldPrice}>{old_price_amount} m.</span>
-          )}
+            <span className={styles.currentPrice}>{price_amount} m.</span>
+            {old_price_amount && (
+              <span className={styles.oldPrice}>{old_price_amount} m.</span>
+            )}
           </div>
           {/* <div className={styles.rating}>
              {product.reviews.rating} <Star/>
@@ -61,7 +106,7 @@ const ProductCard = ({
               className={styles.favoriteButton}
               onClick={handleToggleFavorite}
             >
-              {isFavorite ? <IoMdHeart /> : <IoMdHeartEmpty />}
+              {localIsFavorite ? <IoMdHeart /> : <IoMdHeartEmpty />}
             </button>
           )}
           {showAddToCart && (
@@ -69,7 +114,10 @@ const ProductCard = ({
               {quantity > 0 ? (
                 <div className={styles.quantityControls}>
                   <button
-                    onClick={() => setQuantity(quantity - 1)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setQuantity(quantity - 1);
+                    }}
                     className={styles.quantityBtn}
                   >
                     <svg
@@ -85,7 +133,10 @@ const ProductCard = ({
                   </button>
                   <span>{quantity}</span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setQuantity(quantity + 1);
+                    }}
                     className={styles.quantityBtn}
                   >
                     <svg
@@ -112,7 +163,7 @@ const ProductCard = ({
           )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

@@ -6,6 +6,12 @@ import { X } from "lucide-react";
 const { Option } = Select;
 import AddressSelect from "../AddressSelect(CheckOut)/index";
 import { useTranslation } from "react-i18next";
+import {
+  usePlaceOrderMutation,
+  useGetOrderTimesQuery,
+  useGetOrderPaymentsQuery,
+} from "../../app/api/orderApi";
+import { useGetLocationsQuery } from "../../app/api/locationApi";
 
 const useDeviceType = () => {
   const [deviceType, setDeviceType] = useState("desktop");
@@ -23,12 +29,15 @@ const useDeviceType = () => {
 };
 
 const Checkout = ({ cartItems, onBackToCart }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
-    fullName: "",
-    phone: "",
-    address: "",
-    deliveryAddress: "",
+    customer_name: "",
+    customer_phone: "",
+    customer_address: "",
+    deliveryAddress: "null",
+    payment_type_id: "",
+    delivery_time: "",
+    delivery_at: "",
     region: "",
   });
 
@@ -37,12 +46,20 @@ const Checkout = ({ cartItems, onBackToCart }) => {
   const [deliveryTime, setDeliveryTime] = useState("today");
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [selectedDeliveryType, setSelectedDeliveryType] = useState("standard");
-  const [availableTimeSlots, setAvailableTimeSlots] = useState([
-    "10:00-12:00",
-    "13:00-15:00",
-  ]);
-
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+  const [placeOrder, { isLoading: isPlacingOrder }] = usePlaceOrderMutation();
+  const { data: orderTimes = {} } = useGetOrderTimesQuery();
+  const { data: orderPayments = [] } = useGetOrderPaymentsQuery();
+  const { data: locationsData } = useGetLocationsQuery();
   const deviceType = useDeviceType();
+
+  useEffect(() => {
+    if (orderTimes.dates && orderTimes.hours) {
+      setAvailableTimeSlots(
+        getTimeSlotsByDeliveryType(selectedDeliveryType, deliveryTime)
+      );
+    }
+  }, [orderTimes, selectedDeliveryType, deliveryTime]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -54,11 +71,20 @@ const Checkout = ({ cartItems, onBackToCart }) => {
 
   const handleAddressSelect = (value) => {
     setSelectedAddress(value);
+    const selectedLocation = locationsData?.data?.find(
+      (location) => location.name === value
+    );
+
     setFormData((prev) => ({
       ...prev,
       address: value,
+      region: selectedLocation ? selectedLocation.region : "",
     }));
     setDeliveryOptionsVisible(true);
+  };
+
+  const formatPhoneNumber = (phoneNumber) => {
+    return phoneNumber.replace(/^\+993/, "");
   };
 
   const handleClearAddress = () => {
@@ -77,16 +103,52 @@ const Checkout = ({ cartItems, onBackToCart }) => {
       getTimeSlotsByDeliveryType(selectedDeliveryType, selectedTime)
     );
   };
+
   const getTimeSlotsByDeliveryType = (type, day = "today") => {
     switch (type) {
       case "standard":
-        return day === "today"
-          ? ["10:00-12:00", "13:00-15:00"]
-          : ["10:00-12:00", "13:00-15:00", "16:00-18:00"];
+        return orderTimes.hours[day] || [];
       case "express":
-        return ["14:00-15:00"];
+        return [
+          {
+            date:
+              day === "today"
+                ? orderTimes.dates.today
+                : orderTimes.dates.tomorrow,
+            hour: "14:00-15:00",
+          },
+        ];
       case "pickup":
-        return ["10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00"];
+        return [
+          {
+            date:
+              day === "today"
+                ? orderTimes.dates.today
+                : orderTimes.dates.tomorrow,
+            hour: "10:00-11:00",
+          },
+          {
+            date:
+              day === "today"
+                ? orderTimes.dates.today
+                : orderTimes.dates.tomorrow,
+            hour: "11:00-12:00",
+          },
+          {
+            date:
+              day === "today"
+                ? orderTimes.dates.today
+                : orderTimes.dates.tomorrow,
+            hour: "12:00-13:00",
+          },
+          {
+            date:
+              day === "today"
+                ? orderTimes.dates.today
+                : orderTimes.dates.tomorrow,
+            hour: "13:00-14:00",
+          },
+        ];
       default:
         return [];
     }
@@ -102,11 +164,79 @@ const Checkout = ({ cartItems, onBackToCart }) => {
     setDeliveryTime("today");
     setAvailableTimeSlots(getTimeSlotsByDeliveryType(type));
   };
+
   const handleFocus = (event) => {
     event.target.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
+  };
+
+  const handlePlaceOrder = async () => {
+    // Validation checks
+    if (!selectedTimeSlot) {
+      console.error("No time slot selected");
+      alert("Please select a delivery time slot");
+      return;
+    }
+
+    if (
+      !formData.customer_name ||
+      !formData.customer_phone ||
+      !formData.customer_address ||
+      !formData.payment_type_id
+    ) {
+      console.error("Missing required fields");
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    // Prepare data in the format expected by the API
+    const orderDetails = {
+      customer_name: formData.customer_name,
+      customer_phone: formatPhoneNumber(formData.customer_phone),
+      customer_address: formData.customer_address,
+      shipping_method:
+        selectedDeliveryType === "standard" ? "standart" : selectedDeliveryType, // Fix spelling if needed
+      payment_type_id: formData.payment_type_id,
+      delivery_time: selectedTimeSlot.hour,
+      delivery_at: selectedTimeSlot.date,
+      region: formData.region || "",
+    };
+
+    console.log("Sending order details:", orderDetails);
+
+    try {
+      // Use a workaround for HTML responses by catching the error at a lower level
+      const response = await placeOrder(orderDetails);
+
+      // Check if we got a successful response
+      if (response.data && !response.error) {
+        console.log("Order placed successfully:", response.data);
+        alert("Order placed successfully!");
+        // You might want to redirect the user or clear the cart here
+      } else {
+        throw new Error(response.error || "Unknown error occurred");
+      }
+    } catch (error) {
+      console.error("Failed to place order:", error);
+
+      // Check if the error contains HTML
+      if (
+        error.data &&
+        typeof error.data === "string" &&
+        error.data.includes("<!doctype html>")
+      ) {
+        console.error("Server returned HTML instead of a proper API response");
+        alert(
+          "There was a problem with the server. Please try again later or contact support."
+        );
+      } else {
+        alert(
+          "Failed to place order. Please check your information and try again."
+        );
+      }
+    }
   };
 
   const renderDeliveryTimeSection = () => {
@@ -125,7 +255,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
               }`}
             >
               <span></span>
-              <label>{slot}</label>
+              <label>{slot.hour}</label>
             </button>
           ))}
         </div>
@@ -144,7 +274,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
               }`}
             >
               <label>{t("checkout.today")}</label>
-              <span>27.01.2025</span>
+              <span>{orderTimes.dates?.today}</span>
             </button>
           </div>
           <div className={styles.timeOptionRowBtn}>
@@ -157,7 +287,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
                 }`}
               >
                 <span></span>
-                <label>{slot}</label>
+                <label>{slot.hour}</label>
               </button>
             ))}
           </div>
@@ -176,7 +306,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
             }`}
           >
             <label>{t("checkout.today")}</label>
-            <span>27.01.2025</span>
+            <span>{orderTimes.dates?.today}</span>
           </button>
           <button
             type="button"
@@ -186,7 +316,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
             }`}
           >
             <label>{t("checkout.tomorrow")}</label>
-            <span>28.01.2025</span>
+            <span>{orderTimes.dates?.tomorrow}</span>
           </button>
         </div>
         <div className={styles.timeOptionRowBtn}>
@@ -199,7 +329,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
               }`}
             >
               <span></span>
-              <label>{slot}</label>
+              <label>{slot.hour}</label>
             </button>
           ))}
         </div>
@@ -213,29 +343,30 @@ const Checkout = ({ cartItems, onBackToCart }) => {
       <div className={styles.formSection}>
         <div className={styles.paymentOptions}>
           <h3>{t("checkout.paymentMethod")}:</h3>
-          <div className={styles.option}>
-            <input type="radio" id="nagt" name="paymentType" defaultChecked />
-            <label htmlFor="nagt" className={styles.customRadio}></label>
-            <div className={styles.text}>
-              <span className={styles.optionTitle}>{t("checkout.inCash")}</span>
-              <span className={styles.optionDesc}>
-              {t("checkout.payment_in_cash_upon_delivery_of_the_order")}
-              </span>
+          {orderPayments.map((payment) => (
+            <div className={styles.option} key={payment.id}>
+              <input
+                type="radio"
+                id={`payment${payment.id}`}
+                name="payment_type_id"
+                value={payment.id}
+                checked={formData.payment_type_id === String(payment.id)}
+                onChange={handleInputChange}
+              />
+              <label
+                htmlFor={`payment${payment.id}`}
+                className={styles.customRadio}
+              ></label>
+              <div className={styles.text}>
+                <span className={styles.optionTitle}>{payment.name}</span>
+                <span className={styles.optionDesc}>
+                  {payment.name === "Nagt"
+                    ? t("checkout.payment_in_cash_upon_delivery_of_the_order")
+                    : t("checkout.payment_by_card")}
+                </span>
+              </div>
             </div>
-          </div>
-
-          <div className={styles.option}>
-            <input type="radio" id="terminal" name="paymentType" />
-            <label htmlFor="terminal" className={styles.customRadio}></label>
-            <div className={styles.text}>
-              <span className={styles.optionTitle}>
-                {t("checkout.paymentTerminal")}
-              </span>
-              <span className={styles.optionDesc}>
-              {t("checkout.payment_by_card")}
-              </span>
-            </div>
-          </div>
+          ))}
 
           <div className={styles.balance}>
             <input
@@ -248,7 +379,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
             </label>
             <div className={styles.text}>
               <span style={{ color: "#6b7280" }}>
-                 {t("checkout.cashback")}:{" "}
+                {t("checkout.cashback")}:{" "}
                 <span className={styles.amount}>0.00 m.</span>
               </span>
               <span className={styles.description}>
@@ -265,8 +396,8 @@ const Checkout = ({ cartItems, onBackToCart }) => {
               <label>{t("checkout.fullName")}*</label>
               <input
                 type="text"
-                name="fullName"
-                value={formData.fullName}
+                name="customer_name"
+                value={formData.customer_name}
                 onChange={handleInputChange}
                 required
                 onFocus={handleFocus}
@@ -277,8 +408,8 @@ const Checkout = ({ cartItems, onBackToCart }) => {
               <label>{t("checkout.telephone")}*</label>
               <input
                 type="tel"
-                name="phone"
-                value={formData.phone}
+                name="customer_phone"
+                value={formData.customer_phone}
                 onChange={handleInputChange}
                 placeholder="+993 61097651"
                 required
@@ -295,6 +426,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
                 handleAddressSelect={handleAddressSelect}
                 handleClearAddress={handleClearAddress}
                 deviceType={deviceType}
+                locations={locationsData?.data || []}
               />
             </div>
 
@@ -302,14 +434,15 @@ const Checkout = ({ cartItems, onBackToCart }) => {
               <label>{t("checkout.moreAboutYourAddress")}*</label>
               <input
                 type="text"
-                name="deliveryAddress"
-                value={formData.deliveryAddress}
+                name="customer_address"
+                value={formData.customer_address}
                 onChange={handleInputChange}
                 required
                 onFocus={handleFocus}
               />
             </div>
           </div>
+
           <div className={styles.formRow}>
             <div className={styles.formGroup}>
               <label>{t("checkout.note")}</label>
@@ -331,7 +464,8 @@ const Checkout = ({ cartItems, onBackToCart }) => {
                   <input
                     type="radio"
                     id="standard"
-                    name="deliveryType"
+                    name="shipping_method"
+                    value="standard"
                     checked={selectedDeliveryType === "standard"}
                     onChange={() => handleDeliveryTypeChange("standard")}
                   />
@@ -347,14 +481,15 @@ const Checkout = ({ cartItems, onBackToCart }) => {
                   <input
                     type="radio"
                     id="express"
-                    name="deliveryType"
+                    name="shipping_method"
+                    value="express"
                     checked={selectedDeliveryType === "express"}
                     onChange={() => handleDeliveryTypeChange("express")}
                   />
                   <label className={styles.customRadio}></label>
                   <label htmlFor="express">
                     <div className={styles.optionTitle}>
-                    {t("checkout.expressDelivery")}
+                      {t("checkout.expressDelivery")}
                     </div>
                     <div className={styles.optionCost}>20 manat</div>
                   </label>
@@ -363,13 +498,16 @@ const Checkout = ({ cartItems, onBackToCart }) => {
                   <input
                     type="radio"
                     id="pickup"
-                    name="deliveryType"
+                    name="shipping_method"
+                    value="pickup"
                     checked={selectedDeliveryType === "pickup"}
                     onChange={() => handleDeliveryTypeChange("pickup")}
                   />
                   <label className={styles.customRadio}></label>
                   <label htmlFor="pickup">
-                    <div className={styles.optionTitle}>  {t("checkout.pickup")}</div>
+                    <div className={styles.optionTitle}>
+                      {t("checkout.pickup")}
+                    </div>
                     <div className={styles.optionCost}>Garassyzlyk Shayoly</div>
                   </label>
                 </div>
@@ -378,10 +516,8 @@ const Checkout = ({ cartItems, onBackToCart }) => {
               <div className={styles.deliveryTimeOptions}>
                 <h4>
                   {selectedDeliveryType === "pickup"
-                    ? 
-                    t("checkout.selectPickupTime")
-                    : t("checkout.selectDeliveryTime")
-                    }
+                    ? t("checkout.selectPickupTime")
+                    : t("checkout.selectDeliveryTime")}
                 </h4>
                 {renderDeliveryTimeSection()}
               </div>
@@ -412,6 +548,12 @@ const Checkout = ({ cartItems, onBackToCart }) => {
               )}
             </li>
           </ul>
+        </div>
+
+        <div className={styles.orderButton}>
+          <button onClick={handlePlaceOrder} disabled={isPlacingOrder}>
+            {t("checkout.placeOrder")}
+          </button>
         </div>
       </div>
     </div>

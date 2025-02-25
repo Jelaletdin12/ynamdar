@@ -1,63 +1,34 @@
-// CartPage.jsx
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./CartPage.module.scss";
-import temp1 from "../../assets/temp1.jpg";
-import temp2 from "../../assets/temp2.jpg";
-import temp3 from "../../assets/temp3.jpg";
 import { FaTrashAlt } from "react-icons/fa";
 import Checkout from "../../components/Checkout";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Modal } from "antd";
 import { useTranslation } from "react-i18next";
 import EmptyCartState from "./emptyCart";
+import {
+  useGetCartQuery,
+  useAddToCartMutation,
+  useRemoveFromCartMutation,
+  useUpdateCartItemMutation,
+  useCleanCartMutation,
+} from "../../app/api/cartApi";
 
 const CartPage = () => {
+  const { data: response = {}, refetch, error, isError } = useGetCartQuery();
+  const cartItems = isError ? [] : response.data || [];
   const { t, i18n } = useTranslation();
   const [isCheckout, setIsCheckout] = useState(false);
-  const handleCheckout = () => setIsCheckout(true);
-  const handleBackToCart = () => setIsCheckout(false);
+  const [addToCart] = useAddToCartMutation();
+  const [removeFromCart] = useRemoveFromCartMutation();
+  const [updateCartItem, { isLoading: isUpdating, error: updateError }] =
+    useUpdateCartItemMutation();
+  const [cleanCart] = useCleanCartMutation();
   const [isExpanded, setIsExpanded] = useState(false);
   const expandedRef = useRef(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [emptyCartModalVisible, setEmptyCartModalVisible] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Bebedor",
-      description: 'Standart silikon emzik "Bebedor" görünüşe',
-      price: 65.0,
-      image: temp1,
-      quantity: 2,
-    },
-    {
-      id: 2,
-      name: "Chicco",
-      description:
-        'Bir yumuşaklay Chicco "Sweet Talcum" sensitive 1500ml (0 ay+)',
-      price: 538.5,
-      image: temp2,
-      quantity: 3,
-    },
-    {
-      id: 3,
-      name: "Philips Avent",
-      description:
-        'Emzikli şüşe çeşidi Philips Avent "Natural Response" 1 ay+ plastik 260 ml',
-      price: 498.0,
-      image: temp3,
-      quantity: 2,
-    },
-    {
-      id: 4,
-      name: "Jacobs",
-      description: "Kofe Jacobs Asian, çüyələ qəpsdə 90 gr",
-      price: 172.4,
-      image: temp1,
-      quantity: 2,
-    },
-  ]);
-
   const modalProps = {
     centered: true,
     className: styles.cartDeleteModal,
@@ -65,16 +36,52 @@ const CartPage = () => {
     width: 400,
   };
 
-  const updateQuantity = (id, newQuantity) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
-      )
-    );
+  const handleCheckout = () => setIsCheckout(true);
+  const handleBackToCart = () => setIsCheckout(false);
+
+  const updateQuantity = async (productId, newQuantity) => {
+    if (newQuantity <= 0) {
+      showDeleteConfirm(productId);
+      return;
+    }
+
+    try {
+      const result = await updateCartItem({
+        productId: productId,
+        quantity: newQuantity,
+      }).unwrap();
+
+      if (result && result.message === "error") {
+        console.error("Server returned an error:", result.errorDetails || "Unknown error");
+        return;
+      }
+
+      refetch();
+    } catch (error) {
+      console.error("Failed to update cart:", error);
+
+      let errorMessage = "Failed to update cart. Please try again.";
+
+      if (error?.data?.errorDetails) {
+        errorMessage = error.data.errorDetails;
+      } else if (error?.data?.message) {
+        errorMessage = error.data.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      if (process.env.NODE_ENV === "development") {
+        console.log("Full error object:", JSON.stringify(error, null, 2));
+      }
+    }
   };
 
   const calculateTotal = () => {
-    return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    return cartItems.reduce((sum, item) => {
+      const itemPrice = parseFloat(item.product.price_amount) || 0;
+      const itemQuantity = parseInt(item.product_quantity, 10) || 0;
+      return sum + itemPrice * itemQuantity;
+    }, 0);
   };
 
   useEffect(() => {
@@ -88,14 +95,15 @@ const CartPage = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const showDeleteConfirm = (itemId) => {
-    setItemToDelete(itemId);
+  const showDeleteConfirm = (productId) => {
+    setItemToDelete(productId);
     setDeleteModalVisible(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (itemToDelete) {
-      setCartItems(cartItems.filter((item) => item.id !== itemToDelete));
+      await removeFromCart({ productId: itemToDelete }).unwrap();
+      refetch();
     }
     setDeleteModalVisible(false);
     setItemToDelete(null);
@@ -105,12 +113,11 @@ const CartPage = () => {
     setEmptyCartModalVisible(true);
   };
 
-  const handleEmptyCartConfirm = () => {
-    setCartItems([]);
+  const handleEmptyCartConfirm = async () => {
+    await cleanCart().unwrap();
+    refetch();
     setEmptyCartModalVisible(false);
   };
-  // const handleCheckout = () => setIsCheckout(true);
-  // const handleBackToCart = () => setIsCheckout(false);
 
   return (
     <div className={styles.cartContainer}>
@@ -126,7 +133,6 @@ const CartPage = () => {
         <p>{t("common.Do_you_really_want_to_remove_the_item_from_the_cart")}</p>
       </Modal>
 
-      {/* Empty Cart Modal */}
       <Modal
         {...modalProps}
         title={t("common.confirm")}
@@ -150,7 +156,11 @@ const CartPage = () => {
                 <div className={styles.cartHeader}>
                   <h2>
                     {t("cart.basket")} (
-                    {cartItems.reduce((sum, item) => sum + item.quantity, 0)})
+                    {cartItems.reduce(
+                      (sum, item) => sum + parseInt(item.product_quantity, 10),
+                      0
+                    )}
+                    )
                   </h2>
                   <div>
                     <button
@@ -165,21 +175,24 @@ const CartPage = () => {
                 {cartItems.map((item) => (
                   <div key={item.id} className={styles.cartItem}>
                     <div className={styles.itemImage}>
-                      <img src={item.image} alt={item.name} />
+                      <img
+                        src={item.product.media[0]?.images_400x400}
+                        alt={item.product.name}
+                      />
                     </div>
                     <div className={styles.itemInfo}>
                       <div style={{ flex: "1" }}>
-                        <h3>{item.name}</h3>
-                        <p>{item.description}</p>
+                        <h3>{item.product.name}</h3>
+                        <p>{item.product.description}</p>
                       </div>
                       <div className={styles.priceQuantity}>
                         <span className={styles.price}>
-                          {item.price.toFixed(2)} m.
+                          {(parseFloat(item.product.price_amount) || 0).toFixed(2)} m.
                         </span>
                         <div className={styles.quantityControls}>
                           <button
                             onClick={() =>
-                              updateQuantity(item.id, item.quantity - 1)
+                              updateQuantity(item.product.id, parseInt(item.product_quantity, 10) - 1)
                             }
                             className={styles.quantityBtn}
                           >
@@ -194,10 +207,10 @@ const CartPage = () => {
                               ></path>
                             </svg>
                           </button>
-                          <span>{item.quantity}</span>
+                          <span>{parseInt(item.product_quantity, 10)}</span>
                           <button
                             onClick={() =>
-                              updateQuantity(item.id, item.quantity + 1)
+                              updateQuantity(item.product.id, parseInt(item.product_quantity, 10) + 1)
                             }
                             className={styles.quantityBtn}
                           >
@@ -217,7 +230,7 @@ const CartPage = () => {
                       <div className={styles.deleteBtnContainer}>
                         <button
                           className={styles.deleteBtn}
-                          onClick={() => showDeleteConfirm(item.id)}
+                          onClick={() => showDeleteConfirm(item.product.id)}
                         >
                           <FaTrashAlt />
                         </button>
@@ -251,16 +264,15 @@ const CartPage = () => {
 
             <div className={styles.container}>
               <div className={styles.summaryCard} ref={expandedRef}>
-                {/* Expanded Content - Appears above the header when expanded */}
                 <div
-                  className={`${styles.expandedContent} ${
-                    isExpanded ? styles.visible : ""
-                  }`}
+                  className={`${styles.expandedContent} ${isExpanded ? styles.visible : ""}`}
                 >
                   <div className={styles.details}>
                     <div className={styles.row}>
                       <span> {t("cart.price")}:</span>
-                      <span className={styles.amount}>2124.00 m.</span>
+                      <span className={styles.amount}>
+                        {calculateTotal().toFixed(2)} m.
+                      </span>
                     </div>
                     <div className={styles.row}>
                       <span> {t("cart.delivery")}:</span>
@@ -268,8 +280,6 @@ const CartPage = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* Header - Always visible */}
                 <div className={styles.header}>
                   <div
                     className={styles.titleWrapper}
@@ -279,14 +289,12 @@ const CartPage = () => {
                     }}
                   >
                     <span>
-                      {isExpanded ? (
-                        <ChevronUp size={20} />
-                      ) : (
-                        <ChevronDown size={20} />
-                      )}
+                      {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                       {t("cart.total")}:
                     </span>
-                    <span className={styles.amount}>2124.00 m.</span>
+                    <span className={styles.amount}>
+                      {calculateTotal().toFixed(2)} m.
+                    </span>
                   </div>
                   <div className={styles.actionWrapper}>
                     <button onClick={handleCheckout} className={styles.button}>

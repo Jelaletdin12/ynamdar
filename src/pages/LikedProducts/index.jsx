@@ -1,68 +1,13 @@
-// ProductListing.jsx
 import React from "react";
 import styles from "./WishListing.module.scss";
-import temp1 from "../../assets/temp1.jpg";
-import temp2 from "../../assets/temp2.jpg";
-import temp3 from "../../assets/temp3.jpg";
-import { FaHeart } from "react-icons/fa";
-import { FaShoppingCart } from "react-icons/fa";
 import ProductCard from "../../components/ProductCard/index";
 import { useTranslation } from "react-i18next";
 import EmptyWishListState from "./emptyWishlist";
+import { useGetFavoritesQuery } from "../../app/api/favoritesApi";
+
 const WishtList = () => {
   const { t, i18n } = useTranslation();
-  const products = [
-    {
-      id: 1,
-      name: "Bebedor",
-      description: 'Standart silikon emzik "Bebedor" gülgüne',
-      price: 32.5,
-      oldPrice: 65.0,
-      discount: 50,
-      image: temp1,
-    },
-    {
-      id: 2,
-      name: "Philips Avent",
-      description:
-        'Emzikli çüýşe Philips Avent "Natural Response" 3 aý+ plastik 330 ml',
-      price: 259.5,
-      oldPrice: 519.0,
-      discount: 50,
-      image: temp2,
-    },
-    {
-      id: 3,
-      name: "Philips Avent",
-      description:
-        'Emzikli çüýşe Philips Avent "Natural Response" 3 aý+ plastik 330 ml',
-      price: 259.5,
-      oldPrice: 519.0,
-      discount: 50,
-      image: temp2,
-    },
-    {
-      id: 4,
-      name: "Philips Avent",
-      description:
-        'Emzikli çüýşe Philips Avent "Natural Response" 3 aý+ plastik 330 ml',
-      price: 259.5,
-      oldPrice: 519.0,
-      discount: 50,
-      image: temp3,
-    },
-    {
-      id: 5,
-      name: "Philips Avent",
-      description:
-        'Emzikli çüýşe Philips Avent "Natural Response" 3 aý+ plastik 330 ml',
-      price: 259.5,
-      oldPrice: 519.0,
-      discount: 50,
-      image: temp1,
-    },
-    // Add other products similarly
-  ];
+  const { data: products = [], isFetching, error } = useGetFavoritesQuery();
 
   const handleAddToCart = (product) => {
     // Implement cart logic here
@@ -74,6 +19,14 @@ const WishtList = () => {
     console.log("Toggling favorite:", product);
   };
 
+  if (isFetching) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading wishlist.</div>;
+  }
+
   return (
     <div className={styles.container}>
       {products.length === 0 ? (
@@ -82,7 +35,7 @@ const WishtList = () => {
         <>
           <h1 className={styles.title}>{t("wishtList.likedProducts")}</h1>
           <div className={styles.productGrid}>
-            {products.map((product) => (
+            {products.map(({ product }) => (
               <ProductCard
                 key={product.id}
                 product={product}
@@ -96,7 +49,6 @@ const WishtList = () => {
           </div>
         </>
       )}
-      ;
     </div>
   );
 };
