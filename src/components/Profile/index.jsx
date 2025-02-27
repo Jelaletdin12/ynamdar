@@ -35,9 +35,9 @@ const ProfileMenu = () => {
     { icon: <Wallet />, text: t("profile.orders"), path: "/orders" },
     { icon: <Heart />, text: t("profile.favorites"), path: "/wishlist" },
     { icon: <Languages />, text: t("profile.language"), action: "language" },
-    { icon: <List />, text: t("profile.delivery"), path: "/delivery" },
-    { icon: <Mail />, text: t("profile.contact"), path: "/contact" },
-    { icon: <Info />, text: t("profile.about"), path: "/about" },
+    { icon: <List />, text: t("profile.delivery"), path: "/delivery-and-payment" },
+    { icon: <Mail />, text: t("profile.contact"), path: "/contactus" },
+    { icon: <Info />, text: t("profile.about"), path: "/about-us" },
   ];
 
   const handleMenuClick = (item) => {
