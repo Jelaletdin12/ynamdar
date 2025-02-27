@@ -12,6 +12,8 @@ import { useGetFavoritesQuery } from "../../app/api/favoritesApi";
 import {
   useAddToCartMutation,
   useUpdateCartItemMutation,
+  useRemoveFromCartMutation,
+  useGetCartQuery,
 } from "../../app/api/cartApi";
 
 const ProductCard = ({
@@ -22,21 +24,43 @@ const ProductCard = ({
   onToggleFavorite,
   isFavorite = false,
 }) => {
-  const [quantity, setQuantity] = useState(0);
   const navigate = useNavigate();
   const [addFavorite] = useAddFavoriteMutation();
   const [removeFavorite] = useRemoveFavoriteMutation();
   const { data: favoriteProducts = [], refetch } = useGetFavoritesQuery();
-  // const { data: favoriteProducts = [] } = useGetFavoritesQuery();
   const [isLoading, setIsLoading] = useState(false);
   const [localIsFavorite, setLocalIsFavorite] = useState(
-    favoriteProducts.some((fav) => fav.product.id === product.id)
+    favoriteProducts.some((fav) => fav.product?.id === product.id)
   );
+
+  // Get cart data and keep it updated
+  const { data: cartData } = useGetCartQuery(undefined, {
+    // Use selective cache to reduce unnecessary re-renders
+    selectFromResult: (result) => ({
+      data: result.data,
+    }),
+  });
   const [addToCart] = useAddToCartMutation();
   const [updateCartItem] = useUpdateCartItemMutation();
+  const [removeFromCart] = useRemoveFromCartMutation();
+
+  // Find this product in the cart to get its quantity
+  const cartItem = cartData?.data?.find(
+    (item) => item.product?.id === product.id || item.product_id === product.id
+  );
+  const quantity = cartItem?.quantity || cartItem?.product_quantity || 0;
+  const [localQuantity, setLocalQuantity] = useState(0);
+
+  // Update local quantity when cart data changes
+  useEffect(() => {
+    if (cartItem) {
+      setLocalQuantity(cartItem.quantity || cartItem.product_quantity || 0);
+    } else {
+      setLocalQuantity(0);
+    }
+  }, [cartData, cartItem]);
 
   useEffect(() => {
-    // Component mount olduğunda ve favoriteProducts değiştiğinde çalışır
     if (Array.isArray(favoriteProducts)) {
       const isFav = favoriteProducts.some(
         (fav) => fav.product?.id === product.id
@@ -46,50 +70,64 @@ const ProductCard = ({
   }, [favoriteProducts, product.id]);
 
   const handleAddToCart = async (event) => {
+    event.preventDefault();
     event.stopPropagation();
-    if (onAddToCart) {
-      onAddToCart(product);
-    }
+  
+    setLocalQuantity((prev) => prev + 1); // Hemen güncelle
+    
     try {
-      await addToCart({
-        productId: product.id,
-        quantity: quantity + 1,
-      }).unwrap();
-      setQuantity(quantity + 1);
+      await addToCart({ productId: product.id, quantity: 1 }).unwrap();
     } catch (error) {
       console.error("Failed to add to cart:", error);
+      setLocalQuantity((prev) => prev - 1); // Başarısız olursa geri al
     }
   };
+  
+  
 
-  const handleQuantityIncrease = async (event) => {
+  const handleQuantityIncrease = (event) => {
+    event.preventDefault();
     event.stopPropagation();
-    try {
-      await updateCartItem({
-        productId: product.id,
-        quantity: quantity + 1,
-      }).unwrap();
-      setQuantity(quantity + 1);
-    } catch (error) {
-      console.error("Failed to update cart item:", error);
-    }
-  };
-
-  const handleQuantityDecrease = async (event) => {
-    event.stopPropagation();
-    if (quantity > 0) {
-      try {
-        await updateCartItem({
-          productId: product.id,
-          quantity: quantity - 1,
-        }).unwrap();
-        setQuantity(quantity - 1);
-      } catch (error) {
+  
+    setLocalQuantity((prev) => prev + 1); // UI hemen güncellensin
+  
+    updateCartItem({ productId: product.id, quantity: localQuantity + 1 })
+      .unwrap()
+      .catch((error) => {
         console.error("Failed to update cart item:", error);
-      }
+        setLocalQuantity((prev) => prev - 1);
+      });
+  };
+  
+
+  const handleQuantityDecrease = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  
+    if (localQuantity <= 1) {
+      // Ürün miktarı 1 ise tamamen kaldır
+      setLocalQuantity(0);
+      removeFromCart({ productId: product.id })
+        .unwrap()
+        .catch((error) => {
+          console.error("Failed to remove from cart:", error);
+          setLocalQuantity(1); // Hata olursa geri al
+        });
+    } else {
+      // Ürün miktarını azalt
+      setLocalQuantity((prev) => prev - 1);
+      updateCartItem({ productId: product.id, quantity: localQuantity - 1 })
+        .unwrap()
+        .catch((error) => {
+          console.error("Failed to update cart item:", error);
+          setLocalQuantity((prev) => prev + 1); // Hata olursa geri al
+        });
     }
   };
+  
 
   const handleToggleFavorite = async (event) => {
+    event.preventDefault();
     event.stopPropagation();
     if (isLoading) return;
 
@@ -106,7 +144,7 @@ const ProductCard = ({
           setLocalIsFavorite(true);
         }
       }
-      // Favori durumu değiştikten SONRA refetch yapın
+      // Refetch after changing favorite status
       await refetch();
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
@@ -153,7 +191,7 @@ const ProductCard = ({
           )}
           {showAddToCart && (
             <>
-              {quantity > 0 ? (
+              {localQuantity > 0 ? (
                 <div className={styles.quantityControls}>
                   <button
                     onClick={handleQuantityDecrease}
@@ -170,7 +208,7 @@ const ProductCard = ({
                       ></path>
                     </svg>
                   </button>
-                  <span>{quantity}</span>
+                  <span>{localQuantity}</span>
                   <button
                     onClick={handleQuantityIncrease}
                     className={styles.quantityBtn}

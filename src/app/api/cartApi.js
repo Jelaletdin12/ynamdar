@@ -4,6 +4,13 @@ export const cartApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCart: builder.query({
       query: () => `/carts`,
+      providesTags: ["cartItems"],
+      // Use polling with a reasonable interval instead of constantly refetching
+      pollingInterval: 5000, // Poll every 30 seconds
+      refetchOnMountOrArgChange: true, // Refetch when component mounts or query args change
+      // Minimize refetches for other window events
+      refetchOnFocus: false, 
+      refetchOnReconnect: true,
       transformResponse: (response) => {
         // Check if response is HTML (starts with <!DOCTYPE or <html)
         if (
@@ -57,6 +64,17 @@ export const cartApi = baseApi.injectEndpoints({
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }),
+      // Use pessimistic updates for data integrity
+      invalidatesTags: ["cartItems"],
+      async onQueryStarted({ productId, quantity }, { dispatch, queryFulfilled }) {
+        try {
+          // Wait for the mutation to complete
+          await queryFulfilled;
+        } catch {
+          // If the mutation fails, we don't need to do anything as our optimistic update 
+          // in the component will handle reverting
+        }
+      },
       transformResponse: (response) => {
         if (typeof response === "object" && response.data) {
           return response;
@@ -85,6 +103,16 @@ export const cartApi = baseApi.injectEndpoints({
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }),
+      invalidatesTags: ["cartItems"],
+      async onQueryStarted({ productId }, { dispatch, queryFulfilled }) {
+        try {
+          // Wait for the mutation to complete
+          await queryFulfilled;
+        } catch {
+          // If the mutation fails, we don't need to do anything as our optimistic update 
+          // in the component will handle reverting
+        }
+      },
       transformResponse: (response) => {
         // Check if response is already parsed
         if (typeof response === "object" && response.data) {
@@ -97,7 +125,7 @@ export const cartApi = baseApi.injectEndpoints({
             const parsed = JSON.parse(response);
             return parsed.data || [];
           } catch (error) {
-            console.error("Failed to parse favorites response:", error);
+            console.error("Failed to parse cart response:", error);
             return [];
           }
         }
@@ -114,6 +142,7 @@ export const cartApi = baseApi.injectEndpoints({
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }),
+      invalidatesTags: ["cartItems"],
       transformResponse: (response) => {
         // Check if response is already parsed
         if (typeof response === "object" && response.data) {
@@ -126,7 +155,7 @@ export const cartApi = baseApi.injectEndpoints({
             const parsed = JSON.parse(response);
             return parsed.data || [];
           } catch (error) {
-            console.error("Failed to parse favorites response:", error);
+            console.error("Failed to parse cart response:", error);
             return [];
           }
         }
@@ -147,6 +176,16 @@ export const cartApi = baseApi.injectEndpoints({
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }),
+      invalidatesTags: ["cartItems"],
+      async onQueryStarted({ productId, quantity }, { dispatch, queryFulfilled }) {
+        try {
+          // Wait for the mutation to complete
+          await queryFulfilled;
+        } catch {
+          // If the mutation fails, we don't need to do anything as our optimistic update 
+          // in the component will handle reverting
+        }
+      },
       transformResponse: (response) => {
         // Check if response is already parsed
         if (typeof response === "object" && response.data) {
@@ -159,7 +198,7 @@ export const cartApi = baseApi.injectEndpoints({
             const parsed = JSON.parse(response);
             return parsed.data || [];
           } catch (error) {
-            console.error("Failed to parse favorites response:", error);
+            console.error("Failed to parse cart response:", error);
             return [];
           }
         }
