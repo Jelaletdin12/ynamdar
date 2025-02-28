@@ -4,56 +4,60 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useLazyGetBrandsQuery } from "../../app/api/brandsApi";
 import styles from "./Brands.module.scss";
 import { CiSearch } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
 const BrandsPage = () => {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [loadedImages, setLoadedImages] = useState({});
-  
+  const navigate = useNavigate();
   // Brands data state
   const [allBrands, setAllBrands] = useState([]);
   const [visibleBrands, setVisibleBrands] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const itemsPerPage = 40;
-  
+
   // Use lazy query to have more control over when to fetch
-  const [getBrands, { data: brandsData, isLoading, error }] = useLazyGetBrandsQuery();
-  
+  const [getBrands, { data: brandsData, isLoading, error }] =
+    useLazyGetBrandsQuery();
+
   // Initial fetch on component mount
   useEffect(() => {
     getBrands({ page: 1, limit: itemsPerPage });
   }, []);
-  
+
   // Process brands data when it arrives
   useEffect(() => {
     if (brandsData) {
       // Add new brands to our collection
-      setAllBrands(prev => {
+      setAllBrands((prev) => {
         // Create a Set of existing IDs for efficient lookup
-        const existingIds = new Set(prev.map(brand => brand.id));
+        const existingIds = new Set(prev.map((brand) => brand.id));
         // Filter out any duplicates and add only new brands
-        const newBrands = brandsData.filter(brand => !existingIds.has(brand.id));
+        const newBrands = brandsData.filter(
+          (brand) => !existingIds.has(brand.id)
+        );
         return [...prev, ...newBrands];
       });
-      
+
       // Update hasMore based on received data length
       if (brandsData.length < itemsPerPage) {
         setHasMore(false);
       }
     }
   }, [brandsData]);
-  
+
   // Process brands for display whenever all brands or search term changes
   useEffect(() => {
     if (allBrands.length > 0) {
       // Filter brands by search term
-      const filteredBrands = searchTerm 
-        ? allBrands.filter(brand => 
+      const filteredBrands = searchTerm
+        ? allBrands.filter((brand) =>
             brand.name.toLowerCase().includes(searchTerm.toLowerCase())
           )
         : allBrands;
-      
+
       // Group brands by type
       const groupedBrands = filteredBrands.reduce((acc, brand) => {
         const type = brand.type || "other";
@@ -63,22 +67,24 @@ const BrandsPage = () => {
         acc[type].push(brand);
         return acc;
       }, {});
-      
+
       // Convert to array format for display
-      const displayGroups = Object.entries(groupedBrands).map(([type, brands]) => ({
-        title: type.charAt(0).toUpperCase() + type.slice(1),
-        brands
-      })).filter(group => group.brands.length > 0);
-      
+      const displayGroups = Object.entries(groupedBrands)
+        .map(([type, brands]) => ({
+          title: type.charAt(0).toUpperCase() + type.slice(1),
+          brands,
+        }))
+        .filter((group) => group.brands.length > 0);
+
       setVisibleBrands(displayGroups);
-      
+
       // Reset hasMore if we're searching, as we're filtering from loaded data
       if (searchTerm) {
         setHasMore(false);
       }
     }
   }, [allBrands, searchTerm]);
-  
+
   const loadMoreBrands = () => {
     // Only fetch more if we're not searching
     if (!searchTerm) {
@@ -95,7 +101,9 @@ const BrandsPage = () => {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
-
+  const handleBrandClick = (brandId) => {
+    navigate(`/brands/${brandId}`); // Change to /brand/ route
+  };
   if (isLoading && page === 1) return <p>{t("common.loading")}</p>;
   if (error) return <p>{t("common.error")}</p>;
 
@@ -115,9 +123,9 @@ const BrandsPage = () => {
         dataLength={allBrands.length}
         next={loadMoreBrands}
         hasMore={hasMore && !searchTerm}
-        loader={<p style={{ textAlign: 'center' }}>{t("common.loading")}</p>}
+        loader={<p style={{ textAlign: "center" }}>{t("common.loading")}</p>}
         endMessage={
-          <p style={{ textAlign: 'center' }}>
+          <p style={{ textAlign: "center" }}>
             <b>{t("common.noMoreResults")}</b>
           </p>
         }
@@ -128,10 +136,16 @@ const BrandsPage = () => {
 
             <div className={styles.brandsGrid}>
               {group.brands.map((brand) => (
-                <div key={brand.id} className={styles.brandCard}>
+                <div
+                  key={brand.id}
+                  className={styles.brandCard}
+                  onClick={() => handleBrandClick(brand.id)}
+                >
                   <div className={styles.imageWrapper}>
                     {!loadedImages[brand.id] && (
-                      <div className={`${styles.placeholder} ${styles.skeleton}`}>
+                      <div
+                        className={`${styles.placeholder} ${styles.skeleton}`}
+                      >
                         {/* Loading placeholder */}
                       </div>
                     )}

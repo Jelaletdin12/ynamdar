@@ -4,6 +4,7 @@ import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Star } from "lucide-react";
+import { debounce } from "lodash";
 import {
   useAddFavoriteMutation,
   useRemoveFavoriteMutation,
@@ -25,6 +26,7 @@ const ProductCard = ({
   isFavorite = false,
 }) => {
   const navigate = useNavigate();
+
   const [addFavorite] = useAddFavoriteMutation();
   const [removeFavorite] = useRemoveFavoriteMutation();
   const { data: favoriteProducts = [], refetch } = useGetFavoritesQuery();
@@ -32,7 +34,6 @@ const ProductCard = ({
   const [localIsFavorite, setLocalIsFavorite] = useState(
     favoriteProducts.some((fav) => fav.product?.id === product.id)
   );
-
   // Get cart data and keep it updated
   const { data: cartData } = useGetCartQuery(undefined, {
     // Use selective cache to reduce unnecessary re-renders
@@ -50,7 +51,7 @@ const ProductCard = ({
   );
   const quantity = cartItem?.quantity || cartItem?.product_quantity || 0;
   const [localQuantity, setLocalQuantity] = useState(0);
-
+  const [pendingQuantity, setPendingQuantity] = useState(localQuantity);
   // Update local quantity when cart data changes
   useEffect(() => {
     if (cartItem) {
@@ -72,59 +73,65 @@ const ProductCard = ({
   const handleAddToCart = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-  
-    setLocalQuantity((prev) => prev + 1); // Hemen güncelle
-    
+
+    // Badge sayısını anında güncelle
+    setLocalQuantity((prev) => prev + 1);
+    setPendingQuantity((prev) => prev + 1); // Hemen güncelle
+
     try {
       await addToCart({ productId: product.id, quantity: 1 }).unwrap();
     } catch (error) {
       console.error("Failed to add to cart:", error);
       setLocalQuantity((prev) => prev - 1); // Başarısız olursa geri al
+      setPendingQuantity((prev) => prev - 1); // Başarısız olursa geri al
     }
   };
-  
-  
+
+  useEffect(() => {
+    const updateCart = debounce(async () => {
+      if (pendingQuantity !== localQuantity) {
+        try {
+          await updateCartItem({
+            productId: product.id,
+            quantity: pendingQuantity,
+          }).unwrap();
+        } catch (error) {
+          console.error("Failed to update cart item:", error);
+        }
+      }
+    }, 500);
+
+    updateCart();
+
+    return () => updateCart.cancel(); 
+  }, [pendingQuantity]);
 
   const handleQuantityIncrease = (event) => {
     event.preventDefault();
     event.stopPropagation();
-  
-    setLocalQuantity((prev) => prev + 1); // UI hemen güncellensin
-  
-    updateCartItem({ productId: product.id, quantity: localQuantity + 1 })
-      .unwrap()
-      .catch((error) => {
-        console.error("Failed to update cart item:", error);
-        setLocalQuantity((prev) => prev - 1);
-      });
+
+    setLocalQuantity((prev) => prev + 1);
+    setPendingQuantity((prev) => prev + 1);
   };
-  
 
   const handleQuantityDecrease = (event) => {
     event.preventDefault();
     event.stopPropagation();
-  
-    if (localQuantity <= 1) {
-      // Ürün miktarı 1 ise tamamen kaldır
+
+    if (pendingQuantity <= 1) {
+      setPendingQuantity(0);
       setLocalQuantity(0);
       removeFromCart({ productId: product.id })
         .unwrap()
-        .catch((error) => {
-          console.error("Failed to remove from cart:", error);
-          setLocalQuantity(1); // Hata olursa geri al
+        .catch(() => {
+          setLocalQuantity(1);
+          setPendingQuantity(1);
         });
     } else {
-      // Ürün miktarını azalt
       setLocalQuantity((prev) => prev - 1);
-      updateCartItem({ productId: product.id, quantity: localQuantity - 1 })
-        .unwrap()
-        .catch((error) => {
-          console.error("Failed to update cart item:", error);
-          setLocalQuantity((prev) => prev + 1); // Hata olursa geri al
-        });
+      setPendingQuantity((prev) => prev - 1);
     }
   };
-  
 
   const handleToggleFavorite = async (event) => {
     event.preventDefault();

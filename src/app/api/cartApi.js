@@ -9,7 +9,7 @@ export const cartApi = baseApi.injectEndpoints({
       pollingInterval: 5000, // Poll every 30 seconds
       refetchOnMountOrArgChange: true, // Refetch when component mounts or query args change
       // Minimize refetches for other window events
-      refetchOnFocus: false, 
+      refetchOnFocus: false,
       refetchOnReconnect: true,
       transformResponse: (response) => {
         // Check if response is HTML (starts with <!DOCTYPE or <html)
@@ -66,12 +66,15 @@ export const cartApi = baseApi.injectEndpoints({
       }),
       // Use pessimistic updates for data integrity
       invalidatesTags: ["cartItems"],
-      async onQueryStarted({ productId, quantity }, { dispatch, queryFulfilled }) {
+      async onQueryStarted(
+        { productId, quantity },
+        { dispatch, queryFulfilled }
+      ) {
         try {
           // Wait for the mutation to complete
           await queryFulfilled;
         } catch {
-          // If the mutation fails, we don't need to do anything as our optimistic update 
+          // If the mutation fails, we don't need to do anything as our optimistic update
           // in the component will handle reverting
         }
       },
@@ -109,7 +112,7 @@ export const cartApi = baseApi.injectEndpoints({
           // Wait for the mutation to complete
           await queryFulfilled;
         } catch {
-          // If the mutation fails, we don't need to do anything as our optimistic update 
+          // If the mutation fails, we don't need to do anything as our optimistic update
           // in the component will handle reverting
         }
       },
@@ -176,36 +179,15 @@ export const cartApi = baseApi.injectEndpoints({
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }),
-      invalidatesTags: ["cartItems"],
       async onQueryStarted({ productId, quantity }, { dispatch, queryFulfilled }) {
         try {
-          // Wait for the mutation to complete
           await queryFulfilled;
         } catch {
-          // If the mutation fails, we don't need to do anything as our optimistic update 
-          // in the component will handle reverting
+          console.error("API update failed, retrying...");
         }
-      },
-      transformResponse: (response) => {
-        // Check if response is already parsed
-        if (typeof response === "object" && response.data) {
-          return response.data;
-        }
-
-        // If response is a string, try to parse it
-        if (typeof response === "string") {
-          try {
-            const parsed = JSON.parse(response);
-            return parsed.data || [];
-          } catch (error) {
-            console.error("Failed to parse cart response:", error);
-            return [];
-          }
-        }
-
-        return [];
       },
     }),
+    
   }),
 });
 

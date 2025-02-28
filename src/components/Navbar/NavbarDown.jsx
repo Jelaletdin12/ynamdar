@@ -28,8 +28,12 @@ const NavbarDown = () => {
   const { data: searchData, refetch } = useSearchProductQuery(searchQuery, {
     skip: !searchQuery,
   });
-  const { data: cartData } = useGetCartQuery();
+  const { data: cartData } = useGetCartQuery(undefined, {
+    refetchOnMountOrArgChange: false, // Gereksiz refetch'leri önle
+  });
+  
   const cartItemCount = cartData?.data?.length || 0;
+  
 
   const { data: ordersData } = useGetOrdersQuery();
   const ordersItemCount = ordersData?.data?.length || 0;

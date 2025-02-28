@@ -34,10 +34,15 @@ export const brandsApi = baseApi.injectEndpoints({
       transformResponse: (response) => response.data || response,
     }),
     getBrandProducts: builder.query({
-      query: (brandId) => `/brands/${brandId}/products`,
-      transformResponse: (response) => response.data || response,
+      query: (brandId) => {
+
+        return `/brands/${brandId}/products`;
+      },
+      transformResponse: (response) => {
+        return response.data || response;
+      },
     }),
   }),
 });
 
-export const { useGetBrandsQuery, useLazyGetBrandsQuery, useGetBrandDetailsQuery } = brandsApi;
+export const { useGetBrandsQuery, useLazyGetBrandsQuery, useGetBrandDetailsQuery, useGetBrandProductsQuery } = brandsApi;

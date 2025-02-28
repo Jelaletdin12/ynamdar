@@ -33,6 +33,7 @@ export default function Router() {
       children: [
         { path: "/", element: <Home /> },
         { path: "/brands", element: <BrandsPage /> },
+        { path: "/brands/:brandId", element: <Category /> },
         { path: "/cart", element: <CartPage /> },
         { path: "/wishlist", element: <WishList /> },
         { path: "/category/:categoryId", element: <Category /> },
