@@ -33,11 +33,11 @@
     font-size: 12px;
   }
 }
-.rating{
+.rating {
   display: flex;
   align-items: center;
   gap: 5px;
-  svg{
+  svg {
     fill: #facc15;
     color: #facc15;
   }
@@ -219,4 +219,22 @@
     min-height: 33px;
     height: 36px;
   }
+}
+.outOfStock {
+  background-color: #ff4d4f;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modalButton {
+  // Style for modal buttons
+  padding: 6px 15px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }

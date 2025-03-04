@@ -27,15 +27,18 @@ const CategoryPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
+  // Price sorting state
+  const [priceSort, setPriceSort] = useState("none");
+
   // Search related data
   const searchResults = location.state?.searchData?.data || [];
   const searchQuery = location.state?.searchQuery || null;
-  
+
   // Get categories data
   const { data: categoriesData } = useGetCategoriesQuery("tree");
   const [selectedCategory, setSelectedCategory] = useState(null);
-  
+
   // API queries with conditional skipping
   const {
     data: categoryProducts = [],
@@ -72,7 +75,7 @@ const CategoryPage = () => {
   // Helper function to find category by ID
   const findCategoryById = (categories, id) => {
     if (!categories) return null;
-    
+
     for (const category of categories) {
       if (category.id === id) return category;
       if (category.children) {
@@ -86,7 +89,7 @@ const CategoryPage = () => {
   // Determine if category is a subcategory
   const isSubCategory = useMemo(() => {
     if (!categoriesData?.data || !categoryId) return false;
-    
+
     const checkIsSubCategory = (categories, targetId) => {
       for (const category of categories) {
         if (category.children) {
@@ -101,7 +104,7 @@ const CategoryPage = () => {
       }
       return false;
     };
-    
+
     return checkIsSubCategory(categoriesData.data, parseInt(categoryId));
   }, [categoriesData, categoryId]);
 
@@ -117,29 +120,57 @@ const CategoryPage = () => {
   }, [categoriesData, categoryId]);
 
   // Loading and error states
-  const isLoading = categoryLoading || collectionLoading || 
-                    collectionProductsLoading || brandProductsLoading;
-  
-  const hasError = categoryError || collectionError || 
-                   collectionProductsError || brandProductsError;
+  const isLoading =
+    categoryLoading ||
+    collectionLoading ||
+    collectionProductsLoading ||
+    brandProductsLoading;
 
-  // Determine which products to display
+  const hasError =
+    categoryError ||
+    collectionError ||
+    collectionProductsError ||
+    brandProductsError;
+
+  // Determine which products to display with sorting applied
   const products = useMemo(() => {
-    if (searchQuery) return searchResults;
-    if (brandId) return brandProducts || [];
-    if (categoryId) return categoryProducts || [];
-    return collectionProducts?.data || [];
+    let productsList = [];
+
+    // Get base products list
+    if (searchQuery) productsList = [...searchResults];
+    else if (brandId) productsList = [...(brandProducts || [])];
+    else if (categoryId) productsList = [...(categoryProducts || [])];
+    else productsList = [...(collectionProducts?.data || [])];
+
+    // Apply sorting
+    if (priceSort === "lowToHigh") {
+      return [...productsList].sort(
+        (a, b) => (a.price_amount || 0) - (b.price_amount || 0)
+      );
+    } else if (priceSort === "highToLow") {
+      return [...productsList].sort(
+        (a, b) => (b.price_amount || 0) - (a.price_amount || 0)
+      );
+    }
+
+    return productsList;
   }, [
-    searchQuery, 
-    searchResults, 
-    brandId, 
-    brandProducts, 
-    categoryId, 
-    categoryProducts, 
-    collectionProducts
+    searchQuery,
+    searchResults,
+    brandId,
+    brandProducts,
+    categoryId,
+    categoryProducts,
+    collectionProducts,
+    priceSort, 
   ]);
 
   const totalItems = products.length || 0;
+
+  // Handle price sort change
+  const handlePriceSortChange = (sortType) => {
+    setPriceSort(sortType);
+  };
 
   // Event handlers
   const handleAddToCart = (product) => {
@@ -160,7 +191,8 @@ const CategoryPage = () => {
 
   // Generate breadcrumbs for subcategories
   const renderBreadcrumbs = () => {
-    if (!isSubCategory || !categoriesData?.data || !selectedCategory) return null;
+    if (!isSubCategory || !categoriesData?.data || !selectedCategory)
+      return null;
 
     const breadcrumbs = [];
     let currentCategory = selectedCategory;
@@ -204,8 +236,9 @@ const CategoryPage = () => {
 
   // Display subcategories section
   const renderSubCategories = () => {
-    if (!selectedCategory?.children || searchQuery || isSubCategory) return null;
-    
+    if (!selectedCategory?.children || searchQuery || isSubCategory)
+      return null;
+
     return (
       <div className={styles.subCategories}>
         {selectedCategory.children.map((subCategory) => (
@@ -236,11 +269,14 @@ const CategoryPage = () => {
           {totalItems} {t("category.items")}
         </button>
         <BrandSidebar />
-        <FilterSidebar />
+        <FilterSidebar
+          onPriceSortChange={handlePriceSortChange}
+          currentPriceSort={priceSort}
+        />
       </div>
-      
+
       {renderSubCategories()}
-      
+
       <div className={styles.Container}>
         <aside className={styles.sidebar}>
           {!searchQuery && selectedCategory?.children && !isSubCategory && (
@@ -261,17 +297,32 @@ const CategoryPage = () => {
           <div className={styles.filterSection}>
             <h3>{t("category.composition")}</h3>
             <label>
-              <input type="radio" name="sort" />
+              <input
+                type="radio"
+                name="sort"
+                checked={priceSort === "none"}
+                onChange={() => handlePriceSortChange("none")}
+              />
               <span className={styles.customRadio}></span>
               {t("category.neverMind")}
             </label>
             <label>
-              <input type="radio" name="sort" />
+              <input
+                type="radio"
+                name="sort"
+                checked={priceSort === "lowToHigh"}
+                onChange={() => handlePriceSortChange("lowToHigh")}
+              />
               <span className={styles.customRadio}></span>
               {t("category.From_cheap_to_expensive")}
             </label>
             <label>
-              <input type="radio" name="sort" />
+              <input
+                type="radio"
+                name="sort"
+                checked={priceSort === "highToLow"}
+                onChange={() => handlePriceSortChange("highToLow")}
+              />
               <span className={styles.customRadio}></span>
               {t("category.From_expensive_to_cheap")}
             </label>

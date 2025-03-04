@@ -7,7 +7,7 @@ const { Search } = Input;
 import DropdownMenu from "../CategoryDropdown/index";
 import LoginModal from "../LogIn/index";
 import SignUpModal from "../SignUp/index";
-import { data, Link, useNavigate } from "react-router-dom";
+import {  Link, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import tm from "../../assets/tm.png";
 import ru from "../../assets/ru.png";
@@ -29,18 +29,16 @@ const NavbarDown = () => {
     skip: !searchQuery,
   });
   const { data: cartData } = useGetCartQuery(undefined, {
-    refetchOnMountOrArgChange: false, // Gereksiz refetch'leri önle
+    refetchOnMountOrArgChange: false, 
   });
-  
+
   const cartItemCount = cartData?.data?.length || 0;
-  
 
   const { data: ordersData } = useGetOrdersQuery();
   const ordersItemCount = ordersData?.data?.length || 0;
 
   const { data: favoritesData } = useGetFavoritesQuery();
-  const favoritesItemCount = favoritesData?.length || 0; 
-  
+  const favoritesItemCount = favoritesData?.length || 0;
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -61,29 +59,49 @@ const NavbarDown = () => {
     i18n.changeLanguage(langCode);
     localStorage.setItem("preferredLanguage", langCode);
   };
-  const menuItems = [
-    { key: "tm", img: tm, label: t("navbar.languages.tm") },
-    { key: "ru", img: ru, label: t("navbar.languages.ru") },
-    { key: "en", img: en, label: t("navbar.languages.en") },
-  ];
 
-  const globeMenu = (
-    <Menu
-      items={menuItems.map((item) => ({
-        key: item.key,
-        label: (
-          <span onClick={() => changeLanguage(item.key)}>
-            <img
-              src={item.img}
-              alt={item.label}
-              style={{ width: "20px", marginRight: "10px" }}
-            />
-            {item.label}
-          </span>
-        ),
-      }))}
-    />
-  );
+
+  const items = [
+    {
+      key: "tm",
+      label: (
+        <div onClick={() => changeLanguage("tm")}>
+          <img
+            src={tm}
+            alt={t("navbar.languages.tm")}
+            style={{ width: "20px", marginRight: "10px" }}
+          />
+          {t("navbar.languages.tm")}
+        </div>
+      ),
+    },
+    {
+      key: "ru",
+      label: (
+        <div onClick={() => changeLanguage("ru")}>
+          <img
+            src={ru}
+            alt={t("navbar.languages.ru")}
+            style={{ width: "20px", marginRight: "10px" }}
+          />
+          {t("navbar.languages.ru")}
+        </div>
+      ),
+    },
+    {
+      key: "en",
+      label: (
+        <div onClick={() => changeLanguage("en")}>
+          <img
+            src={en}
+            alt={t("navbar.languages.en")}
+            style={{ width: "20px", marginRight: "10px" }}
+          />
+          {t("navbar.languages.en")}
+        </div>
+      ),
+    },
+  ];
 
   return (
     <header className={styles.navbar}>
@@ -134,10 +152,17 @@ const NavbarDown = () => {
               />
             </li>
             <li>
-              <Dropdown menu={globeMenu} trigger={["click"]}>
-                <button className={styles.navButton}>
+              <Dropdown
+                menu={{ items }}
+                placement="bottomLeft"
+                trigger={["click"]}
+              >
+                <span
+                  className={styles.navButton}
+                  style={{ cursor: "pointer" }}
+                >
                   <FaGlobe />
-                </button>
+                </span>
               </Dropdown>
             </li>
             <div className={styles.stick}></div>
@@ -152,25 +177,25 @@ const NavbarDown = () => {
             <div className={styles.stick}></div>
             <li>
               <Link to={"/orders"}>
-              <Badge
+                <Badge
                   style={{ marginRight: "4px" }}
                   count={ordersItemCount}
                   offset={[10, 0]}
-                  showZero
+                  
                 >
-                <button className={styles.navButton}>
-                  <svg
-                    data-name="Layer 1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 28.35 28.35"
-                    data-v-5c1608dd=""
-                  >
-                    <path
-                      d="M24.4,16a2.37,2.37,0,0,0-.94-.59V14.22h0v-2.7h0V9a2.27,2.27,0,0,0-.29-1.11L21.72,5.33a2.27,2.27,0,0,0-2-1.15H11A2.27,2.27,0,0,0,9,5.33L7.52,7.91A2.38,2.38,0,0,0,7.23,9v2.5h0v2h0v.81H4.68a1.46,1.46,0,0,0-1.45,1.46v6.86a1.45,1.45,0,0,0,1.45,1.45H7.2a1.46,1.46,0,0,0,1.28-.78h1.68a2.69,2.69,0,0,1,.57.06l3.55.71a4.09,4.09,0,0,0,.85.09,4.24,4.24,0,0,0,.94-.11l4.64-1,3.65-3.5a2.43,2.43,0,0,0,0-3.49Zm-7.17-1.14-.06,0-3.89-.63a4.34,4.34,0,0,0-2.88.55l-1.75.8V11.52a1,1,0,0,1,1-1H21a1,1,0,0,1,1,1v2h0v1.87a2.45,2.45,0,0,0-.94.5L19,17.68c0-.11,0-.23,0-.36A2.64,2.64,0,0,0,17.23,14.89ZM20.49,6,21.93,8.6A.78.78,0,0,1,22,9v.29a2.51,2.51,0,0,0-1-.23h-5V5.59h3.7A.86.86,0,0,1,20.49,6ZM8.76,8.6,10.2,6A.86.86,0,0,1,11,5.59h3.69V9.08h-5a2.51,2.51,0,0,0-1,.23V9A.78.78,0,0,1,8.76,8.6Zm-1.53,14s0,0,0,0H4.68a0,0,0,0,1,0,0V15.78a0,0,0,0,1,0,0H7.2s0,0,0,0v6.86ZM23.39,18.5,20,21.73l-4.26,1a2.85,2.85,0,0,1-1.2,0L11,22a4.8,4.8,0,0,0-.85-.08H8.65V17.14L11,16.06l.08,0a2.87,2.87,0,0,1,2-.38l3.75.6a1.21,1.21,0,0,1,.76,1.08c0,.44,0,1.18-1.77,1.18H14.54a.7.7,0,0,0-.7.71.7.7,0,0,0,.7.7h4L22,17A1,1,0,0,1,23.4,17a1,1,0,0,1,.3.74A1,1,0,0,1,23.39,18.5Z"
+                  <button className={styles.navButton}>
+                    <svg
+                      data-name="Layer 1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 28.35 28.35"
                       data-v-5c1608dd=""
-                    ></path>
-                  </svg>
-                </button>
+                    >
+                      <path
+                        d="M24.4,16a2.37,2.37,0,0,0-.94-.59V14.22h0v-2.7h0V9a2.27,2.27,0,0,0-.29-1.11L21.72,5.33a2.27,2.27,0,0,0-2-1.15H11A2.27,2.27,0,0,0,9,5.33L7.52,7.91A2.38,2.38,0,0,0,7.23,9v2.5h0v2h0v.81H4.68a1.46,1.46,0,0,0-1.45,1.46v6.86a1.45,1.45,0,0,0,1.45,1.45H7.2a1.46,1.46,0,0,0,1.28-.78h1.68a2.69,2.69,0,0,1,.57.06l3.55.71a4.09,4.09,0,0,0,.85.09,4.24,4.24,0,0,0,.94-.11l4.64-1,3.65-3.5a2.43,2.43,0,0,0,0-3.49Zm-7.17-1.14-.06,0-3.89-.63a4.34,4.34,0,0,0-2.88.55l-1.75.8V11.52a1,1,0,0,1,1-1H21a1,1,0,0,1,1,1v2h0v1.87a2.45,2.45,0,0,0-.94.5L19,17.68c0-.11,0-.23,0-.36A2.64,2.64,0,0,0,17.23,14.89ZM20.49,6,21.93,8.6A.78.78,0,0,1,22,9v.29a2.51,2.51,0,0,0-1-.23h-5V5.59h3.7A.86.86,0,0,1,20.49,6ZM8.76,8.6,10.2,6A.86.86,0,0,1,11,5.59h3.69V9.08h-5a2.51,2.51,0,0,0-1,.23V9A.78.78,0,0,1,8.76,8.6Zm-1.53,14s0,0,0,0H4.68a0,0,0,0,1,0,0V15.78a0,0,0,0,1,0,0H7.2s0,0,0,0v6.86ZM23.39,18.5,20,21.73l-4.26,1a2.85,2.85,0,0,1-1.2,0L11,22a4.8,4.8,0,0,0-.85-.08H8.65V17.14L11,16.06l.08,0a2.87,2.87,0,0,1,2-.38l3.75.6a1.21,1.21,0,0,1,.76,1.08c0,.44,0,1.18-1.77,1.18H14.54a.7.7,0,0,0-.7.71.7.7,0,0,0,.7.7h4L22,17A1,1,0,0,1,23.4,17a1,1,0,0,1,.3.74A1,1,0,0,1,23.39,18.5Z"
+                        data-v-5c1608dd=""
+                      ></path>
+                    </svg>
+                  </button>
                 </Badge>
               </Link>
             </li>
@@ -181,7 +206,7 @@ const NavbarDown = () => {
                   style={{ marginRight: "4px" }}
                   count={favoritesItemCount}
                   offset={[10, 0]}
-                  showZero
+                  
                 >
                   <button className={styles.navButton}>
                     <svg
@@ -208,7 +233,7 @@ const NavbarDown = () => {
             <div className={styles.stick}></div>
             <li>
               <Link to={"/cart"}>
-                <Badge count={cartItemCount} offset={[10, 0]} showZero>
+                <Badge count={cartItemCount} offset={[10, 0]}>
                   <button className={styles.navButton}>
                     <svg
                       viewBox="0 0 19 16"

@@ -1,6 +1,6 @@
 .termsContainer {
     max-width: 1366px;
-    margin: 0 auto;
+    margin: 30px 30px;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -48,8 +48,8 @@
   
   @media (max-width: 768px) {
     .termsContainer {
-      padding: 1.5rem;
-      margin: 0 1rem;
+      padding: 0.5rem;
+      margin: 15px;
     }
   
     .title {
@@ -60,5 +60,8 @@
       p {
         font-size: 0.95rem;
       }
+    }
+    .termsList{
+      padding: 0px 15px 10px 15px;
     }
   }

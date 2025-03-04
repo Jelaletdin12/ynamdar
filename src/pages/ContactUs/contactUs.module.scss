@@ -7,6 +7,11 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 15px;
   margin-top: 15px;
+  @media screen and (max-width: 520px) {
+    margin: 15px;
+    margin-bottom: 30px;
+    
+  }
 }
 
 .contactInfo {
@@ -68,6 +73,7 @@
 .phoneInputWrapper {
   display: flex;
   align-items: center;
+  width: 100%;
 
   .phonePrefix {
     padding: 0.75rem;
@@ -76,12 +82,13 @@
     border-right: none;
     border-radius: 4px 0 0 4px;
     color: #666;
-    width: 100%;
+    width: auto;
   }
 
   .phoneInput {
     border-left: none;
     border-radius: 0 4px 4px 0;
+    width: 100%;
   }
 }
 

@@ -6,6 +6,7 @@ export default {
     brands: "Brendler",
     search: "Haryt ady boýunça gözleg...",
     cart: "Sebet",
+    home: "Baş sahypa",
     languages: {
       tm: "Türkmençe",
       ru: "Русский",
@@ -24,11 +25,15 @@ export default {
     confirmDelete: "Bu harytlary sebetden aýyrmak isleýärsiňizmi?",
     the_Chosen_Ones: "Saýlanan harytlar",
     clearCart: "Sebeti arassalamak",
+    emptyCartTitle: "Sebediňiz boş",
+    emptyCartMessage: "Sebediňize entek hiç zat goşmadyňyz.",
+    continueShopping: "Söwda etmegi dowam etdiriň",
   },
   checkout: {
     paymentMethod: "Töleg görnüşi",
     inCash: "Nagt",
-    payment_in_cash_upon_delivery_of_the_order: "Sargyt gowşurylanda nagt töleg",
+    payment_in_cash_upon_delivery_of_the_order:
+      "Sargyt gowşurylanda nagt töleg",
     paymentTerminal: "Töleg terminaly",
     payment_by_card: "Terminal arkaly töleg",
     cashback: "Keşbek galyndysy",
@@ -46,10 +51,14 @@ export default {
     selectPickupTime: "Almak wagtyny saýlaň",
     today: "Şu gün",
     tomorrow: "Ertir",
-    Delivery_is_carried_out_in_the_cities_of_Ashgabat_Buzmein_and_Anau: "Eltip bermek hyzmaty Aşgabat, Büzmeýin we Änew şäherlerinde amala aşyrylýar",
-    The_minimum_order_amount_must_be_at_least_50_manat_for_orders_over_150_manat_delivery_is_free: "Iň az sargyt möçberi 50 manat bolmaly, 150 manatdan ýokary sargytlar üçin eltip bermek mugt",
-    After_you_place_an_order_on_the_website_the_operator_will_call_you_to_confirm_the_order_for_regular_customers_confirmation_is_carried_out_automatically_at_their_request: "Web saýtda sargyt edeniňizden soň, operator size jaň edip, sargydy tassyklar (hemişelik müşderiler üçin tassyklama olaryň haýyşy boýunça awtomatiki ýerine ýetirilýär)",
-    Payment_is_made_after_you_check_and_accept_the_order_The_amount_of_your_payment_is_indicated_on_the_delivery_persons_payment_document_Payment_is_made_in_cash_and_by_card_in_national_currency_Accepted_and_paid_goods_are_not_subject_to_return: "Töleg sargyt barlanandan we kabul edilenden soň amala aşyrylýar. Tölemegiňiz zerur bolan pul möçberi eltip beriji işgäriň töleg resminamasynda görkezilýär. Töleg milli walýutada nagt we kart bilen amala aşyrylýar. Kabul edilen we tölenen harytlar yzyna gaýtarylyp bilinmez",
+    Delivery_is_carried_out_in_the_cities_of_Ashgabat_Buzmein_and_Anau:
+      "Eltip bermek hyzmaty Aşgabat, Büzmeýin we Änew şäherlerinde amala aşyrylýar",
+    The_minimum_order_amount_must_be_at_least_50_manat_for_orders_over_150_manat_delivery_is_free:
+      "Iň az sargyt möçberi 50 manat bolmaly, 150 manatdan ýokary sargytlar üçin eltip bermek mugt",
+    After_you_place_an_order_on_the_website_the_operator_will_call_you_to_confirm_the_order_for_regular_customers_confirmation_is_carried_out_automatically_at_their_request:
+      "Web saýtda sargyt edeniňizden soň, operator size jaň edip, sargydy tassyklar (hemişelik müşderiler üçin tassyklama olaryň haýyşy boýunça awtomatiki ýerine ýetirilýär)",
+    Payment_is_made_after_you_check_and_accept_the_order_The_amount_of_your_payment_is_indicated_on_the_delivery_persons_payment_document_Payment_is_made_in_cash_and_by_card_in_national_currency_Accepted_and_paid_goods_are_not_subject_to_return:
+      "Töleg sargyt barlanandan we kabul edilenden soň amala aşyrylýar. Tölemegiňiz zerur bolan pul möçberi eltip beriji işgäriň töleg resminamasynda görkezilýär. Töleg milli walýutada nagt we kart bilen amala aşyrylýar. Kabul edilen we tölenen harytlar yzyna gaýtarylyp bilinmez",
   },
   common: {
     yes: "Hawa",
@@ -62,10 +71,15 @@ export default {
     search: "Gözleg",
     confirm: "Tassyklamak",
     Are_you_sure_you_want_to_empty_the_cart: "Sebeti boşatmak isleýärsiňizmi?",
-    Do_you_really_want_to_remove_the_item_from_the_cart: "Harytlary sebetden aýyrmak isleýärsiňizmi?",
-    Are_you_sure_you_want_to_close_the_modal: "Penjireni ýapmak isleýärsiňizmi?",
+    Do_you_really_want_to_remove_the_item_from_the_cart:
+      "Harytlary sebetden aýyrmak isleýärsiňizmi?",
+    Are_you_sure_you_want_to_close_the_modal:
+      "Penjireni ýapmak isleýärsiňizmi?",
+    warning: "Dykkat!",
+    not_enough_stock: "Ammarda ýeterlik haryt ýok!",
+    ok: "OK",
   },
-  search:{
+  search: {
     resultsFor: "Gozleg netijesi",
     noResults: "Haryt tapylmady",
   },
@@ -85,6 +99,7 @@ export default {
     confirmPassword: "Paroly tassyklaň",
     telephone: "Telefon",
     keyword: "Açar söz",
+    profile: "Profil",
   },
   order: {
     orderDate: "Sargyt senesi",
@@ -127,7 +142,11 @@ export default {
     similarProducts: "Meňzeş harytlar",
   },
   wishtList: {
-    likedProducts: "Halanan harytlar",
+    likedProducts: "Halanlarym",
+    emptyWishListTitle: "Siziň halan harytlaryňyzyň sanawy boş",
+    emptyWishListMessage:
+      "Halanan harytlar sanawyna haryt goşmak üçin harytlary saýlaň",
+    continueShopping: "Söwda etmegi dowam etdiriň",
   },
   footer: {
     market: "Market",

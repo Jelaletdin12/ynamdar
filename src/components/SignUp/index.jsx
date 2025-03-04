@@ -1,44 +1,54 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Modal, Input, Button } from "antd";
+import { Modal, Input, Button, message } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import IMask from "imask";
 import styles from "./SignUpModal.module.scss";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
+import {
+  useRegisterMutation,
+  useVerifyTokenMutation,
+} from "../../app/api/authApi";
 
-const SignUpModal = ({isVisible: propIsVisible, onClose: propOnClose}) => {
+const SignUpModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
   const [internalIsVisible, setInternalIsVisible] = useState(false);
   const { t, i18n } = useTranslation();
   const isControlled = propIsVisible !== undefined;
   const isVisible = isControlled ? propIsVisible : internalIsVisible;
   const [activeTab, setActiveTab] = useState("phone");
-  
+
   const [phone, setPhone] = useState("+993");
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [messageTitle, setMessageTitle] = useState("");
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
   const phoneInputRef = useRef(null);
   const maskRef = useRef(null);
 
+  // Verification code related states
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
 
-useEffect(() => {
+  // API mutations
+  const [register, { isLoading: isRegistering }] = useRegisterMutation();
+  const [verifyToken, { isLoading: isVerifying }] = useVerifyTokenMutation();
+
+  useEffect(() => {
     if (activeTab === "phone" && phoneInputRef.current) {
-      
       const inputElement = phoneInputRef.current.input;
-      
+
       if (inputElement) {
         const maskOptions = {
-          mask: '+{993} 00 000000',
+          mask: "+{993} 00 000000",
           lazy: false,
-          placeholderChar: '_'
+          placeholderChar: "_",
         };
-        
+
         maskRef.current = IMask(inputElement, maskOptions);
         maskRef.current.value = phone;
-        
-        maskRef.current.on('accept', () => {
+
+        maskRef.current.on("accept", () => {
           setPhone(maskRef.current.value);
         });
 
@@ -58,11 +68,9 @@ useEffect(() => {
     }
   };
 
-
   const handleCancel = () => {
     if (hasChanges) {
       Modal.confirm({
-      
         title: t("common.Are_you_sure_you_want_to_close_the_modal"),
         icon: <ExclamationCircleOutlined />,
         okText: t("common.yes"),
@@ -79,11 +87,13 @@ useEffect(() => {
   };
 
   const resetForm = () => {
-    setPhone("+993 ");  
+    setPhone("+993");
     setEmail("");
-    setMessage("");
-    setMessageTitle("");
+    setAddress("");
+    setName("");
     setHasChanges(false);
+    setShowVerification(false);
+    setVerificationCode("");
   };
 
   const handleInputChange = (type, value) => {
@@ -95,16 +105,17 @@ useEffect(() => {
       case "email":
         setEmail(value);
         break;
-      case "message":
-        setMessage(value);
+      case "name":
+        setName(value);
         break;
-      case "messageTitle":
-        setMessageTitle(value);
+      case "address":
+        setAddress(value);
         break;
       default:
         break;
     }
   };
+
   const closeModal = () => {
     if (isControlled) {
       propOnClose?.();
@@ -113,108 +124,125 @@ useEffect(() => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log({
-      type: activeTab,
-      phone,
-      email,
-      message,
-      messageTitle,
-    });
+  // Function to clean the phone number - remove country code and spaces
+  const getCleanPhoneNumber = () => {
+    // Remove the country code (+993) and any spaces/non-digit characters
+    return phone.replace(/^\+993\s?/, "").replace(/\s+/g, "");
   };
+
+  const handleSubmit = async () => {
+    try {
+      const userData = {
+        name: name,
+        address: address,
+      };
+      console.log(userData);
+
+      if (activeTab === "phone") {
+        // Get phone number without the country code
+        const cleanPhone = getCleanPhoneNumber();
+        userData.phone_number = parseInt(cleanPhone, 10);
+      } else {
+        userData.email = email;
+      }
+
+      // Call register API
+      const response = await register(userData).unwrap();
+
+      // If successful, show verification modal
+      if (response) {
+        message.success(t("profile.verification_code_sent"));
+        setShowVerification(true);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      message.error(error?.data?.message || t("common.something_went_wrong"));
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    try {
+      // Get phone number without the country code
+      const cleanPhone = getCleanPhoneNumber();
+
+      // Call verify API
+      const response = await verifyToken({
+        phone_number:
+          activeTab === "phone" ? parseInt(cleanPhone, 10) : undefined,
+        email: activeTab === "email" ? email : undefined,
+        code: verificationCode,
+      }).unwrap();
+
+      if (response?.token) {
+        message.success(t("profile.registration_successful"));
+        closeModal();
+        resetForm();
+      }
+    } catch (error) {
+      console.error("Verification error:", error);
+      message.error(
+        error?.data?.message || t("common.invalid_verification_code")
+      );
+    }
+  };
+
   const handleFocus = (event) => {
     event.target.scrollIntoView({
       behavior: "smooth",
       block: "center",
     });
   };
-  return (
-    <>
-     {!isControlled && (
-      <Button onClick={showModal} className={styles.navButton}>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212">
-          <path
-            id="path"
-            d="M 94.43 101.71 C 104.598 101.712 114.471 98.26 122.422 91.922 C 130.373 85.584 135.939 76.729 138.203 66.816 C 140.467 56.903 139.297 46.51 134.887 37.348 C 130.476 28.187 123.081 20.79 113.921 16.377 C 104.76 11.965 94.367 10.793 84.454 13.055 C 74.541 15.317 65.684 20.881 59.344 28.83 C 53.005 36.78 49.55 46.652 49.55 56.82 C 49.563 68.715 54.299 80.132 62.709 88.544 C 71.119 96.956 82.535 101.694 94.43 101.71 Z M 94.43 25.26 C 101.579 25.258 108.52 27.684 114.111 32.14 C 119.701 36.596 123.615 42.821 125.207 49.79 C 126.799 56.759 125.978 64.067 122.877 70.508 C 119.777 76.95 114.578 82.15 108.137 85.253 C 101.697 88.355 94.39 89.179 87.42 87.589 C 80.45 85.999 74.224 82.087 69.766 76.498 C 65.309 70.91 62.88 63.969 62.88 56.82 C 62.891 48.458 66.22 40.433 72.132 34.519 C 78.044 28.605 86.068 25.273 94.43 25.26 Z"
-            fill="currentColor"
-          ></path>
-          <path
-            id="path_1"
-            d="M 94.43 118.88 C 42.93 118.88 17.86 139.88 7.51 152.41 C 2.684 158.273 0.046 165.636 0.05 173.23 L 0.05 181.32 C 0.055 186.448 2.097 191.37 5.723 194.997 C 9.35 198.623 14.272 200.665 19.4 200.67 L 169.47 200.67 C 174.598 200.665 179.52 198.623 183.147 194.997 C 186.773 191.37 188.815 186.448 188.82 181.32 L 188.82 173.23 C 188.824 165.636 186.186 158.273 181.36 152.41 C 171 139.89 145.94 118.88 94.43 118.88 Z M 175.49 181.32 C 175.49 182.911 174.857 184.438 173.733 185.563 C 172.608 186.687 171.081 187.32 169.49 187.32 L 19.4 187.32 C 17.809 187.32 16.282 186.687 15.157 185.563 C 14.033 184.438 13.4 182.911 13.4 181.32 L 13.4 173.23 C 13.392 168.738 14.948 164.381 17.8 160.91 C 26.67 150.19 48.41 132.21 94.45 132.21 C 140.49 132.21 162.24 150.21 171.11 160.91 C 173.957 164.383 175.513 168.739 175.51 173.23 Z"
-            fill="currentColor"
-          ></path>
-          <path
-            id="path_2"
-            d="M 205.88 48 L 194.16 48 L 194.16 36.27 C 194.216 34.827 193.802 33.405 192.981 32.218 C 192.16 31.03 190.975 30.141 189.605 29.684 C 188.236 29.228 186.754 29.228 185.385 29.684 C 184.015 30.141 182.83 31.03 182.009 32.218 C 181.188 33.405 180.774 34.827 180.83 36.27 L 180.83 48 L 169.11 48 C 167.388 48.067 165.756 48.799 164.561 50.041 C 163.366 51.283 162.698 52.941 162.698 54.665 C 162.698 56.389 163.366 58.047 164.561 59.289 C 165.756 60.531 167.388 61.263 169.11 61.33 L 180.83 61.33 L 180.83 73 C 180.774 74.443 181.188 75.865 182.009 77.052 C 182.83 78.24 184.015 79.129 185.385 79.586 C 186.754 80.042 188.236 80.042 189.605 79.586 C 190.975 79.129 192.16 78.24 192.981 77.052 C 193.802 75.865 194.216 74.443 194.16 73 L 194.16 61.32 L 205.88 61.32 C 207.323 61.376 208.745 60.962 209.932 60.141 C 211.12 59.32 212.009 58.135 212.466 56.765 C 212.922 55.396 212.922 53.914 212.466 52.545 C 212.009 51.175 211.12 49.99 209.932 49.169 C 208.745 48.348 207.323 47.934 205.88 47.99 Z"
-            fill="currentColor"
-          ></path>
-        </svg>
-        {t("profile.registration")}
-      </Button>
-)}
+
+  // Render verification modal
+  const renderVerificationModal = () => {
+    return (
       <Modal
-        title={t("profile.registration")}
-        open={isVisible}
-        onCancel={handleCancel}
+        title={t("profile.verification_code")}
+        open={showVerification}
+        onCancel={() => setShowVerification(false)}
         footer={null}
         className={styles.modalWrapper}
         closeIcon={<span>×</span>}
       >
-        <div className={styles.tabWrapper}>
-          <div
-            className={`${styles.tab} ${
-              activeTab === "phone" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("phone")}
-          >
-           {t("profile.telephone")}
+        <div className={styles.verificationWrapper}>
+          <p>
+            {activeTab === "phone"
+              ? t("profile.verification_code_sent_to_phone", { phone })
+              : t("profile.verification_code_sent_to_email", { email })}
+          </p>
+
+          <div className={styles.inputGroup}>
+            <label>{t("profile.verification_code")}</label>
+            <Input
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              placeholder="123456"
+              maxLength={6}
+            />
           </div>
-          <div
-            className={`${styles.tab} ${
-              activeTab === "email" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("email")}
+
+          <button
+            className={styles.submitButton}
+            onClick={handleVerifyCode}
+            disabled={isVerifying || verificationCode.length < 4}
           >
-               {t("profile.email")}
+            {isVerifying ? t("common.verifying") : t("common.verify")}
+          </button>
+
+          <div className={styles.resendCode}>
+            <Button type="link" onClick={handleSubmit}>
+              {t("profile.resend_code")}
+            </Button>
           </div>
         </div>
+      </Modal>
+    );
+  };
 
-     <div className={styles.inputGroup}>
-           <label>{activeTab === "phone" ? "Telefon" : "Email"}</label>
-           {activeTab === "phone" ? (
-             <Input
-               ref={phoneInputRef}
-               value={phone}
-               onChange={(e) => handleInputChange("phone", e.target.value)}
-               className={styles.phoneInput}
-             />
-           ) : (
-             <Input
-               value={email}
-               onChange={(e) => handleInputChange("email", e.target.value)}
-             />
-           )}
-         </div>
-
-        <div className={styles.inputGroup}>
-          <label>{t("profile.password")}</label>
-          <Input
-           onFocus={handleFocus}
-            value={message}
-            onChange={(e) => handleInputChange("message", e.target.value)}
-          />
-        </div>
-
-        <div className={styles.inputGroup}>
-          <label>{t("profile.confirmPassword")}</label>
-          <Input
-           onFocus={handleFocus}
-            value={messageTitle}
-            onChange={(e) => handleInputChange("messageTitle", e.target.value)}
-          />
-        </div>
-
-        <button className={styles.submitButton} onClick={handleSubmit}>
+  return (
+    <>
+      {!isControlled && (
+        <Button onClick={showModal} className={styles.navButton}>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212">
             <path
               id="path"
@@ -233,6 +261,102 @@ useEffect(() => {
             ></path>
           </svg>
           {t("profile.registration")}
+        </Button>
+      )}
+
+      <Modal
+        title={t("profile.registration")}
+        open={isVisible}
+        onCancel={handleCancel}
+        footer={null}
+        className={styles.modalWrapper}
+        closeIcon={<span>×</span>}
+      >
+        <div className={styles.tabWrapper}>
+          <div
+            className={`${styles.tab} ${
+              activeTab === "phone" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("phone")}
+          >
+            {t("profile.telephone")}
+          </div>
+          <div
+            className={`${styles.tab} ${
+              activeTab === "email" ? styles.active : ""
+            }`}
+            onClick={() => setActiveTab("email")}
+          >
+            {t("profile.email")}
+          </div>
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label>
+            {activeTab === "phone"
+              ? t("profile.telephone")
+              : t("profile.email")}
+          </label>
+          {activeTab === "phone" ? (
+            <Input
+              ref={phoneInputRef}
+              value={phone}
+              onChange={(e) => handleInputChange("phone", e.target.value)}
+              className={styles.phoneInput}
+            />
+          ) : (
+            <Input
+              value={email}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+            />
+          )}
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label>{t("profile.name")}</label>
+          <Input
+            onFocus={handleFocus}
+            value={name}
+            onChange={(e) => handleInputChange("name", e.target.value)}
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label>{t("profile.address")}</label>
+          <Input
+            onFocus={handleFocus}
+            value={address}
+            onChange={(e) => handleInputChange("address", e.target.value)}
+          />
+        </div>
+
+        <button
+          className={styles.submitButton}
+          onClick={handleSubmit}
+          disabled={
+            isRegistering ||
+            (activeTab === "phone" ? !phone || phone.length < 12 : !email) ||
+            !name
+          }
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212">
+            <path
+              id="path"
+              d="M 94.43 101.71 C 104.598 101.712 114.471 98.26 122.422 91.922 C 130.373 85.584 135.939 76.729 138.203 66.816 C 140.467 56.903 139.297 46.51 134.887 37.348 C 130.476 28.187 123.081 20.79 113.921 16.377 C 104.76 11.965 94.367 10.793 84.454 13.055 C 74.541 15.317 65.684 20.881 59.344 28.83 C 53.005 36.78 49.55 46.652 49.55 56.82 C 49.563 68.715 54.299 80.132 62.709 88.544 C 71.119 96.956 82.535 101.694 94.43 101.71 Z M 94.43 25.26 C 101.579 25.258 108.52 27.684 114.111 32.14 C 119.701 36.596 123.615 42.821 125.207 49.79 C 126.799 56.759 125.978 64.067 122.877 70.508 C 119.777 76.95 114.578 82.15 108.137 85.253 C 101.697 88.355 94.39 89.179 87.42 87.589 C 80.45 85.999 74.224 82.087 69.766 76.498 C 65.309 70.91 62.88 63.969 62.88 56.82 C 62.891 48.458 66.22 40.433 72.132 34.519 C 78.044 28.605 86.068 25.273 94.43 25.26 Z"
+              fill="currentColor"
+            ></path>
+            <path
+              id="path_1"
+              d="M 94.43 118.88 C 42.93 118.88 17.86 139.88 7.51 152.41 C 2.684 158.273 0.046 165.636 0.05 173.23 L 0.05 181.32 C 0.055 186.448 2.097 191.37 5.723 194.997 C 9.35 198.623 14.272 200.665 19.4 200.67 L 169.47 200.67 C 174.598 200.665 179.52 198.623 183.147 194.997 C 186.773 191.37 188.815 186.448 188.82 181.32 L 188.82 173.23 C 188.824 165.636 186.186 158.273 181.36 152.41 C 171 139.89 145.94 118.88 94.43 118.88 Z M 175.49 181.32 C 175.49 182.911 174.857 184.438 173.733 185.563 C 172.608 186.687 171.081 187.32 169.49 187.32 L 19.4 187.32 C 17.809 187.32 16.282 186.687 15.157 185.563 C 14.033 184.438 13.4 182.911 13.4 181.32 L 13.4 173.23 C 13.392 168.738 14.948 164.381 17.8 160.91 C 26.67 150.19 48.41 132.21 94.45 132.21 C 140.49 132.21 162.24 150.21 171.11 160.91 C 173.957 164.383 175.513 168.739 175.51 173.23 Z"
+              fill="currentColor"
+            ></path>
+            <path
+              id="path_2"
+              d="M 205.88 48 L 194.16 48 L 194.16 36.27 C 194.216 34.827 193.802 33.405 192.981 32.218 C 192.16 31.03 190.975 30.141 189.605 29.684 C 188.236 29.228 186.754 29.228 185.385 29.684 C 184.015 30.141 182.83 31.03 182.009 32.218 C 181.188 33.405 180.774 34.827 180.83 36.27 L 180.83 48 L 169.11 48 C 167.388 48.067 165.756 48.799 164.561 50.041 C 163.366 51.283 162.698 52.941 162.698 54.665 C 162.698 56.389 163.366 58.047 164.561 59.289 C 165.756 60.531 167.388 61.263 169.11 61.33 L 180.83 61.33 L 180.83 73 C 180.774 74.443 181.188 75.865 182.009 77.052 C 182.83 78.24 184.015 79.129 185.385 79.586 C 186.754 80.042 188.236 80.042 189.605 79.586 C 190.975 79.129 192.16 78.24 192.981 77.052 C 193.802 75.865 194.216 74.443 194.16 73 L 194.16 61.32 L 205.88 61.32 C 207.323 61.376 208.745 60.962 209.932 60.141 C 211.12 59.32 212.009 58.135 212.466 56.765 C 212.922 55.396 212.922 53.914 212.466 52.545 C 212.009 51.175 211.12 49.99 209.932 49.169 C 208.745 48.348 207.323 47.934 205.88 47.99 Z"
+              fill="currentColor"
+            ></path>
+          </svg>
+          {isRegistering ? t("common.processing") : t("profile.registration")}
         </button>
 
         <div className={styles.divider}>{t("common.or")}</div>
@@ -246,6 +370,9 @@ useEffect(() => {
           </button>
         </div>
       </Modal>
+
+      {/* Verification Code Modal */}
+      {renderVerificationModal()}
     </>
   );
 };

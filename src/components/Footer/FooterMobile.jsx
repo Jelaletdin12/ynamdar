@@ -4,11 +4,11 @@ import { Link, useLocation } from "react-router-dom";
 import styles from "./FooterBar.module.scss";
 import { useGetCartQuery } from "../../app/api/cartApi"; // Sepet API
 import { useGetFavoritesQuery } from "../../app/api/favoritesApi"; // Favori API
-
+import { useTranslation } from "react-i18next";
 const FooterBar = () => {
   const location = useLocation();
   
-
+  const { t } = useTranslation();
   const { data: cartData } = useGetCartQuery(); 
   const { data: favoriteData } = useGetFavoritesQuery(); 
 
@@ -19,11 +19,11 @@ const FooterBar = () => {
   const favoriteCount = favoriteData?.length || 0;
 
   const navItems = [
-    { id: 1, icon: <Home />, label: "Baş sahypa", count: 0, path: "/" },
-    { id: 2, icon: <ShoppingBag />, label: "Brendler", count: 0, path: "/brands" },
-    { id: 3, icon: <ShoppingCart />, label: "Sebet", count: cartCount, path: "/cart" },
-    { id: 4, icon: <Heart />, label: "Halanlarym", count: favoriteCount, path: "/wishlist" }, // API'den gelen favori sayısı
-    { id: 5, icon: <User />, label: "Profil", count: 0, path: "/profile" },
+    { id: 1, icon: <Home />, label: t("navbar.home"), count: 0, path: "/" },
+    { id: 2, icon: <ShoppingBag />, label: t("navbar.brands"), count: 0, path: "/brands" },
+    { id: 3, icon: <ShoppingCart />, label: t("navbar.cart"), count: cartCount, path: "/cart" },
+    { id: 4, icon: <Heart />, label: t("wishtList.likedProducts"), count: favoriteCount, path: "/wishlist" }, 
+    { id: 5, icon: <User />, label: t("profile.profile"), count: 0, path: "/profile" },
   ];
 
   return (

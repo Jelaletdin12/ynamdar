@@ -1,6 +1,6 @@
 .aboutUsContainer {
     max-width: 1366px;
-    margin: 0 auto;
+    margin: 30px 30px;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -27,7 +27,7 @@
   @media (max-width: 768px) {
     .aboutUsContainer {
       padding: 1.5rem;
-      margin: 0 1rem;
+      margin: 15px;
     }
   
     .title {
@@ -36,5 +36,6 @@
   
     .paragraph {
       font-size: 0.95rem;
+      padding: 0px 15px 10px 15px;
     }
   }

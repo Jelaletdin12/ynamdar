@@ -10,14 +10,14 @@ const EmptyWishListState = () => {
         <div className={styles.emptyWishListIcon}>
           <img src={EmptyWishList} alt="" />
         </div>
-        <h2>{t("WishList.emptyWishListTitle")}</h2>
-        <p>{t("WishList.emptyWishListMessage")}</p>
+        <h2>{t("wishtList.emptyWishListTitle")}</h2>
+        <p>{t("wishtList.emptyWishListMessage")}</p>
 
         <button
           onClick={() => (window.location.href = "/")}
           className={styles.continueShoppingBtn}
         >
-          {t("WishList.continueShopping")}
+          {t("wishtList.continueShopping")}
         </button>
       </div>
     </div>

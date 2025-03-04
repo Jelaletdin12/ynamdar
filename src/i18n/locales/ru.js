@@ -6,6 +6,7 @@ export default {
     brands: "Бренды",
     search: "Поиск по названию товара...",
     cart: "Корзина",
+    home: "Главная",
     languages: {
       tm: "Türkmençe",
       ru: "Русский",
@@ -24,11 +25,15 @@ export default {
     confirmDelete: "Вы уверены, что хотите удалить этот товар из корзины?",
     the_Chosen_Ones: "Выбранные товары",
     clearCart: "Очистить корзину",
+    emptyCartTitle: "Ваша корзина пуста",
+    emptyCartMessage: "Похоже, вы еще не добавили ни одного товара в корзину",
+    continueShopping: "Продолжить покупки",
   },
   checkout: {
     paymentMethod: "Способ оплаты",
     inCash: "Наличными",
-    payment_in_cash_upon_delivery_of_the_order: "Оплата наличными при доставке заказа",
+    payment_in_cash_upon_delivery_of_the_order:
+      "Оплата наличными при доставке заказа",
     paymentTerminal: "Платежный терминал",
     payment_by_card: "Оплата картой через платежный терминал",
     cashback: "Баланс кэшбэка",
@@ -46,10 +51,14 @@ export default {
     selectPickupTime: "Выберите время самовывоза",
     today: "Сегодня",
     tomorrow: "Завтра",
-    Delivery_is_carried_out_in_the_cities_of_Ashgabat_Buzmein_and_Anau: "Доставка осуществляется в городах Ашхабад, Бузмейин и Анау",
-    The_minimum_order_amount_must_be_at_least_50_manat_for_orders_over_150_manat_delivery_is_free: "Минимальная сумма заказа должна быть не менее 50 манат, для заказов свыше 150 манат доставка бесплатная",
-    After_you_place_an_order_on_the_website_the_operator_will_call_you_to_confirm_the_order_for_regular_customers_confirmation_is_carried_out_automatically_at_their_request: "После оформления заказа на сайте оператор позвонит вам для подтверждения заказа (для постоянных клиентов подтверждение производится автоматически по их запросу)",
-    Payment_is_made_after_you_check_and_accept_the_order_The_amount_of_your_payment_is_indicated_on_the_delivery_persons_payment_document_Payment_is_made_in_cash_and_by_card_in_national_currency_Accepted_and_paid_goods_are_not_subject_to_return: "Оплата производится после проверки и принятия заказа. Сумма вашего платежа указана в платежном документе курьера. Оплата производится наличными и картой в национальной валюте. Принятые и оплаченные товары возврату не подлежат",
+    Delivery_is_carried_out_in_the_cities_of_Ashgabat_Buzmein_and_Anau:
+      "Доставка осуществляется в городах Ашхабад, Бузмейин и Анау",
+    The_minimum_order_amount_must_be_at_least_50_manat_for_orders_over_150_manat_delivery_is_free:
+      "Минимальная сумма заказа должна быть не менее 50 манат, для заказов свыше 150 манат доставка бесплатная",
+    After_you_place_an_order_on_the_website_the_operator_will_call_you_to_confirm_the_order_for_regular_customers_confirmation_is_carried_out_automatically_at_their_request:
+      "После оформления заказа на сайте оператор позвонит вам для подтверждения заказа (для постоянных клиентов подтверждение производится автоматически по их запросу)",
+    Payment_is_made_after_you_check_and_accept_the_order_The_amount_of_your_payment_is_indicated_on_the_delivery_persons_payment_document_Payment_is_made_in_cash_and_by_card_in_national_currency_Accepted_and_paid_goods_are_not_subject_to_return:
+      "Оплата производится после проверки и принятия заказа. Сумма вашего платежа указана в платежном документе курьера. Оплата производится наличными и картой в национальной валюте. Принятые и оплаченные товары возврату не подлежат",
   },
   common: {
     yes: "Да",
@@ -61,9 +70,15 @@ export default {
     or: "или",
     search: "Поиск",
     confirm: "Подтвердить",
-    Are_you_sure_you_want_to_empty_the_cart: "Вы уверены, что хотите очистить корзину?",
-    Do_you_really_want_to_remove_the_item_from_the_cart: "Вы действительно хотите удалить товар из корзины?",
-    Are_you_sure_you_want_to_close_the_modal: "Вы уверены, что хотите закрыть окно?",
+    Are_you_sure_you_want_to_empty_the_cart:
+      "Вы уверены, что хотите очистить корзину?",
+    Do_you_really_want_to_remove_the_item_from_the_cart:
+      "Вы действительно хотите удалить товар из корзины?",
+    Are_you_sure_you_want_to_close_the_modal:
+      "Вы уверены, что хотите закрыть окно?",
+    warning: "Осторожно!",
+    not_enough_stock: "На складе недостаточно товара!",
+    ok: "OK",
   },
   profile: {
     registration: "Регистрация",
@@ -81,6 +96,7 @@ export default {
     confirmPassword: "Подтвердите пароль",
     telephone: "Телефон",
     keyword: "Ключевое слово",
+    profile: "Профиль",
   },
   order: {
     orderDate: "Дата заказа",
@@ -123,7 +139,11 @@ export default {
     similarProducts: "Похожие товары",
   },
   wishtList: {
-    likedProducts: "Понравившиеся товары",
+    likedProducts: "Избранные",
+    emptyWishListTitle: "Ваш список желаний пуст",
+    emptyWishListMessage:
+      "Пожалуйста, выберите несколько товаров для добавления в список желаний",
+    continueShopping: "Продолжить покупки",
   },
   footer: {
     market: "Маркет",
@@ -131,7 +151,8 @@ export default {
     about: "О нас",
     contact: "Контакты",
     delivery_and_payment_procedure: "Порядок доставки и оплаты",
-    TermsofUseandPrivacyPolicy: "Условия использования и политика конфиденциальности",
+    TermsofUseandPrivacyPolicy:
+      "Условия использования и политика конфиденциальности",
     mobile_applications: "Мобильные приложения",
     copyright: "Все права защищены.",
   },

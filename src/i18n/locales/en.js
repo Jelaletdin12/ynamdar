@@ -6,6 +6,7 @@ export default {
     brands: "Brands",
     search: "Search by product name...",
     cart: "Cart",
+    home: "Home",
     languages: {
       tm: "Türkmençe",
       ru: "Русский",
@@ -27,7 +28,6 @@ export default {
     emptyCartTitle: "Your cart is empty",
     emptyCartMessage: "Looks like you haven't added any items to your cart yet",
     continueShopping: "Continue Shopping",
-  
   },
   checkout: {
     paymentMethod: "Payment Method",
@@ -75,8 +75,11 @@ export default {
       "Do you really want to remove the item from the cart?",
     Are_you_sure_you_want_to_close_the_modal:
       "Are you sure you want to close the modal?",
+    warning: "Warning!",
+    not_enough_stock: "Not enough product!",
+    ok: "OK",
   },
-  search:{
+  search: {
     resultsFor: "Search results for",
     noResults: "No results",
   },
@@ -96,6 +99,7 @@ export default {
     confirmPassword: "Confirm Password",
     telephone: "Telephone",
     keyword: "Keyword",
+    profile: "Profile",
   },
   order: {
     orderDate: "Order Date",
@@ -138,7 +142,10 @@ export default {
     similarProducts: "Similar Products",
   },
   wishtList: {
-    likedProducts: "Liked Products",
+    likedProducts: "Favorites",
+    emptyWishListTitle: "Your wishlist is empty",
+    emptyWishListMessage: "Please select some products to add to your wishlist",
+    continueShopping: "Continue shopping",
   },
   footer: {
     market: "Market",

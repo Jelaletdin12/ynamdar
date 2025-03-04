@@ -4,8 +4,9 @@ import Router from "./routes";
 import { Provider } from "react-redux";
 import store from "./app/store";
 import "./i18n/i18n";
-import PageLoader from "./components/Loader/pageLoader.jsx"
+import PageLoader from "./components/Loader/pageLoader.jsx";
 import "./App.css";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -37,12 +38,12 @@ function App() {
     <Provider store={store}>
       {isLoading ? (
         <div className="loading-container">
-          <PageLoader/>
+          <PageLoader />
         </div>
       ) : (
         <>
           <Router />
-
+          <ScrollToTop />
           {isVisible && (
             <BackTop visibilityHeight={500} duration={800}>
               <div

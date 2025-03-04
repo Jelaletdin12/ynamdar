@@ -30,7 +30,7 @@ const ProfileMenu = () => {
   ];
 
   const menuItems = [
-    { icon: <User />, text: t("profile.signUp"), action: "signUp" },
+    { icon: <User />, text: t("profile.registration"), action: "signUp" },
     { icon: <LogIn />, text: t("profile.login"), action: "login" },
     { icon: <Wallet />, text: t("profile.orders"), path: "/orders" },
     { icon: <Heart />, text: t("profile.favorites"), path: "/wishlist" },

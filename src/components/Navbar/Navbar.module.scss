@@ -15,6 +15,18 @@
     margin-bottom: 1px;
   }
 
+  .btn{
+    display: flex;
+    width: max-content;
+    font-size: 16px;
+    border-radius: 8px;
+    border: navajowhite;
+    padding: 10px;
+    background-color: #ffffff;
+    font-weight: bold;
+    color: #ff6600;
+  }
+
   .navbarDown {
     width: 100%;
     background-color: #ffffff;

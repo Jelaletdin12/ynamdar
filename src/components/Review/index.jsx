@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import styles from "./review.module.scss";
+import {
+  useSubmitReviewMutation,
+  useGetReviewsByProductQuery,
+} from "../../app/api/reviewApi";
 
 const StarRating = ({ rating, onRatingChange, interactive = false }) => {
   const [hoverRating, setHoverRating] = useState(0);
@@ -17,48 +21,108 @@ const StarRating = ({ rating, onRatingChange, interactive = false }) => {
           }`}
           onClick={() => interactive && onRatingChange(star)}
           onMouseEnter={() => interactive && setHoverRating(star)}
-          onMouseLeave={() => interactive && setHoverRating(0)}
+          onMouseLeave={() => interactive && setHoverRating(star)}
         />
       ))}
     </div>
   );
 };
 
-const ReviewSection = ({ productId }) => {
-  const [reviews, setReviews] = useState([]);
+const ReviewSection = ({
+  productId,
+  existingReviews = [],
+  reviewStats = { count: 0, rating: "0.00" },
+}) => {
+  // Use the API hooks from reviewApi.js
+  const [submitReview, { isLoading: isSubmitting }] = useSubmitReviewMutation();
+  const { data: apiReviews, isLoading: isLoadingReviews } =
+    existingReviews.length === 0
+      ? useGetReviewsByProductQuery(productId)
+      : { data: null, isLoading: false };
+
+  const [reviews, setReviews] = useState(
+    existingReviews.length > 0
+      ? existingReviews.map((review) => ({
+          id: review.id,
+          rating: parseInt(review.rating),
+          text: review.title,
+          date: review.created_at || new Date().toISOString(),
+          source: review.source,
+        }))
+      : []
+  );
+
   const [newReview, setNewReview] = useState({
     rating: 0,
-    text: "",
+    title: "",
+    source: "site",
   });
 
-  const handleSubmitReview = (e) => {
+  useEffect(() => {
+    if (apiReviews && existingReviews.length === 0) {
+      setReviews(apiReviews);
+    }
+  }, [apiReviews, existingReviews]);
+
+  const averageRating =
+    (reviewStats.rating ? parseFloat(reviewStats.rating) : 0) ||
+    (reviews.length
+      ? (
+          reviews.reduce((sum, review) => sum + review.rating, 0) /
+          reviews.length
+        ).toFixed(2)
+      : "0.00");
+
+  const handleSubmitReview = async (e) => {
     e.preventDefault();
-    if (!newReview.rating || !newReview.text.trim()) return;
+    if (!newReview.rating || !newReview.title?.trim()) return;
 
-    const review = {
-      id: Date.now(),
-      ...newReview,
-      date: new Date().toISOString(),
-    };
+    try {
+      await submitReview({
+        productId,
+        rating: newReview.rating,
+        title: newReview.title,
+        source: newReview.source,
+      }).unwrap();
 
-    setReviews([review, ...reviews]);
-    setNewReview({ rating: 0, text: "" });
+      const review = {
+        id: Date.now(),
+        rating: newReview.rating,
+        text: newReview.title,
+        date: new Date().toISOString(),
+        source: newReview.source,
+      };
+
+      setReviews((currentReviews) =>
+        Array.isArray(currentReviews) ? [review, ...currentReviews] : [review]
+      );
+      setNewReview({
+        rating: 0,
+        title: "",
+        source: "site",
+      });
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+    }
   };
 
   return (
     <div className={styles.root}>
       <div className={styles.header}>
-        <h2 className={styles.title}>
-          Teswir({reviews.length})
-        </h2>
+        <h2 className={styles.title}>Teswir({reviews.length})</h2>
         <div className={styles.ratingStar}>
-          <span>4.5</span>
+          <span>{averageRating}</span>
           <div>
-          <Star/>
-          <Star/>
-          <Star/>
-          <Star/>
-          <Star/>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star
+                key={star}
+                className={
+                  parseFloat(averageRating) >= star
+                    ? styles.starFilled
+                    : styles.starEmpty
+                }
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -79,20 +143,26 @@ const ReviewSection = ({ productId }) => {
 
           <textarea
             className={styles.formTextarea}
-            value={newReview.text}
+            value={newReview.title}
             onChange={(e) =>
-              setNewReview((prev) => ({ ...prev, text: e.target.value }))
+              setNewReview((prev) => ({ ...prev, title: e.target.value }))
             }
             placeholder="Teswir"
           />
 
-          <button type="submit" className={styles.formSubmit}>
-            Teswir ýaz
+          <button
+            type="submit"
+            className={styles.formSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Göndermek..." : "Teswir ýaz"}
           </button>
         </form>
 
         <div className={styles.reviews}>
-          {reviews.length > 0 ? (
+          {isLoadingReviews ? (
+            <div>Ýüklenýär...</div>
+          ) : reviews.length > 0 ? (
             <div className={styles.reviewsList}>
               {reviews.map((review) => (
                 <div key={review.id} className={styles.reviewsItem}>
