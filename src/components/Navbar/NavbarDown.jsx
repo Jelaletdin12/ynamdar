@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Navbar.module.scss";
-
+import { UserOutlined, LogoutOutlined, HomeOutlined } from "@ant-design/icons";
 import { FaGlobe } from "react-icons/fa6";
 import { Input, Badge, Menu, Dropdown } from "antd";
 const { Search } = Input;
 import DropdownMenu from "../CategoryDropdown/index";
 import LoginModal from "../LogIn/index";
 import SignUpModal from "../SignUp/index";
-import {  Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import tm from "../../assets/tm.png";
 import ru from "../../assets/ru.png";
@@ -19,8 +19,9 @@ import { useSearchProductQuery } from "../../app/api/searchApi";
 import { useGetCartQuery } from "../../app/api/cartApi";
 import { useGetOrdersQuery } from "../../app/api/orderApi";
 import { useGetFavoritesQuery } from "../../app/api/favoritesApi";
-
+import { useGetGuestTokenMutation } from "../../app/api/authApi";
 const NavbarDown = () => {
+  const [getGuestToken] = useGetGuestTokenMutation();
   const [isSearchVisible, setSearchVisible] = useState(false);
   const { t, i18n } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,7 +30,7 @@ const NavbarDown = () => {
     skip: !searchQuery,
   });
   const { data: cartData } = useGetCartQuery(undefined, {
-    refetchOnMountOrArgChange: false, 
+    refetchOnMountOrArgChange: false,
   });
 
   const cartItemCount = cartData?.data?.length || 0;
@@ -39,6 +40,10 @@ const NavbarDown = () => {
 
   const { data: favoritesData } = useGetFavoritesQuery();
   const favoritesItemCount = favoritesData?.length || 0;
+
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!document.cookie.includes("authToken")
+  );
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -59,8 +64,65 @@ const NavbarDown = () => {
     i18n.changeLanguage(langCode);
     localStorage.setItem("preferredLanguage", langCode);
   };
+  useEffect(() => {
+    // Check for authToken
+    const hasAuthToken =
+      document.cookie.includes("authToken=") ||
+      localStorage.getItem("authToken");
+    setIsAuthenticated(!!hasAuthToken);
+  
+    // Check for guestToken
+    const hasGuestToken =
+      document.cookie.includes("guestToken=") ||
+      localStorage.getItem("guestToken");
+  
+    if (!hasAuthToken && !hasGuestToken) {
+      // Get a guest token if neither token exists
+      getGuestToken()
+        .unwrap()
+        .then((response) => {
+          // Assuming response contains token or data.token
+          const token = response.token || response.data?.token;
+          if (token) {
+            // Store the token in both localStorage and cookies
+            localStorage.setItem("guestToken", token);
+            document.cookie = `guestToken=${token}; path=/; secure; SameSite=Strict`;
+            console.log("Guest token set after login");
+            
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting guest token:", error);
+        });
+    }
+  }, [getGuestToken]);
 
+  const handleLogout = async () => {
+    // Clear auth token from both localStorage and cookies
+    localStorage.removeItem("authToken");
+    document.cookie =
+      "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
 
+    // Get a new guest token
+    try {
+      const response = await getGuestToken().unwrap();
+      // Store the new guest token
+      const token = response.token || response.data?.token;
+      if (token) {
+        localStorage.setItem("guestToken", token);
+        document.cookie = `guestToken=${token}; path=/; secure; SameSite=Strict`;
+        console.log("Guest token obtained after logout");
+      }
+    } catch (error) {
+      console.error("Error getting guest token:", error);
+    }
+
+    // Update authentication state
+    setIsAuthenticated(false);
+
+    // Navigate to home page
+    navigate("/");
+  };
   const items = [
     {
       key: "tm",
@@ -98,6 +160,35 @@ const NavbarDown = () => {
             style={{ width: "20px", marginRight: "10px" }}
           />
           {t("navbar.languages.en")}
+        </div>
+      ),
+    },
+  ];
+  const profileItems = [
+    {
+      key: "profile",
+      label: (
+        <Link to="/profile">
+          <UserOutlined style={{ marginRight: "10px" }} />
+          My Info
+        </Link>
+      ),
+    },
+    {
+      key: "address",
+      label: (
+        <Link to="/addresses">
+          <HomeOutlined style={{ marginRight: "10px" }} />
+          My Addresses
+        </Link>
+      ),
+    },
+    {
+      key: "logout",
+      label: (
+        <div onClick={handleLogout}>
+          <LogoutOutlined style={{ marginRight: "10px" }} />
+          Logout
         </div>
       ),
     },
@@ -167,13 +258,32 @@ const NavbarDown = () => {
             </li>
             <div className={styles.stick}></div>
 
-            <li>
-              <LoginModal />
-            </li>
-            <div className={styles.stick}></div>
-            <li>
-              <SignUpModal />
-            </li>
+            {!isAuthenticated ? (
+              <>
+                <li>
+                  <LoginModal />
+                </li>
+                <div className={styles.stick}></div>
+                <li>
+                  <SignUpModal />
+                </li>
+              </>
+            ) : (
+              <li>
+                <Dropdown
+                  menu={{ items: profileItems }}
+                  placement="bottomLeft"
+                  trigger={["click"]}
+                >
+                  <span
+                    className={styles.navButton}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <UserOutlined /> My Profile
+                  </span>
+                </Dropdown>
+              </li>
+            )}
             <div className={styles.stick}></div>
             <li>
               <Link to={"/orders"}>
@@ -181,7 +291,6 @@ const NavbarDown = () => {
                   style={{ marginRight: "4px" }}
                   count={ordersItemCount}
                   offset={[10, 0]}
-                  
                 >
                   <button className={styles.navButton}>
                     <svg
@@ -206,7 +315,6 @@ const NavbarDown = () => {
                   style={{ marginRight: "4px" }}
                   count={favoritesItemCount}
                   offset={[10, 0]}
-                  
                 >
                   <button className={styles.navButton}>
                     <svg

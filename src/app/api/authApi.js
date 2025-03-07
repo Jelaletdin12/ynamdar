@@ -2,10 +2,9 @@ import { baseApi } from "./baseApi";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // Guest Token
     getGuestToken: builder.mutation({
       query: () => ({
-        url: "/auth/guest-token",
+        url: "auth/guest-token",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -18,14 +17,13 @@ export const authApi = baseApi.injectEndpoints({
 
           if (token) {
             document.cookie = `guestToken=${token}; path=/; secure; SameSite=Strict`;
+            localStorage.setItem("guestToken", token);
           }
         } catch (error) {
           console.error("Error fetching guest token:", error);
         }
       },
     }),
-
-    // Login (Sadece doğrulama kodu gönderir, token yok!)
     login: builder.mutation({
       query: (credentials) => ({
         url: "/auth/login",
@@ -34,7 +32,6 @@ export const authApi = baseApi.injectEndpoints({
       }),
     }),
 
-    // Register (Sadece doğrulama kodu gönderir, token yok!)
     register: builder.mutation({
       query: (userData) => ({
         url: "/auth/register",
@@ -42,24 +39,28 @@ export const authApi = baseApi.injectEndpoints({
         body: userData,
       }),
     }),
-
-    // Verify Token (Burada token dönecek!)
     verifyToken: builder.mutation({
       query: ({ phone_number, code }) => ({
         url: "/auth/verify",
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+
         body: { phone_number, code },
       }),
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          const token = data?.token;
-
+          const token = data.data;
+          console.log("Full Response:", data);
+          console.log("New TOken:", token);
           if (token) {
-            // Guest token'i temizle
+            localStorage.removeItem("guestToken");
             document.cookie =
               "guestToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-            // Auth token'i kaydet
+            localStorage.setItem("authToken", token);
             document.cookie = `authToken=${token}; path=/; secure; SameSite=Strict`;
           }
         } catch (error) {

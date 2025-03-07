@@ -7,6 +7,7 @@ import "./i18n/i18n";
 import PageLoader from "./components/Loader/pageLoader.jsx";
 import "./App.css";
 import ScrollToTop from "./components/ScrollToTop";
+import { AuthProvider } from "./context/authContext.jsx";
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -36,44 +37,46 @@ function App() {
 
   return (
     <Provider store={store}>
-      {isLoading ? (
-        <div className="loading-container">
-          <PageLoader />
-        </div>
-      ) : (
-        <>
-          <Router />
-          <ScrollToTop />
-          {isVisible && (
-            <BackTop visibilityHeight={500} duration={800}>
-              <div
-                style={{
-                  height: 40,
-                  width: 40,
-                  backgroundColor: "#fff",
-                  color: "#fff",
-                  textAlign: "center",
-                  lineHeight: "40px",
-                  borderRadius: "50%",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-                  right: "0",
-                }}
-              >
-                <svg
-                  style={{ color: "#ec6323" }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
+      <AuthProvider>
+        {isLoading ? (
+          <div className="loading-container">
+            <PageLoader />
+          </div>
+        ) : (
+          <>
+            <Router />
+            <ScrollToTop />
+            {isVisible && (
+              <BackTop visibilityHeight={500} duration={800}>
+                <div
+                  style={{
+                    height: 40,
+                    width: 40,
+                    backgroundColor: "#fff",
+                    color: "#fff",
+                    textAlign: "center",
+                    lineHeight: "40px",
+                    borderRadius: "50%",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+                    right: "0",
+                  }}
                 >
-                  <path
-                    fill="currentColor"
-                    d="m12 7l5 5h-3v4h-4v-4H7l5-5m0 15A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10a10 10 0 0 1-10 10m0-2a8 8 0 0 0 8-8a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8Z"
-                  ></path>
-                </svg>
-              </div>
-            </BackTop>
-          )}
-        </>
-      )}
+                  <svg
+                    style={{ color: "#ec6323" }}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="m12 7l5 5h-3v4h-4v-4H7l5-5m0 15A10 10 0 0 1 2 12A10 10 0 0 1 12 2a10 10 0 0 1 10 10a10 10 0 0 1-10 10m0-2a8 8 0 0 0 8-8a8 8 0 0 0-8-8a8 8 0 0 0-8 8a8 8 0 0 0 8 8Z"
+                    ></path>
+                  </svg>
+                </div>
+              </BackTop>
+            )}
+          </>
+        )}
+      </AuthProvider>
     </Provider>
   );
 }

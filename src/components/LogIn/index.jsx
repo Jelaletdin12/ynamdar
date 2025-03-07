@@ -25,7 +25,7 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [isVerificationModalVisible, setIsVerificationModalVisible] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
-  const [isLogin, setIsLogin] = useState(true); // To track if user is logging in or registering
+  const [isLogin, setIsLogin] = useState(true); 
   const [formattedPhone, setFormattedPhone] = useState("");
 
   // API hooks
@@ -131,6 +131,7 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
   const handleSubmit = async () => {
     try {
       if (activeTab === "phone") {
+        
         // Validate phone number
         if (formattedPhone.length < 8) {
           return message.error(t("validation.enter_valid_phone"));
@@ -138,6 +139,7 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
 
         // Convert to integer
         const phoneInt = parseInt(formattedPhone, 10);
+        console.log(phoneInt);
         
         // Call the appropriate API endpoint
         if (isLogin) {
@@ -167,27 +169,39 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
 
   const handleVerifyCode = async () => {
     try {
-      if (!verificationCode || verificationCode.length < 4) {
+      if (!verificationCode || verificationCode.length < 5) {
         return message.error(t("validation.enter_valid_code"));
       }
-
+  
       // Convert to integer
       const phoneInt = parseInt(formattedPhone, 10);
       const codeInt = parseInt(verificationCode, 10);
-
+  
       const response = await verifyToken({
         phone_number: phoneInt,
         code: codeInt,
       }).unwrap();
-
-      if (response && response.token) {
+  
+      // Token'ı data.data'dan kontrol et
+      if (response && response.data) {
         message.success(t("profile.login_successful"));
         closeModal();
         resetForm();
+      } else {
+        // Fallback error handling
+        message.error(t("errors.verification_failed"));
       }
     } catch (err) {
       console.error("Verification error:", err);
-      message.error(err.data?.message || t("errors.invalid_code"));
+      
+      // More detailed error logging
+      console.log('Full error object:', JSON.stringify(err, null, 2));
+      
+      message.error(
+        err.data?.message || 
+        err.error || 
+        t("errors.something_went_wrong")
+      );
     }
   };
 
