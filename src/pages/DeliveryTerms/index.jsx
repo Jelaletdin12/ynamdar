@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './DeliveryTerms.module.scss';
+import styles from './deliveryTerms.module.scss';
 
 const DeliveryTerms = () => {
   return (
