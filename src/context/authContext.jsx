@@ -91,18 +91,16 @@ export const AuthProvider = ({ children }) => {
 
   const login = (token) => {
     if (!token) return;
-
-   
+     
     document.cookie = `authToken=${token}; path=/; secure; SameSite=Strict`;
     localStorage.setItem("authToken", token);
     setAuthToken(token);
-
-
+  
     localStorage.removeItem("guestToken");
-    document.cookie =
-      "guestToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie = "guestToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     setGuestToken(null);
-
+  
+    // Set authenticated state immediately
     setIsAuthenticated(true);
   };
 

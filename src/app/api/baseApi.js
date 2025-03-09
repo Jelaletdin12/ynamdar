@@ -56,7 +56,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
 
   // Log token for debugging
   if (token) {
-    console.log("Using token:", token.substring(0, 5) + "***");
+    console.log("Using token:", token);
   } else {
     console.warn("No token available for request");
   }

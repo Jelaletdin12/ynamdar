@@ -50,11 +50,11 @@ const Sidebar = () => {
     <div className={styles.sidebarContainer}>
       <button onClick={handleToggle} className={styles.mobileNavButton}>
         <img src={brand} alt="" />
-        {t("category.brands")}
+        {t("navbar.brands")}
       </button>
 
       <Drawer
-        title={t("category.brands")}
+        title={t("navbar.brands")}
         placement="right"
         onClose={handleToggle}
         open={isOpen}

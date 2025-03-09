@@ -3,7 +3,7 @@ import styles from "./CategoryPage.module.scss";
 import ProductCard from "../../components/ProductCard/index";
 import { TiTick } from "react-icons/ti";
 import BrandSidebar from "../../components/BrandsSidebar/index";
-import FilterSidebar from "../../components/FilterSidebar/index";
+import FilterSidebar from "../../components/FilterSideBar/index";
 import { useTranslation } from "react-i18next";
 import {
   useParams,

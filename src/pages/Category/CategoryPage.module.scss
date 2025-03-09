@@ -75,7 +75,9 @@
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
-    flex-wrap: wrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
     button {
       color: #6b7280;
       background-color: #fff;
@@ -83,6 +85,9 @@
       font-size: 14px;
       border-radius: 0.5rem;
       border: none;
+      width: max-content;
+      height: max-content;
+      white-space: nowrap;
     }
     @media screen and (min-width: 1024px) {
       display: none;

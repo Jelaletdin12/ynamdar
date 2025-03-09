@@ -78,6 +78,7 @@ export default {
     warning: "Warning!",
     not_enough_stock: "Not enough product!",
     ok: "OK",
+    
   },
   search: {
     resultsFor: "Search results for",
@@ -100,6 +101,29 @@ export default {
     telephone: "Telephone",
     keyword: "Keyword",
     profile: "Profile",
+    enter_valid_phone: "Enter valid phone number",
+    verification_code_sent: "Verification code sent",
+    enter_valid_code: "Enter valid code",
+    login_successful: "Login successful",
+    verification_failed: "Verification failed",
+    my_profile : "My Profile",
+    my_address: "My Address",
+    logout: "Logout",
+
+    dont_have_account: "Do not have your account please ",
+    already_have_account: "Already have your account please ",
+    register: "register",
+    verification_code_message: "Verification Code Sent to ",
+    verification_code: "Verification Code",
+    verification: "Verification",
+    didnt_receive_code: "Didn't receive code ",
+    resend: "resend",
+    verify: "Verify",
+    name: "Name",
+    address: "Address",
+
+    
+
   },
   order: {
     orderDate: "Order Date",

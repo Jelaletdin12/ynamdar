@@ -79,6 +79,8 @@ export default {
     warning: "Осторожно!",
     not_enough_stock: "На складе недостаточно товара!",
     ok: "OK",
+   
+
   },
   profile: {
     registration: "Регистрация",
@@ -97,6 +99,26 @@ export default {
     telephone: "Телефон",
     keyword: "Ключевое слово",
     profile: "Профиль",
+    enter_valid_phone: "Введите действительный номер телефона",
+    verification_code_sent: "Код верификации отправлен",
+    enter_valid_code: "Введите правильный код",
+    login_successful: "Вход в систему успешный",
+    verification_failed: "Верификация не удалась",
+    my_profile : "Мой профиль",
+    my_address: "Мой адрес",
+    logout: "Выход",
+    dont_have_account: "У вас нет аккаунта, пожалуйста ",
+    already_have_account: "У вас уже есть аккаунт, пожалуйста ",
+    register: "«зарегистрироваться»",
+    verification_code_message: "Код верификации отправлен на ",
+    verification_code: "Код верификации",
+    verification: "«Верификация»",
+    didnt_receive_code: "Didn't receive codeКод не получен ",
+    resend: "Повторная отправка",
+    verify: "«Верификация»",
+    name: "«Имя»",
+    address: "«Address»",
+    
   },
   order: {
     orderDate: "Дата заказа",

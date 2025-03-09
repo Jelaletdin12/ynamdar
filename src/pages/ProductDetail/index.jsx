@@ -219,7 +219,7 @@ const ProductPage = ({
         </div>
         <div className={styles.productInfo}>
           <h1 className={styles.productTitle}>{product.name}</h1>
-          <p className={styles.productDescription}>{product.description}</p>
+          <p className={styles.productDescription}  dangerouslySetInnerHTML={{ __html: product.description }}></p>
 
           <div className={styles.productMeta}>
             <div className={styles.metaItem}>

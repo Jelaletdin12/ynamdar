@@ -11,16 +11,16 @@ const FilterSidebar = ({ onPriceSortChange, currentPriceSort = "none" }) => {
 
   // Map sort values to display options
   const sortOptionsMap = {
-    none: t("category.neverMind") || "Hiç hili",
-    lowToHigh: t("category.From_cheap_to_expensive") || "Arzandan gymmada",
-    highToLow: t("category.From_expensive_to_cheap") || "Gymmatdan arzana",
+    none: t("category.notSelected") || "Hiç hili",
+    lowToHigh: t("category.lowestPrice") || "Arzandan gymmada",
+    highToLow: t("category.highestPrice") || "Gymmatdan arzana",
   };
 
   // Map display options back to sort values
   const displayToSortMap = {
-    [t("category.neverMind") || "Hiç hili"]: "none",
-    [t("category.From_cheap_to_expensive") || "Arzandan gymmada"]: "lowToHigh",
-    [t("category.From_expensive_to_cheap") || "Gymmatdan arzana"]: "highToLow",
+    [t("category.notSelected") || "Hiç hili"]: "none",
+    [t("category.lowestPrice") || "Arzandan gymmada"]: "lowToHigh",
+    [t("category.highestPrice") || "Gymmatdan arzana"]: "highToLow",
   };
 
   // Filter options for display
@@ -55,11 +55,11 @@ const FilterSidebar = ({ onPriceSortChange, currentPriceSort = "none" }) => {
     <div className={styles.sidebarContainer}>
       <button onClick={handleFilterToggle} className={styles.mobileNavButton}>
         <img src={arrow} alt="" />
-        {t("filter.title") || "Suzguc"}
+        {t("category.order") || "Suzguc"}
       </button>
 
       <Drawer
-        title={t("filter.sorting") || "Tertip"}
+        title={t("category.order") || "Tertip"}
         placement="right"
         onClose={handleClose}
         open={isOpen}

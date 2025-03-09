@@ -199,7 +199,9 @@ const ProductCard = ({
         </div>
         <div className={styles.productInfo}>
           <h3 className={styles.productName}>{name}</h3>
-          <p className={styles.productDescription}>{product.description}</p>
+          <p className={styles.productDescription}
+           dangerouslySetInnerHTML={{ __html: product.description }}
+          ></p>
           <div className={styles.priceContainer}>
             <div>
               <span className={styles.currentPrice}>{price_amount} m.</span>
