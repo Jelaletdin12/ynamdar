@@ -1,6 +1,6 @@
 import styles from "./emptyWishlist.module.scss";
 import { useTranslation } from "react-i18next";
-import EmptyWishList from "../../assets/WishList.png"
+import EmptyWishList from "../../assets/wishlist.png"
 const EmptyWishListState = () => {
   const { t, i18n } = useTranslation();
   return (
