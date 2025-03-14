@@ -13,6 +13,7 @@ import {
   useUpdateCartItemMutation,
   useCleanCartMutation,
 } from "../../app/api/cartApi";
+import { DecreaseIcon, IncreaseIcon } from "../../components/Icons";
 
 const CartPage = () => {
   const { data: response = {}, refetch, error, isError } = useGetCartQuery();
@@ -52,7 +53,10 @@ const CartPage = () => {
       }).unwrap();
 
       if (result && result.message === "error") {
-        console.error("Server returned an error:", result.errorDetails || "Unknown error");
+        console.error(
+          "Server returned an error:",
+          result.errorDetails || "Unknown error"
+        );
         return;
       }
 
@@ -183,47 +187,40 @@ const CartPage = () => {
                     <div className={styles.itemInfo}>
                       <div style={{ flex: "1" }}>
                         <h3>{item.product.name}</h3>
-                        <p>{item.product.description}</p>
+                        <p
+                        dangerouslySetInnerHTML={{ __html: item.product.description }}
+                        ></p>
                       </div>
                       <div className={styles.priceQuantity}>
                         <span className={styles.price}>
-                          {(parseFloat(item.product.price_amount) || 0).toFixed(2)} m.
+                          {(parseFloat(item.product.price_amount) || 0).toFixed(
+                            2
+                          )}{" "}
+                          m.
                         </span>
                         <div className={styles.quantityControls}>
                           <button
                             onClick={() =>
-                              updateQuantity(item.product.id, parseInt(item.product_quantity, 10) - 1)
+                              updateQuantity(
+                                item.product.id,
+                                parseInt(item.product_quantity, 10) - 1
+                              )
                             }
                             className={styles.quantityBtn}
                           >
-                            <svg
-                              viewBox="0 0 9 11"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M1.41422 6.86246C0.633166 6.08141 0.633165 4.81508 1.41421 4.03403L4.61487 0.833374C5.8748 -0.426555 8.02908 0.465776 8.02908 2.24759V8.6489C8.02908 10.4307 5.8748 11.323 4.61487 10.0631L1.41422 6.86246Z"
-                                fill="white"
-                              ></path>
-                            </svg>
+                            <DecreaseIcon />
                           </button>
                           <span>{parseInt(item.product_quantity, 10)}</span>
                           <button
                             onClick={() =>
-                              updateQuantity(item.product.id, parseInt(item.product_quantity, 10) + 1)
+                              updateQuantity(
+                                item.product.id,
+                                parseInt(item.product_quantity, 10) + 1
+                              )
                             }
                             className={styles.quantityBtn}
                           >
-                            <svg
-                              viewBox="0 0 9 11"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M6.64389 4.03427C7.42494 4.81532 7.42494 6.08165 6.64389 6.8627L3.44324 10.0634C2.18331 11.3233 0.0290222 10.431 0.0290226 8.64914V2.24783C0.0290226 0.466021 2.18331 -0.426312 3.44324 0.833617L6.64389 4.03427Z"
-                                fill="white"
-                              ></path>
-                            </svg>
+                            <IncreaseIcon />
                           </button>
                         </div>
                       </div>
@@ -265,7 +262,9 @@ const CartPage = () => {
             <div className={styles.container}>
               <div className={styles.summaryCard} ref={expandedRef}>
                 <div
-                  className={`${styles.expandedContent} ${isExpanded ? styles.visible : ""}`}
+                  className={`${styles.expandedContent} ${
+                    isExpanded ? styles.visible : ""
+                  }`}
                 >
                   <div className={styles.details}>
                     <div className={styles.row}>
@@ -289,7 +288,11 @@ const CartPage = () => {
                     }}
                   >
                     <span>
-                      {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                      {isExpanded ? (
+                        <ChevronUp size={20} />
+                      ) : (
+                        <ChevronDown size={20} />
+                      )}
                       {t("cart.total")}:
                     </span>
                     <span className={styles.amount}>

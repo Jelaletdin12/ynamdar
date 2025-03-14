@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import styles from "./review.module.scss";
 import {
@@ -33,18 +35,20 @@ const ReviewSection = ({
   existingReviews = [],
   reviewStats = { count: 0, rating: "0.00" },
 }) => {
+  // Always call the hook, but skip the query if we already have reviews
+  const { data: apiReviews, isLoading: isLoadingReviews } =
+    useGetReviewsByProductQuery(productId, {
+      skip: existingReviews.length > 0,
+    });
+
   // Use the API hooks from reviewApi.js
   const [submitReview, { isLoading: isSubmitting }] = useSubmitReviewMutation();
-  const { data: apiReviews, isLoading: isLoadingReviews } =
-    existingReviews.length === 0
-      ? useGetReviewsByProductQuery(productId)
-      : { data: null, isLoading: false };
 
   const [reviews, setReviews] = useState(
     existingReviews.length > 0
       ? existingReviews.map((review) => ({
           id: review.id,
-          rating: parseInt(review.rating),
+          rating: Number.parseInt(review.rating),
           text: review.title,
           date: review.created_at || new Date().toISOString(),
           source: review.source,
@@ -65,7 +69,7 @@ const ReviewSection = ({
   }, [apiReviews, existingReviews]);
 
   const averageRating =
-    (reviewStats.rating ? parseFloat(reviewStats.rating) : 0) ||
+    (reviewStats.rating ? Number.parseFloat(reviewStats.rating) : 0) ||
     (reviews.length
       ? (
           reviews.reduce((sum, review) => sum + review.rating, 0) /
@@ -117,7 +121,7 @@ const ReviewSection = ({
               <Star
                 key={star}
                 className={
-                  parseFloat(averageRating) >= star
+                  Number.parseFloat(averageRating) >= star
                     ? styles.starFilled
                     : styles.starEmpty
                 }

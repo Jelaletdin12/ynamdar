@@ -1,10 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  CartIcon,
-  WishlistIcon,
-  BrandIcon,
-  OrderIcon,
-} from "../Icons";
+import { CartIcon, WishlistIcon, BrandIcon, OrderIcon } from "../Icons";
 import styles from "./Navbar.module.scss";
 import { UserOutlined, LogoutOutlined, HomeOutlined } from "@ant-design/icons";
 import { FaGlobe } from "react-icons/fa6";
@@ -26,6 +21,7 @@ import { useGetCartQuery } from "../../app/api/cartApi";
 import { useGetOrdersQuery } from "../../app/api/orderApi";
 import { useGetFavoritesQuery } from "../../app/api/favoritesApi";
 import { useAuth } from "../../context/authContext";
+import ProfileModal from "../../components/MyProfileModal/index";
 const NavbarDown = () => {
   const [isSearchVisible, setSearchVisible] = useState(false);
   const { t, i18n } = useTranslation();
@@ -38,14 +34,17 @@ const NavbarDown = () => {
     refetchOnMountOrArgChange: false,
   });
   const { isAuthenticated, logout } = useAuth();
-  const cartItemCount = cartData?.data?.length || 0;
+  const cartItemCount =
+    cartData?.data?.reduce((total, item) => {
+      return total + (parseInt(item.product_quantity, 10) || 0);
+    }, 0) || 0;
 
   const { data: ordersData } = useGetOrdersQuery();
-  const ordersItemCount = ordersData?.data?.length || 0;
+  const ordersItemCount = ordersData?.length || 0;
 
   const { data: favoritesData } = useGetFavoritesQuery();
   const favoritesItemCount = favoritesData?.length || 0;
-
+  const [profileModalVisible, setProfileModalVisible] = useState(false);
   const handleSearch = () => {
     if (searchQuery.trim()) {
       refetch();
@@ -67,10 +66,7 @@ const NavbarDown = () => {
   };
 
   const handleLogout = async () => {
-    // Use the logout function from auth context
     await logout();
-
-    // Navigate to home page
     navigate("/");
   };
   useEffect(() => {}, [isAuthenticated]);
@@ -119,10 +115,10 @@ const NavbarDown = () => {
     {
       key: "profile",
       label: (
-        <Link to="/profile">
+        <div onClick={() => setProfileModalVisible(true)}>
           <UserOutlined style={{ marginRight: "10px" }} />
           {t("profile.my_profile")}
-        </Link>
+        </div>
       ),
     },
     {
@@ -292,6 +288,12 @@ const NavbarDown = () => {
           </div>
         )}
       </div>
+      {isAuthenticated && (
+        <ProfileModal
+          visible={profileModalVisible}
+          onClose={() => setProfileModalVisible(false)}
+        />
+      )}
     </header>
   );
 };

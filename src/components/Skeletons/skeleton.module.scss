@@ -1,0 +1,23 @@
+.skeletonCard {
+    width: 100%;
+    margin-bottom: 1rem;
+    
+    :global {
+      .ant-card {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      }
+    }
+    
+    .skeletonImage {
+      width: 100% !important;
+      height: 250px !important;
+      object-fit: cover;
+    }
+    
+    .priceButton {
+      margin-top: 12px;
+      width: 40%;
+    }
+  }

@@ -11,6 +11,7 @@ import { locationApi } from "./api/locationApi";
 import { orderApi } from "./api/orderApi";
 import { mediaApi } from "./api/bannersApi";
 import { reviewsApi } from "./api/reviewApi";
+import { profileApi } from "./api/myProfileApi";
 
 const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ const store = configureStore({
     [orderApi.reducerPath]: orderApi.reducer,
     [mediaApi.reducerPath]: mediaApi.reducer,
     [reviewsApi.reducerPath]: reviewsApi.reducer,
+    [profileApi.reducerPath]: profileApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -39,7 +41,8 @@ const store = configureStore({
       locationApi.middleware,
       orderApi.middleware,
       reviewsApi.middleware,
-      mediaApi.middleware
+      mediaApi.middleware,
+      profileApi.middleware,
     ),
 });
 

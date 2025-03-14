@@ -1,0 +1,52 @@
+.profileModal {
+    :global(.ant-modal-content) {
+      border-radius: 8px;
+    }
+  
+    :global(.ant-modal-header) {
+      border-bottom: 1px solid #f0f0f0;
+      padding: 16px 24px;
+    }
+  
+    :global(.ant-modal-title) {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+  }
+  
+  .form {
+    margin-top: 16px;
+  
+    :global(.ant-form-item-label) {
+      font-weight: 500;
+    }
+  
+    :global(.ant-input-affix-wrapper) {
+      border-radius: 6px;
+      height: 40px;
+    }
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    margin-bottom: 0;
+  
+    button {
+      min-width: 100px;
+      height: 40px;
+      border-radius: 6px;
+    }
+  }
+  
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #999;
+  }
+  

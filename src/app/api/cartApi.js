@@ -5,14 +5,11 @@ export const cartApi = baseApi.injectEndpoints({
     getCart: builder.query({
       query: () => `/carts`,
       providesTags: ["cartItems"],
-      // Use polling with a reasonable interval instead of constantly refetching
-      pollingInterval: 5000, // Poll every 30 seconds
-      refetchOnMountOrArgChange: true, // Refetch when component mounts or query args change
-      // Minimize refetches for other window events
+      pollingInterval: 5000,
+      refetchOnMountOrArgChange: true,
       refetchOnFocus: false,
       refetchOnReconnect: true,
       transformResponse: (response) => {
-        // Check if response is HTML (starts with <!DOCTYPE or <html)
         if (
           typeof response === "string" &&
           (response.trim().startsWith("<!DOCTYPE") ||
@@ -29,8 +26,6 @@ export const cartApi = baseApi.injectEndpoints({
               "Server returned HTML instead of JSON. The server might be down or experiencing issues.",
           };
         }
-
-        // Rest of your existing transformResponse code...
         if (typeof response === "object") {
           if (response.data) {
             return response;
@@ -64,19 +59,14 @@ export const cartApi = baseApi.injectEndpoints({
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }),
-      // Use pessimistic updates for data integrity
       invalidatesTags: ["cartItems"],
       async onQueryStarted(
         { productId, quantity },
         { dispatch, queryFulfilled }
       ) {
         try {
-          // Wait for the mutation to complete
           await queryFulfilled;
-        } catch {
-          // If the mutation fails, we don't need to do anything as our optimistic update
-          // in the component will handle reverting
-        }
+        } catch {}
       },
       transformResponse: (response) => {
         if (typeof response === "object" && response.data) {
@@ -109,20 +99,14 @@ export const cartApi = baseApi.injectEndpoints({
       invalidatesTags: ["cartItems"],
       async onQueryStarted({ productId }, { dispatch, queryFulfilled }) {
         try {
-          // Wait for the mutation to complete
           await queryFulfilled;
-        } catch {
-          // If the mutation fails, we don't need to do anything as our optimistic update
-          // in the component will handle reverting
-        }
+        } catch {}
       },
       transformResponse: (response) => {
-        // Check if response is already parsed
         if (typeof response === "object" && response.data) {
           return response.data;
         }
 
-        // If response is a string, try to parse it
         if (typeof response === "string") {
           try {
             const parsed = JSON.parse(response);
@@ -147,12 +131,10 @@ export const cartApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["cartItems"],
       transformResponse: (response) => {
-        // Check if response is already parsed
         if (typeof response === "object" && response.data) {
           return response.data;
         }
 
-        // If response is a string, try to parse it
         if (typeof response === "string") {
           try {
             const parsed = JSON.parse(response);
@@ -179,15 +161,36 @@ export const cartApi = baseApi.injectEndpoints({
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }),
-      async onQueryStarted({ productId, quantity }, { dispatch, queryFulfilled }) {
+      invalidatesTags: ["cartItems"],
+      async onQueryStarted(
+        { productId, quantity },
+        { dispatch, queryFulfilled }
+      ) {
         try {
           await queryFulfilled;
         } catch {
           console.error("API update failed, retrying...");
         }
       },
+      // Add a transform response to match other mutations
+      transformResponse: (response) => {
+        if (typeof response === "object" && response.data) {
+          return response;
+        }
+
+        if (typeof response === "string") {
+          try {
+            const parsed = JSON.parse(response);
+            return parsed;
+          } catch (error) {
+            console.error("Failed to parse update cart response:", error);
+            return { message: "success", data: "Updated cart" };
+          }
+        }
+
+        return { message: "success", data: "Updated cart" };
+      },
     }),
-    
   }),
 });
 

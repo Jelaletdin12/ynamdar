@@ -84,3 +84,13 @@ main {
     bottom: 70px;
   }
 }
+
+
+:global(.skeleton-thumb .ant-skeleton-image .ant-skeleton .ant-skeleton-element .ant-skeleton-image) {
+  width: 100% !important;
+  height: 100% !important;
+}
+:global(.ant-skeleton.ant-skeleton-element ) {
+  width: 100% !important;
+  height: 100% !important;
+}

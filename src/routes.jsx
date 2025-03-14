@@ -42,7 +42,7 @@ export default function Router() {
         { path: "/product/:productId", element: <ProductDetail /> },
         { path: "/profile", element: <ProfileMenu /> },
         { path: "/orders", element: <Orders /> },
-        { path: "/orderdetail", element: <OrderDetail /> },
+        { path: "/orderdetail/:id", element: <OrderDetail /> },
         { path: "/contactus", element: <ContactUs /> },
         { path: "/delivery-and-payment", element: <DeliveryTerms /> },
         { path: "/about-us", element: <AboutUs /> },

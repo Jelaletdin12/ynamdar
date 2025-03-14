@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import styles from "./ProductCard.module.scss";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
 import { FaShoppingCart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
 import { debounce } from "lodash";
 import {
   useAddFavoriteMutation,
@@ -16,8 +17,10 @@ import {
   useRemoveFromCartMutation,
   useGetCartQuery,
 } from "../../app/api/cartApi";
-import { Modal } from "antd"; 
-import { useTranslation } from "react-i18next"; 
+import { Modal } from "antd";
+import { useTranslation } from "react-i18next";
+import { DecreaseIcon, IncreaseIcon } from "../Icons";
+import ImageCarousel from "./imageCarousel/index"; // Yeni carousel bileşenini import et
 
 const ProductCard = ({
   product,
@@ -27,7 +30,7 @@ const ProductCard = ({
   onToggleFavorite,
   isFavorite = false,
 }) => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [stockErrorModalVisible, setStockErrorModalVisible] = useState(false);
   const [addFavorite] = useAddFavoriteMutation();
@@ -37,30 +40,31 @@ const ProductCard = ({
   const [localIsFavorite, setLocalIsFavorite] = useState(
     favoriteProducts.some((fav) => fav.product?.id === product.id)
   );
-  // Get cart data and keep it updated
+
   const { data: cartData } = useGetCartQuery(undefined, {
-    // Use selective cache to reduce unnecessary re-renders
     selectFromResult: (result) => ({
       data: result.data,
     }),
   });
+
   const [addToCart] = useAddToCartMutation();
   const [updateCartItem] = useUpdateCartItemMutation();
   const [removeFromCart] = useRemoveFromCartMutation();
 
-  // Find this product in the cart to get its quantity
   const cartItem = cartData?.data?.find(
     (item) => item.product?.id === product.id || item.product_id === product.id
   );
   const quantity = cartItem?.quantity || cartItem?.product_quantity || 0;
   const [localQuantity, setLocalQuantity] = useState(0);
   const [pendingQuantity, setPendingQuantity] = useState(localQuantity);
-  // Update local quantity when cart data changes
+
   useEffect(() => {
     if (cartItem) {
       setLocalQuantity(cartItem.quantity || cartItem.product_quantity || 0);
+      setPendingQuantity(cartItem.quantity || cartItem.product_quantity || 0);
     } else {
       setLocalQuantity(0);
+      setPendingQuantity(0);
     }
   }, [cartData, cartItem]);
 
@@ -76,50 +80,55 @@ const ProductCard = ({
   const handleAddToCart = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-
-    // Check if stock is available
     if (product.stock <= 0) {
       setStockErrorModalVisible(true);
       return;
     }
-
-    // Badge sayısını anında güncelle
     setLocalQuantity((prev) => prev + 1);
-    setPendingQuantity((prev) => prev + 1); // Hemen güncelle
-
+    setPendingQuantity((prev) => prev + 1);
     try {
       await addToCart({ productId: product.id, quantity: 1 }).unwrap();
     } catch (error) {
       console.error("Failed to add to cart:", error);
-      setLocalQuantity((prev) => prev - 1); // Başarısız olursa geri al
-      setPendingQuantity((prev) => prev - 1); // Başarısız olursa geri al
+      setLocalQuantity((prev) => prev - 1);
+      setPendingQuantity((prev) => prev - 1);
     }
   };
 
   useEffect(() => {
-    const updateCart = debounce(async () => {
-      if (pendingQuantity !== localQuantity) {
+    const updateCart = async () => {
+      if (pendingQuantity !== quantity && pendingQuantity > 0) {
         try {
+          setIsLoading(true);
           await updateCartItem({
             productId: product.id,
             quantity: pendingQuantity,
           }).unwrap();
         } catch (error) {
           console.error("Failed to update cart item:", error);
+          setLocalQuantity(quantity);
+          setPendingQuantity(quantity);
+        } finally {
+          setIsLoading(false);
         }
       }
-    }, 500);
+    };
 
-    updateCart();
+    const debouncedUpdate = debounce(updateCart, 300);
 
-    return () => updateCart.cancel();
-  }, [pendingQuantity]);
+    if (pendingQuantity !== quantity) {
+      debouncedUpdate();
+    }
+
+    return () => debouncedUpdate.cancel();
+  }, [pendingQuantity, quantity, product.id, updateCartItem]);
 
   const handleQuantityIncrease = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    // Check if adding would exceed stock
+    if (isLoading) return;
+
     if (localQuantity >= product.stock) {
       setStockErrorModalVisible(true);
       return;
@@ -133,14 +142,20 @@ const ProductCard = ({
     event.preventDefault();
     event.stopPropagation();
 
+    if (isLoading) return;
+
     if (pendingQuantity <= 1) {
       setPendingQuantity(0);
       setLocalQuantity(0);
+      setIsLoading(true);
       removeFromCart({ productId: product.id })
         .unwrap()
         .catch(() => {
           setLocalQuantity(1);
           setPendingQuantity(1);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else {
       setLocalQuantity((prev) => prev - 1);
@@ -166,7 +181,6 @@ const ProductCard = ({
           setLocalIsFavorite(true);
         }
       }
-      // Refetch after changing favorite status
       await refetch();
     } catch (error) {
       console.error("Failed to toggle favorite:", error);
@@ -181,8 +195,6 @@ const ProductCard = ({
 
   const { name, price_amount, old_price_amount, media = [], reviews } = product;
 
-  const imageUrl = media[0]?.images_400x400 || "";
-
   return (
     <>
       <div className={styles.productCard} onClick={handleCardClick}>
@@ -190,17 +202,20 @@ const ProductCard = ({
           {product.discount && (
             <span className={styles.discountBadge}>-{product.discount}%</span>
           )}
-          {/* {product.stock === 0 && (
+          {product.stock === 0 && (
             <span className={`${styles.discountBadge} ${styles.outOfStock}`}>
               {t("common.out_of_stock")}
             </span>
-          )} */}
-          <img src={imageUrl} alt={name} className={styles.productImage} />
+          )}
+
+          {/* Tek resim yerine ImageCarousel bileşenini kullan */}
+          <ImageCarousel images={media} altText={name} />
         </div>
         <div className={styles.productInfo}>
           <h3 className={styles.productName}>{name}</h3>
-          <p className={styles.productDescription}
-           dangerouslySetInnerHTML={{ __html: product.description }}
+          <p
+            className={styles.productDescription}
+            dangerouslySetInnerHTML={{ __html: product.description }}
           ></p>
           <div className={styles.priceContainer}>
             <div>
@@ -227,32 +242,14 @@ const ProductCard = ({
                       onClick={handleQuantityDecrease}
                       className={styles.quantityBtn}
                     >
-                      <svg
-                        viewBox="0 0 9 11"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M1.41422 6.86246C0.633166 6.08141 0.633165 4.81508 1.41421 4.03403L4.61487 0.833374C5.8748 -0.426555 8.02908 0.465776 8.02908 2.24759V8.6489C8.02908 10.4307 5.8748 11.323 4.61487 10.0631L1.41422 6.86246Z"
-                          fill="white"
-                        ></path>
-                      </svg>
+                      <DecreaseIcon />
                     </button>
                     <span>{localQuantity}</span>
                     <button
                       onClick={handleQuantityIncrease}
                       className={styles.quantityBtn}
                     >
-                      <svg
-                        viewBox="0 0 9 11"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6.64389 4.03427C7.42494 4.81532 7.42494 6.08165 6.64389 6.8627L3.44324 10.0634C2.18331 11.3233 0.0290222 10.431 0.0290226 8.64914V2.24783C0.0290226 0.466021 2.18331 -0.426312 3.44324 0.833617L6.64389 4.03427Z"
-                          fill="white"
-                        ></path>
-                      </svg>
+                      <IncreaseIcon />
                     </button>
                   </div>
                 ) : (

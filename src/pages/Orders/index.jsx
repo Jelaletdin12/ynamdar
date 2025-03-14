@@ -1,13 +1,47 @@
-// SargytlarymComponent.jsx
+// Orders.jsx
 import React from "react";
 import styles from "./Orders.module.scss";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useGetOrdersQuery } from "../../app/api/orderApi"; // Update with your correct path
+
+
 const Orders = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const { data: orders, isLoading, error } = useGetOrdersQuery();
+
+  // Function to format date - implement this or use a library like date-fns
+  const formatOrderDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString('tk-TM', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return dateString;
+    }
+  };
+
+  // Handle loading state
+  if (isLoading) return <div className={styles.loading}>Loading orders...</div>;
+  
+  // Handle error state
+  if (error) return <div className={styles.error}>Error loading orders: {error.message}</div>;
+  
+  // Handle empty orders
+  if (!orders || orders.length === 0) {
+    return <div className={styles.empty}>{t("order.noOrders")}</div>;
+  }
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Sargytlarym</h2>
+      
+      {/* Desktop table view */}
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
@@ -21,49 +55,68 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>2501258856309</td>
-              <td>25.01.2025 10:12</td>
-              <td style={{ color: "#ec6323", fontWeight: "600" }}>63.30 m.</td>
-              <td>Nagt</td>
-              <td>Goybolsun edili</td>
-              <td>
-                <Link to={"/orderdetail"}>
-                
-                <button className={styles.actionButton}>{t("order.information")}</button>
-                </Link>
-
-              </td>
-            </tr>
+            {orders.map(order => {
+              // Calculate total order amount
+              const totalAmount = order.orderItems.reduce((sum, item) => 
+                sum + (parseFloat(item.unit_price_amount) * item.quantity), 0);
+              
+              return (
+                <tr key={order.id}>
+                  <td>{order.id}</td>
+                  <td>{formatOrderDate(order.delivery_at)}</td>
+                  <td style={{ color: "#ec6323", fontWeight: "600" }}>
+                    {totalAmount.toFixed(2)} m.
+                  </td>
+                  <td>{order.payment_type}</td>
+                  <td>{order.status}</td>
+                  <td>
+                    <Link to={`/orderdetail/${order.id}`}>
+                      <button className={styles.actionButton}>
+                        {t("order.information")}
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
-      <Link to={"/orderdetail"}>
+      
+      {/* Mobile card view */}
       <div className={styles.Mobilecontainer}>
-        <div className={styles.orderCard}>
-          <div className={styles.orderRow}>
-            <span className={styles.label}>{t("order.orderNumber")}:</span>
-            <span className={styles.value}>250125885309</span>
-          </div>
-          <div className={styles.orderRow}>
-            <span className={styles.label}>{t("order.orderDate")}</span>
-            <span className={styles.value}>25.01.2025 10:12</span>
-          </div>
-          <div className={styles.orderRow}>
-            <span className={styles.label}>{t("order.sum")}:</span>
-            <span className={styles.total}>63.30 m.</span>
-          </div>
-          <div className={styles.orderRow}>
-            <span className={styles.label}>{t("checkout.paymentMethod")}:</span>
-            <span className={styles.value}>Nagt</span>
-          </div>
-          <div className={styles.orderRow}>
-            <span className={styles.label}>{t("order.orderStatus")}:</span>
-            <span className={styles.value}>Goýbolsun edildi</span>
-          </div>
-        </div>
+        {orders.map(order => {
+          const totalAmount = order.orderItems.reduce((sum, item) => 
+            sum + (parseFloat(item.unit_price_amount) * item.quantity), 0);
+            
+          return (
+            <Link to={`/orderdetail/${order.id}`} key={order.id}>
+              <div className={styles.orderCard}>
+                <div className={styles.orderRow}>
+                  <span className={styles.label}>{t("order.orderNumber")}:</span>
+                  <span className={styles.value}>{order.id}</span>
+                </div>
+                <div className={styles.orderRow}>
+                  <span className={styles.label}>{t("order.orderDate")}:</span>
+                  <span className={styles.value}>{formatOrderDate(order.delivery_at)}</span>
+                </div>
+                <div className={styles.orderRow}>
+                  <span className={styles.label}>{t("order.sum")}:</span>
+                  <span className={styles.total}>{totalAmount.toFixed(2)} m.</span>
+                </div>
+                <div className={styles.orderRow}>
+                  <span className={styles.label}>{t("checkout.paymentMethod")}:</span>
+                  <span className={styles.value}>{order.payment_type}</span>
+                </div>
+                <div className={styles.orderRow}>
+                  <span className={styles.label}>{t("order.orderStatus")}:</span>
+                  <span className={styles.value}>{order.status}</span>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
-      </Link>
     </div>
   );
 };

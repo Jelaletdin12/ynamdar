@@ -1,52 +1,79 @@
+import { useParams } from "react-router-dom";
 import styles from "./OrderDetail.module.scss";
-import order from "../../assets/order.jpg";
-import track from "../../assets/track.jpg";
 import { Ban, CircleCheck, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useGetOrderByIdQuery } from "../../app/api/orderApi"; // Update with your correct path
+import track from "../../assets/track.jpg"; // Keep for delivery service icon
+
 const OrderDetail = () => {
-  const { t, i18n } = useTranslation();
-  const orderData = {
-    id: "250125885309",
-    date: "25.01.2025 10:12",
-    status: "Garaşylýar",
-    deliveryTime: "19:00 - 21:00 (26.01.2025)",
-    paymentMethod: "Nagt",
-    total: "63.30",
-    items: [
-      {
-        image: order,
-        name: 'Kreker "Alvita" duzly 75 gr',
-        brand: "Alvita",
-        code: "AVT006.015",
-        price: "3.80",
-        quantity: 2,
-        total: "7.60",
-      },
-      {
-        image: order,
-        name: "Gaýnadylýan kakadylan towuk jylka eti",
-        brand: "Täze aý Şöhlat",
-        code: "TZS120828",
-        price: "45.70",
-        quantity: 1,
-        total: "45.70",
-      },
-      {
-        image: track,
-        name: "Eltip bermek hyzmaty",
-        brand: "Beýleki",
-        code: "YNMDELIVERY10",
-        price: "10.00",
-        quantity: 1,
-        total: "10.00",
-      },
-    ],
+  const { t } = useTranslation();
+  const { id } = useParams(); // Get the order ID from URL params
+  const { data: orderData, isLoading, error } = useGetOrderByIdQuery(id);
+
+  // Format date function
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString("tk-TM", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (e) {
+      return dateString;
+    }
   };
+
+  // Format delivery time for display
+  const formatDeliveryTime = (time, date) => {
+    try {
+      const deliveryDate = new Date(date);
+      const formattedDate = deliveryDate.toLocaleDateString("tk-TM", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      });
+      return `${time} (${formattedDate})`;
+    } catch (e) {
+      return `${time}`;
+    }
+  };
+
+  // Calculate total order amount
+  const calculateTotal = (orderItems) => {
+    if (!orderItems || !orderItems.length) return 0;
+    return orderItems
+      .reduce(
+        (sum, item) => sum + parseFloat(item.unit_price_amount) * item.quantity,
+        0
+      )
+      .toFixed(2);
+  };
+
+  // Handle loading state
+  if (isLoading)
+    return <div className={styles.loading}>Loading order details...</div>;
+
+  // Handle error state
+  if (error)
+    return (
+      <div className={styles.error}>Error loading order: {error.message}</div>
+    );
+
+  // Handle case where order data is not available
+  if (!orderData) return <div className={styles.notFound}>Order not found</div>;
+
+  // Calculate total
+  const totalAmount = calculateTotal(orderData.orderItems);
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>{t("order.orderNumber")}: {orderData.id}</h1>
+        <h1>
+          {t("order.orderNumber")}: {orderData.id}
+        </h1>
         <div className={styles.Buttons}>
           <button className={styles.repeatButton}>
             <svg
@@ -66,8 +93,8 @@ const OrderDetail = () => {
         </div>
       </div>
       <div className={styles.content}>
-        {/* Sipariş Durumu */}
-        <div className={styles.status}>
+        {/* Order Status */}
+        {/* <div className={styles.status}>
           <p className={styles.statusText}>
             <span className={styles.statusIcon}>
               <CircleCheck />
@@ -77,14 +104,14 @@ const OrderDetail = () => {
           <span className={styles.close}>
             <X />
           </span>
-        </div>
+        </div> */}
 
-        {/* Sipariş Detayları */}
+        {/* Order Details */}
         <div className={styles.details}>
           <div className={styles.rowContainer}>
             <div className={styles.row}>
               <span>{t("order.orderDate")}:</span>
-              <span>{orderData.date}</span>
+              <span>{formatDate(orderData.delivery_at)}</span>
             </div>
             <div className={styles.row}>
               <span>{t("order.orderStatus")}:</span>
@@ -92,22 +119,26 @@ const OrderDetail = () => {
             </div>
             <div className={styles.row}>
               <span>{t("order.deliveryTime")}:</span>
-              <span>{orderData.deliveryTime}</span>
+              <span>
+                {formatDeliveryTime(
+                  orderData.delivery_time,
+                  orderData.delivery_at
+                )}
+              </span>
             </div>
           </div>
           <div className={styles.rowContainer}>
             <div className={styles.row}>
               <span>{t("checkout.paymentMethod")}:</span>
-              <span>{orderData.paymentMethod}</span>
+              <span>{orderData.payment_type}</span>
             </div>
             <div className={styles.row}>
               <span>{t("order.sum")}:</span>
-              <span className={styles.total}>{orderData.total} m.</span>
+              <span className={styles.total}>{totalAmount} m.</span>
             </div>
           </div>
         </div>
 
-       
         <div className={styles.tableContainer}>
           <table className={styles.table}>
             <thead>
@@ -122,45 +153,102 @@ const OrderDetail = () => {
               </tr>
             </thead>
             <tbody>
-              {orderData.items.map((item, index) => (
-                <tr key={index}>
+              {orderData.orderItems.map((item, index) => {
+                const product = item.product;
+                const itemTotal = (
+                  parseFloat(item.unit_price_amount) * item.quantity
+                ).toFixed(2);
+
+                return (
+                  <tr key={index}>
+                    <td>
+                      <img
+                        src={product.thumbnail}
+                        alt={product.name}
+                        className={styles.image}
+                      />
+                    </td>
+                    <td>{product.name}</td>
+                    <td>{product.brand || "-"}</td>
+                    <td>{product.id || "-"}</td>
+                    <td>{item.unit_price_amount} m.</td>
+                    <td>{item.quantity}</td>
+                    <td>{itemTotal} m.</td>
+                  </tr>
+                );
+              })}
+              {/* Add delivery service row if shipping method exists */}
+              {orderData.shipping_method && (
+                <tr>
                   <td>
                     <img
-                      src={item.image}
-                      alt={item.name}
+                      src={track}
+                      alt="Delivery Service"
                       className={styles.image}
                     />
                   </td>
-                  <td>{item.name}</td>
-                  <td>{item.brand}</td>
-                  <td>{item.code}</td>
-                  <td>{item.price} m.</td>
-                  <td>{item.quantity}</td>
-                  <td>{item.total} m.</td>
+                  <td>Eltip bermek hyzmaty</td>
+                  <td>Beýleki</td>
+                  <td>DELIVERY</td>
+                  <td>10.00 m.</td>{" "}
+                  {/* You may need to get actual delivery cost from API */}
+                  <td>1</td>
+                  <td>10.00 m.</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
       </div>
-      {/* Mobile */}
+      {/* Mobile View */}
       <div className={styles.productList}>
-      {orderData.items.map((item) => (
-        <div className={styles.card} key={item.id}>
-          <div className={styles.imageContainer}>
-            <img src={item.image} alt={item.title} />
-          </div>
-          <div className={styles.detailsMobile}>
-            <h3 className={styles.title}>{item.brand}</h3>
-            <p className={styles.description}>{item.name}</p>
-            <div className={styles.footer}>
-              <span className={styles.quantity}>{t("order.quantity")}: {item.quantity}</span>
-              <span className={styles.price}>{item.price}</span>
+        {orderData.orderItems.map((item, index) => {
+          const product = item.product;
+          const itemTotal = (
+            parseFloat(item.unit_price_amount) * item.quantity
+          ).toFixed(2);
+
+          return (
+            <div className={styles.card} key={index}>
+              <div className={styles.imageContainer}>
+                <img src={product.thumbnail} alt={product.name} />
+              </div>
+              <div className={styles.detailsMobile}>
+                <h3 className={styles.title}>
+                  {product.brand || product.name}
+                </h3>
+                <p className={styles.description}>{product.name}</p>
+                <div className={styles.footer}>
+                  <span className={styles.quantity}>
+                    {t("order.quantity")}: {item.quantity}
+                  </span>
+                  <span className={styles.price}>
+                    {item.unit_price_amount} m.
+                  </span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+        {/* Add delivery service card if shipping method exists */}
+        {orderData.shipping_method && (
+          <div className={styles.card}>
+            <div className={styles.imageContainer}>
+              <img src={track} alt="Delivery Service" />
+            </div>
+            <div className={styles.detailsMobile}>
+              <h3 className={styles.title}>Beýleki</h3>
+              <p className={styles.description}>Eltip bermek hyzmaty</p>
+              <div className={styles.footer}>
+                <span className={styles.quantity}>
+                  {t("order.quantity")}: 1
+                </span>
+                <span className={styles.price}>10.00 m.</span>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
+        )}
+      </div>
     </div>
   );
 };

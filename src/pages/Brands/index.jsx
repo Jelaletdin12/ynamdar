@@ -142,23 +142,16 @@ const BrandsPage = () => {
                   onClick={() => handleBrandClick(brand.id)}
                 >
                   <div className={styles.imageWrapper}>
-                    {!loadedImages[brand.id] && (
-                      <div
-                        className={`${styles.placeholder} ${styles.skeleton}`}
-                      >
-                        {/* Loading placeholder */}
-                      </div>
-                    )}
+                    
                     <img
-                      src={brand.media?.[0]?.url || brand.logo}
+                      src={
+                        brand.media?.[0]?.thumbnail ||
+                        brand.media?.[0]?.images_800x800 ||
+                        brand.logo
+                      }
                       alt={brand.name}
                       width={120}
                       height={120}
-                      onLoad={() => handleImageLoad(brand.id)}
-                      style={{
-                        opacity: loadedImages[brand.id] ? 1 : 0,
-                        transition: "opacity 0.3s",
-                      }}
                     />
                   </div>
                   <div className={styles.divider}></div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import styles from "./DropdownMenu.module.scss";
@@ -8,6 +8,7 @@ import { CategoryIcon } from "../Icons";
 const DropdownMenu = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dropdownRef = useRef(null); // Ref ekledik
   const {
     data: categoriesData,
     isLoading,
@@ -43,11 +44,25 @@ const DropdownMenu = () => {
     setIsOpen(false);
   };
 
+  // Dışarıya tıklanınca kapanması için event listener
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading categories</div>;
 
   return (
-    <div className={styles.dropdownContainer}>
+    <div className={styles.dropdownContainer} ref={dropdownRef}>
       <button onClick={handleToggle} className={styles.navButton}>
         <CategoryIcon />
         {t("navbar.category")}

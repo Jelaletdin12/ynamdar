@@ -13,8 +13,11 @@ const FooterBar = () => {
   const { data: favoriteData } = useGetFavoritesQuery(); 
 
  
-  const cartCount = cartData?.data?.reduce((total, item) => total + (item.quantity || 1), 0) || 0;
-
+  
+  const cartCount =
+  cartData?.data?.reduce((total, item) => {
+    return total + (parseInt(item.product_quantity, 10) || 0);
+  }, 0) || 0;
  
   const favoriteCount = favoriteData?.length || 0;
 

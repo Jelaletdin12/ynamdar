@@ -16,6 +16,8 @@ import "swiper/css/navigation";
 import styles from "./Banner.module.scss";
 import { useGetCarouselsQuery } from "../../app/api/bannersApi.js";
 
+import { Skeleton } from "antd";
+
 function Carousel() {
   const { data, isLoading, isError } = useGetCarouselsQuery();
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -57,7 +59,55 @@ function Carousel() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className={styles.carouselContainer}>
+        {/* Main slider skeleton */}
+        <div className={`${styles.mainSlider} skeleton-main-slider`}>
+          <Skeleton.Image active={true} className="main-skeleton-image" />
+          <style jsx>{`
+            .skeleton-main-slider {
+              width: 100%;
+              aspect-ratio: 16/9;
+              position: relative;
+              margin-bottom: 20px;
+              border-radius: 8px;
+              overflow: hidden;
+            }
+            .main-skeleton-image {
+              width: 100% !important;
+              height: 100% !important;
+            }
+          `}</style>
+        </div>
+
+        {/* Thumbnail Slider  skeleton */}
+        <div className={`${styles.thumbSlider} skeleton-thumb-slider`}>
+          {[...Array(5)].map((_, index) => (
+            <div
+              key={index}
+              className={`${styles.thumbWrapper} skeleton-thumb`}
+            >
+              <Skeleton.Image active={true} />
+              <style jsx>{`
+                .skeleton-thumb-slider {
+                  display: flex;
+                  flex-direction: column;
+                  height: 100%;
+                  overflow: hidden;
+                }
+                .skeleton-thumb {
+                  width: 100%;
+                  height: 100%;
+                  margin-bottom: 10px;
+                  border-radius: 4px;
+                  overflow: hidden;
+                }
+              `}</style>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (isError || !data || !data.data || data.data.length === 0) {

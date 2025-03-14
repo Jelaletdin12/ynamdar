@@ -20,6 +20,8 @@ import {
   useGetCollectionProductsQuery,
 } from "../../app/api/collectionsApi";
 import { useGetBrandProductsQuery } from "../../app/api/brandsApi";
+// import Loader  from "../../components/Loader/index"
+import PageLoader from "../../components/Loader/pageLoader"
 
 const CategoryPage = () => {
   const { t } = useTranslation();
@@ -162,7 +164,7 @@ const CategoryPage = () => {
     categoryId,
     categoryProducts,
     collectionProducts,
-    priceSort, 
+    priceSort,
   ]);
 
   const totalItems = products.length || 0;
@@ -253,7 +255,7 @@ const CategoryPage = () => {
     );
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <PageLoader/>;
   if (hasError) return <div>Error loading content</div>;
 
   return (
