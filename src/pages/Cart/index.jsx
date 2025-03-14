@@ -39,7 +39,22 @@ const CartPage = () => {
 
   const handleCheckout = () => setIsCheckout(true);
   const handleBackToCart = () => setIsCheckout(false);
+  const checkoutRef = useRef({ current: null });
 
+  const handleOrderSubmit = async () => {
+    if (isCheckout && checkoutRef.current) {
+      const success = await checkoutRef.current();
+      if (success) {
+        // Order was successful
+        refetch(); // Refresh cart data
+        setIsCheckout(false); // Go back to cart view
+        // Show success message if needed
+      }
+    } else {
+      // Start checkout if not already in checkout state
+      setIsCheckout(true);
+    }
+  };
   const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity <= 0) {
       showDeleteConfirm(productId);
@@ -123,6 +138,21 @@ const CartPage = () => {
     setEmptyCartModalVisible(false);
   };
 
+  const handlePlaceOrder = (orderData) => {
+    refetch();
+    setIsCheckout(false);
+  };
+
+  const handleButtonClick = () => {
+    if (isCheckout) {
+      // If already in checkout, submit the order
+      handleOrderSubmit();
+    } else {
+      // If in cart view, open checkout
+      handleCheckout();
+    }
+  };
+
   return (
     <div className={styles.cartContainer}>
       <Modal
@@ -154,7 +184,11 @@ const CartPage = () => {
         <div className={styles.cartItems}>
           <div className={styles.cartProducts}>
             {isCheckout ? (
-              <Checkout cartItems={cartItems} onBackToCart={handleBackToCart} />
+              <Checkout
+                cartItems={cartItems}
+                onBackToCart={handleBackToCart}
+                onPlaceOrder={checkoutRef}
+              />
             ) : (
               <div className={styles.cartItemContainer}>
                 <div className={styles.cartHeader}>
@@ -188,7 +222,9 @@ const CartPage = () => {
                       <div style={{ flex: "1" }}>
                         <h3>{item.product.name}</h3>
                         <p
-                        dangerouslySetInnerHTML={{ __html: item.product.description }}
+                          dangerouslySetInnerHTML={{
+                            __html: item.product.description,
+                          }}
                         ></p>
                       </div>
                       <div className={styles.priceQuantity}>
@@ -254,8 +290,11 @@ const CartPage = () => {
                   <span>{calculateTotal().toFixed(2)} m.</span>
                 </div>
               </div>
-              <button onClick={handleCheckout} className={styles.checkoutBtn}>
-                {t("cart.prepareOrders")}
+              <button
+                onClick={handleButtonClick}
+                className={styles.checkoutBtn}
+              >
+                {isCheckout ? t("cart.order") : t("cart.prepareOrders")}
               </button>
             </div>
 
@@ -300,8 +339,11 @@ const CartPage = () => {
                     </span>
                   </div>
                   <div className={styles.actionWrapper}>
-                    <button onClick={handleCheckout} className={styles.button}>
-                      {t("cart.prepareOrders")}
+                    <button
+                      onClick={handleButtonClick}
+                      className={styles.button}
+                    >
+                      {isCheckout ? t("cart.order") : t("cart.prepareOrders")}
                     </button>
                   </div>
                 </div>

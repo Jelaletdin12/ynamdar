@@ -10,7 +10,7 @@ const AddressSelect = ({
   handleAddressSelect,
   handleClearAddress,
   deviceType,
-  locations, // Prop olarak locations ekledik
+  locations, 
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -81,6 +81,7 @@ const AddressSelect = ({
           onClear={handleClearAddress}
           className={styles.addressSelect}
           showArrow={!selectedAddress}
+          loading={!locations}
           dropdownRender={(menu) => (
             <div
               style={{
@@ -99,7 +100,7 @@ const AddressSelect = ({
               </Option>
             ))
           ) : (
-            <Option disabled>Loading...</Option>
+            <Option disabled></Option>
           )}
         </Select>
       )}

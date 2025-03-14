@@ -18,6 +18,7 @@ export default {
     price: "Price",
     delivery: "Delivery",
     prepareOrders: "Prepare orders",
+    order: "Order",
     empty: "Your cart is empty",
     checkout: "Checkout",
     total: "Total",

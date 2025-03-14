@@ -18,6 +18,7 @@ export default {
     price: "Bahasy",
     delivery: "Eltip bermek",
     prepareOrders: "Sargytlary taýýarlamak",
+    order: "Sargyt et",
     empty: "Sebet boş",
     checkout: "Sargyt etmek",
     total: "Jemi",

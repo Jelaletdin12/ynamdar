@@ -18,6 +18,7 @@ export default {
     price: "Цена",
     delivery: "Доставка",
     prepareOrders: "Подготовка заказов",
+    order: "заказов",
     empty: "Ваша корзина пуста",
     checkout: "Оформить заказ",
     total: "Итого",

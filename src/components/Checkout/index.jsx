@@ -28,7 +28,7 @@ const useDeviceType = () => {
   return deviceType;
 };
 
-const Checkout = ({ cartItems, onBackToCart }) => {
+const Checkout = ({ cartItems, onBackToCart, onPlaceOrder }) => {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     customer_name: "",
@@ -172,12 +172,82 @@ const Checkout = ({ cartItems, onBackToCart }) => {
     });
   };
 
-  const handlePlaceOrder = async () => {
+  // const handlePlaceOrder = async () => {
+  //   // Validation checks
+  //   if (!selectedTimeSlot) {
+  //     console.error("No time slot selected");
+  //     alert("Please select a delivery time slot");
+  //     return;
+  //   }
+
+  //   if (
+  //     !formData.customer_name ||
+  //     !formData.customer_phone ||
+  //     !formData.customer_address ||
+  //     !formData.payment_type_id
+  //   ) {
+  //     console.error("Missing required fields");
+  //     alert("Please fill in all required fields");
+  //     return;
+  //   }
+
+  //   // Prepare data in the format expected by the API
+  //   const orderDetails = {
+  //     customer_name: formData.customer_name,
+  //     customer_phone: formatPhoneNumber(formData.customer_phone),
+  //     customer_address: formData.customer_address,
+  //     shipping_method:
+  //       selectedDeliveryType === "standard" ? "standart" : selectedDeliveryType, // Fix spelling if needed
+  //     payment_type_id: formData.payment_type_id,
+  //     delivery_time: selectedTimeSlot.hour,
+  //     delivery_at: selectedTimeSlot.date,
+  //     region: formData.region || "",
+  //   };
+
+  //   console.log("Sending order details:", orderDetails);
+
+  //   try {
+  //     // Use a workaround for HTML responses by catching the error at a lower level
+  //     const response = await placeOrder(orderDetails);
+
+  //     // Check if we got a successful response
+  //     if (response.data && !response.error) {
+  //       console.log("Order placed successfully:", response.data);
+  //       alert("Order placed successfully!");
+  //       if (onPlaceOrder) {
+  //         onPlaceOrder(response.data);
+  //       }
+  //       // You might want to redirect the user or clear the cart here
+  //     } else {
+  //       throw new Error(response.error || "Unknown error occurred");
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to place order:", error);
+
+  //     // Check if the error contains HTML
+  //     if (
+  //       error.data &&
+  //       typeof error.data === "string" &&
+  //       error.data.includes("<!doctype html>")
+  //     ) {
+  //       console.error("Server returned HTML instead of a proper API response");
+  //       alert(
+  //         "There was a problem with the server. Please try again later or contact support."
+  //       );
+  //     } else {
+  //       alert(
+  //         "Failed to place order. Please check your information and try again."
+  //       );
+  //     }
+  //   }
+  // };
+
+  const getOrderData = () => {
     // Validation checks
     if (!selectedTimeSlot) {
       console.error("No time slot selected");
       alert("Please select a delivery time slot");
-      return;
+      return null;
     }
 
     if (
@@ -188,56 +258,69 @@ const Checkout = ({ cartItems, onBackToCart }) => {
     ) {
       console.error("Missing required fields");
       alert("Please fill in all required fields");
-      return;
+      return null;
     }
 
     // Prepare data in the format expected by the API
-    const orderDetails = {
+    return {
       customer_name: formData.customer_name,
       customer_phone: formatPhoneNumber(formData.customer_phone),
       customer_address: formData.customer_address,
       shipping_method:
-        selectedDeliveryType === "standard" ? "standart" : selectedDeliveryType, // Fix spelling if needed
+        selectedDeliveryType === "standard" ? "standart" : selectedDeliveryType,
       payment_type_id: formData.payment_type_id,
       delivery_time: selectedTimeSlot.hour,
       delivery_at: selectedTimeSlot.date,
       region: formData.region || "",
     };
-
-    console.log("Sending order details:", orderDetails);
-
-    try {
-      // Use a workaround for HTML responses by catching the error at a lower level
-      const response = await placeOrder(orderDetails);
-
-      // Check if we got a successful response
-      if (response.data && !response.error) {
-        console.log("Order placed successfully:", response.data);
-        alert("Order placed successfully!");
-        // You might want to redirect the user or clear the cart here
-      } else {
-        throw new Error(response.error || "Unknown error occurred");
-      }
-    } catch (error) {
-      console.error("Failed to place order:", error);
-
-      // Check if the error contains HTML
-      if (
-        error.data &&
-        typeof error.data === "string" &&
-        error.data.includes("<!doctype html>")
-      ) {
-        console.error("Server returned HTML instead of a proper API response");
-        alert(
-          "There was a problem with the server. Please try again later or contact support."
-        );
-      } else {
-        alert(
-          "Failed to place order. Please check your information and try again."
-        );
-      }
-    }
   };
+
+  // Make handlePlaceOrder available to the parent through a ref or expose it
+  useEffect(() => {
+    if (onPlaceOrder) {
+      onPlaceOrder.current = async () => {
+        const orderDetails = getOrderData();
+        if (!orderDetails) return false;
+
+        try {
+          const response = await placeOrder(orderDetails);
+
+          if (response.data && !response.error) {
+            console.log("Order placed successfully:", response.data);
+            return true;
+          } else {
+            throw new Error(response.error || "Unknown error occurred");
+          }
+        } catch (error) {
+          console.error("Failed to place order:", error);
+
+          if (
+            error.data &&
+            typeof error.data === "string" &&
+            error.data.includes("<!doctype html>")
+          ) {
+            console.error(
+              "Server returned HTML instead of a proper API response"
+            );
+            alert(
+              "There was a problem with the server. Please try again later or contact support."
+            );
+          } else {
+            alert(
+              "Failed to place order. Please check your information and try again."
+            );
+          }
+          return false;
+        }
+      };
+    }
+  }, [
+    formData,
+    selectedTimeSlot,
+    selectedDeliveryType,
+    placeOrder,
+    onPlaceOrder,
+  ]);
 
   const renderDeliveryTimeSection = () => {
     if (selectedDeliveryType === "express") {
@@ -368,7 +451,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
             </div>
           ))}
 
-          <div className={styles.balance}>
+          {/* <div className={styles.balance}>
             <input
               type="checkbox"
               id="customCheckbox"
@@ -386,7 +469,7 @@ const Checkout = ({ cartItems, onBackToCart }) => {
                 Ygtyýarlygy pul serişdeleri ulanınak
               </span>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className={styles.deliveryForm}>
@@ -548,12 +631,6 @@ const Checkout = ({ cartItems, onBackToCart }) => {
               )}
             </li>
           </ul>
-        </div>
-
-        <div className={styles.orderButton}>
-          <button onClick={handlePlaceOrder} disabled={isPlacingOrder}>
-            {t("checkout.placeOrder")}
-          </button>
         </div>
       </div>
     </div>
