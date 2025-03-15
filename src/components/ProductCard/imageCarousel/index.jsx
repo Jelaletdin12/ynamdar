@@ -1,10 +1,11 @@
-"use client";
-
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "./ImageCarousel.module.scss";
 
 const ImageCarousel = ({ images, altText }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+  const carouselRef = useRef(null);
 
   // Birden fazla resim olup olmadığını kontrol et
   const hasMultipleImages = Array.isArray(images) && images.length > 1;
@@ -17,17 +18,58 @@ const ImageCarousel = ({ images, altText }) => {
 
   // Önceki resme geç
   const handlePrev = (e) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     if (!hasMultipleImages) return;
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   // Sonraki resme geç
   const handleNext = (e) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     if (!hasMultipleImages) return;
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
+
+  // Touch event handlers
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!hasMultipleImages) return;
+    
+    const touchDiff = touchStartX.current - touchEndX.current;
+    
+    // Swipe threshold - only respond to intentional swipes
+    if (Math.abs(touchDiff) > 50) {
+      if (touchDiff > 0) {
+        // Swipe left -> Next image
+        handleNext();
+      } else {
+        // Swipe right -> Previous image
+        handlePrev();
+      }
+    }
+  };
+
+  // Apply transition effect using CSS
+  useEffect(() => {
+    if (carouselRef.current) {
+      carouselRef.current.classList.add(styles.transitioning);
+      
+      const timer = setTimeout(() => {
+        if (carouselRef.current) {
+          carouselRef.current.classList.remove(styles.transitioning);
+        }
+      }, 300); // Match this timing with CSS transition duration
+      
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex]);
 
   // Eğer tek resim varsa sadece resmi göster
   if (!hasMultipleImages) {
@@ -41,12 +83,22 @@ const ImageCarousel = ({ images, altText }) => {
   }
 
   return (
-    <div className={styles.carouselContainer}>
-      <img
-        src={currentImage || "/placeholder.svg"}
-        alt={altText || "Ürün resmi"}
-        className={styles.productImage}
-      />
+    <div 
+      className={styles.carouselContainer}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      <div 
+        ref={carouselRef} 
+        className={styles.imageWrapper}
+      >
+        <img
+          src={currentImage || "/placeholder.svg"}
+          alt={altText || "Ürün resmi"}
+          className={styles.productImage}
+        />
+      </div>
 
       {/* Navigasyon okları */}
       <button
@@ -97,6 +149,10 @@ const ImageCarousel = ({ images, altText }) => {
             className={`${styles.indicator} ${
               currentIndex === idx ? styles.active : ""
             }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentIndex(idx);
+            }}
           />
         ))}
       </div>

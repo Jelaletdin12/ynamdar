@@ -1,13 +1,13 @@
 import styles from "./emptyOrder.module.scss";
 import { useTranslation } from "react-i18next";
-import EmptyCart from "../../assets/cart.png"
-const EmptyCartState = () => {
+import order from "../../assets/order.png"
+const EmptyOrderState = () => {
   const { t, i18n } = useTranslation();
   return (
     <div className={styles.emptyCartContainer}>
       <div className={styles.emptyCartContent}>
         <div className={styles.emptyCartIcon}>
-          <img src={EmptyCart} alt="" />
+          <img src={order} alt="" />
         </div>
         <h2>{t("cart.emptyCartTitle")}</h2>
         <p>{t("cart.emptyCartMessage")}</p>
@@ -23,4 +23,4 @@ const EmptyCartState = () => {
   );
 };
 
-export default EmptyCartState;
+export default EmptyOrderState;

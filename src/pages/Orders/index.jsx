@@ -4,7 +4,7 @@ import styles from "./Orders.module.scss";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useGetOrdersQuery } from "../../app/api/orderApi"; // Update with your correct path
-
+import EmptyOrderState from "./emptyOrder"; // Import the EmptyOrderState component
 
 const Orders = () => {
   const { t } = useTranslation();
@@ -14,12 +14,12 @@ const Orders = () => {
   const formatOrderDate = (dateString) => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleString('tk-TM', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+      return date.toLocaleString("tk-TM", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       });
     } catch (e) {
       return dateString;
@@ -28,19 +28,22 @@ const Orders = () => {
 
   // Handle loading state
   if (isLoading) return <div className={styles.loading}>Loading orders...</div>;
-  
+
   // Handle error state
-  if (error) return <div className={styles.error}>Error loading orders: {error.message}</div>;
-  
-  // Handle empty orders
+  if (error)
+    return (
+      <div className={styles.error}>Error loading orders: {error.message}</div>
+    );
+
+  // Handle empty orders - render EmptyOrderState component
   if (!orders || orders.length === 0) {
-    return <div className={styles.empty}>{t("order.noOrders")}</div>;
+    return <EmptyOrderState />;
   }
 
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Sargytlarym</h2>
-      
+
       {/* Desktop table view */}
       <div className={styles.tableContainer}>
         <table className={styles.table}>
@@ -55,11 +58,14 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {orders.map(order => {
+            {orders.map((order) => {
               // Calculate total order amount
-              const totalAmount = order.orderItems.reduce((sum, item) => 
-                sum + (parseFloat(item.unit_price_amount) * item.quantity), 0);
-              
+              const totalAmount = order.orderItems.reduce(
+                (sum, item) =>
+                  sum + parseFloat(item.unit_price_amount) * item.quantity,
+                0
+              );
+
               return (
                 <tr key={order.id}>
                   <td>{order.id}</td>
@@ -82,34 +88,47 @@ const Orders = () => {
           </tbody>
         </table>
       </div>
-      
+
       {/* Mobile card view */}
       <div className={styles.Mobilecontainer}>
-        {orders.map(order => {
-          const totalAmount = order.orderItems.reduce((sum, item) => 
-            sum + (parseFloat(item.unit_price_amount) * item.quantity), 0);
-            
+        {orders.map((order) => {
+          const totalAmount = order.orderItems.reduce(
+            (sum, item) =>
+              sum + parseFloat(item.unit_price_amount) * item.quantity,
+            0
+          );
+
           return (
             <Link to={`/orderdetail/${order.id}`} key={order.id}>
               <div className={styles.orderCard}>
                 <div className={styles.orderRow}>
-                  <span className={styles.label}>{t("order.orderNumber")}:</span>
+                  <span className={styles.label}>
+                    {t("order.orderNumber")}:
+                  </span>
                   <span className={styles.value}>{order.id}</span>
                 </div>
                 <div className={styles.orderRow}>
                   <span className={styles.label}>{t("order.orderDate")}:</span>
-                  <span className={styles.value}>{formatOrderDate(order.delivery_at)}</span>
+                  <span className={styles.value}>
+                    {formatOrderDate(order.delivery_at)}
+                  </span>
                 </div>
                 <div className={styles.orderRow}>
                   <span className={styles.label}>{t("order.sum")}:</span>
-                  <span className={styles.total}>{totalAmount.toFixed(2)} m.</span>
+                  <span className={styles.total}>
+                    {totalAmount.toFixed(2)} m.
+                  </span>
                 </div>
                 <div className={styles.orderRow}>
-                  <span className={styles.label}>{t("checkout.paymentMethod")}:</span>
+                  <span className={styles.label}>
+                    {t("checkout.paymentMethod")}:
+                  </span>
                   <span className={styles.value}>{order.payment_type}</span>
                 </div>
                 <div className={styles.orderRow}>
-                  <span className={styles.label}>{t("order.orderStatus")}:</span>
+                  <span className={styles.label}>
+                    {t("order.orderStatus")}:
+                  </span>
                   <span className={styles.value}>{order.status}</span>
                 </div>
               </div>

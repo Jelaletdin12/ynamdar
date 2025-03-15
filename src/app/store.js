@@ -12,6 +12,7 @@ import { orderApi } from "./api/orderApi";
 import { mediaApi } from "./api/bannersApi";
 import { reviewsApi } from "./api/reviewApi";
 import { profileApi } from "./api/myProfileApi";
+import { contactApi } from "./api/contactUs";
 
 const store = configureStore({
   reducer: {
@@ -28,6 +29,7 @@ const store = configureStore({
     [mediaApi.reducerPath]: mediaApi.reducer,
     [reviewsApi.reducerPath]: reviewsApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
+    [contactApi.reducerPath]: contactApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -43,6 +45,7 @@ const store = configureStore({
       reviewsApi.middleware,
       mediaApi.middleware,
       profileApi.middleware,
+      contactApi.middleware,
     ),
 });
 

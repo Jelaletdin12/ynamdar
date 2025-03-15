@@ -14,7 +14,7 @@ import {
   useCleanCartMutation,
 } from "../../app/api/cartApi";
 import { DecreaseIcon, IncreaseIcon } from "../../components/Icons";
-
+import { debounce } from "lodash";
 const CartPage = () => {
   const { data: response = {}, refetch, error, isError } = useGetCartQuery();
   const cartItems = isError ? [] : response.data || [];
@@ -22,14 +22,17 @@ const CartPage = () => {
   const [isCheckout, setIsCheckout] = useState(false);
   const [addToCart] = useAddToCartMutation();
   const [removeFromCart] = useRemoveFromCartMutation();
-  const [updateCartItem, { isLoading: isUpdating, error: updateError }] =
-    useUpdateCartItemMutation();
+  const [updateCartItem] = useUpdateCartItemMutation();
   const [cleanCart] = useCleanCartMutation();
   const [isExpanded, setIsExpanded] = useState(false);
   const expandedRef = useRef(null);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [emptyCartModalVisible, setEmptyCartModalVisible] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+
+  const [localQuantities, setLocalQuantities] = useState({});
+  const [pendingQuantities, setPendingQuantities] = useState({});
+  const [loadingItems, setLoadingItems] = useState({});
   const modalProps = {
     centered: true,
     className: styles.cartDeleteModal,
@@ -41,58 +44,158 @@ const CartPage = () => {
   const handleBackToCart = () => setIsCheckout(false);
   const checkoutRef = useRef({ current: null });
 
+  useEffect(() => {
+    const newLocalQuantities = {};
+    const newPendingQuantities = {};
+
+    cartItems.forEach((item) => {
+      const productId = item.product.id;
+      const quantity = parseInt(item.product_quantity, 10) || 0;
+      newLocalQuantities[productId] = quantity;
+      newPendingQuantities[productId] = quantity;
+    });
+
+    setLocalQuantities(newLocalQuantities);
+    setPendingQuantities(newPendingQuantities);
+  }, [cartItems]);
+
+  useEffect(() => {
+    const updateItem = async (productId) => {
+      const serverQuantity =
+        cartItems.find((item) => item.product.id === productId)
+          ?.product_quantity || 0;
+      const pendingQuantity = pendingQuantities[productId];
+
+      if (
+        pendingQuantity === undefined ||
+        pendingQuantity === parseInt(serverQuantity, 10)
+      ) {
+        return;
+      }
+
+      try {
+        setLoadingItems((prev) => ({ ...prev, [productId]: true }));
+
+        if (pendingQuantity <= 0) {
+          await removeFromCart({ productId }).unwrap();
+        } else {
+          await updateCartItem({
+            productId,
+            quantity: pendingQuantity,
+          }).unwrap();
+        }
+
+        refetch();
+      } catch (error) {
+        console.error("Failed to update cart:", error);
+
+        // Revert to server quantity on error
+        const originalItem = cartItems.find(
+          (item) => item.product.id === productId
+        );
+        if (originalItem) {
+          const originalQty = parseInt(originalItem.product_quantity, 10) || 0;
+          setLocalQuantities((prev) => ({
+            ...prev,
+            [productId]: originalQty,
+          }));
+          setPendingQuantities((prev) => ({
+            ...prev,
+            [productId]: originalQty,
+          }));
+        }
+      } finally {
+        setLoadingItems((prev) => ({ ...prev, [productId]: false }));
+      }
+    };
+
+    // Create a debounced function for each product
+    const debouncedUpdates = {};
+    Object.keys(pendingQuantities).forEach((productId) => {
+      if (!debouncedUpdates[productId]) {
+        debouncedUpdates[productId] = debounce(
+          () => updateItem(productId),
+          300
+        );
+      }
+      debouncedUpdates[productId]();
+    });
+
+    // Cleanup
+    return () => {
+      Object.values(debouncedUpdates).forEach((debouncedFn) =>
+        debouncedFn.cancel()
+      );
+    };
+  }, [pendingQuantities, cartItems, updateCartItem, removeFromCart, refetch]);
+
+  // Replace the existing quantity handlers with these
+  const handleQuantityIncrease = (productId) => (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (loadingItems[productId]) return;
+
+    const item = cartItems.find((item) => item.product.id === productId);
+    if (!item) return;
+
+    // Check if stock is sufficient
+    if (localQuantities[productId] >= item.product.stock) {
+      // Show stock error modal if needed
+      return;
+    }
+
+    // Update local state immediately for responsive UI
+    const newQuantity = (localQuantities[productId] || 0) + 1;
+    setLocalQuantities((prev) => ({
+      ...prev,
+      [productId]: newQuantity,
+    }));
+
+    // Update pending state which will trigger the effect to send API request
+    setPendingQuantities((prev) => ({
+      ...prev,
+      [productId]: newQuantity,
+    }));
+  };
+
   const handleOrderSubmit = async () => {
     if (isCheckout && checkoutRef.current) {
       const success = await checkoutRef.current();
       if (success) {
-        // Order was successful
-        refetch(); // Refresh cart data
-        setIsCheckout(false); // Go back to cart view
-        // Show success message if needed
+        refetch();
+        setIsCheckout(false);
       }
     } else {
-      // Start checkout if not already in checkout state
       setIsCheckout(true);
     }
   };
-  const updateQuantity = async (productId, newQuantity) => {
-    if (newQuantity <= 0) {
+
+  const handleQuantityDecrease = (productId) => (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (loadingItems[productId]) return;
+
+    const currentQuantity = localQuantities[productId] || 0;
+
+    if (currentQuantity <= 1) {
       showDeleteConfirm(productId);
       return;
     }
 
-    try {
-      const result = await updateCartItem({
-        productId: productId,
-        quantity: newQuantity,
-      }).unwrap();
+    // Update local state immediately for responsive UI
+    const newQuantity = currentQuantity - 1;
+    setLocalQuantities((prev) => ({
+      ...prev,
+      [productId]: newQuantity,
+    }));
 
-      if (result && result.message === "error") {
-        console.error(
-          "Server returned an error:",
-          result.errorDetails || "Unknown error"
-        );
-        return;
-      }
-
-      refetch();
-    } catch (error) {
-      console.error("Failed to update cart:", error);
-
-      let errorMessage = "Failed to update cart. Please try again.";
-
-      if (error?.data?.errorDetails) {
-        errorMessage = error.data.errorDetails;
-      } else if (error?.data?.message) {
-        errorMessage = error.data.message;
-      } else if (error?.message) {
-        errorMessage = error.message;
-      }
-
-      if (process.env.NODE_ENV === "development") {
-        console.log("Full error object:", JSON.stringify(error, null, 2));
-      }
-    }
+    // Update pending state which will trigger the effect to send API request
+    setPendingQuantities((prev) => ({
+      ...prev,
+      [productId]: newQuantity,
+    }));
   };
 
   const calculateTotal = () => {
@@ -138,17 +241,10 @@ const CartPage = () => {
     setEmptyCartModalVisible(false);
   };
 
-  const handlePlaceOrder = (orderData) => {
-    refetch();
-    setIsCheckout(false);
-  };
-
   const handleButtonClick = () => {
     if (isCheckout) {
-      // If already in checkout, submit the order
       handleOrderSubmit();
     } else {
-      // If in cart view, open checkout
       handleCheckout();
     }
   };
@@ -236,25 +332,21 @@ const CartPage = () => {
                         </span>
                         <div className={styles.quantityControls}>
                           <button
-                            onClick={() =>
-                              updateQuantity(
-                                item.product.id,
-                                parseInt(item.product_quantity, 10) - 1
-                              )
-                            }
+                            onClick={handleQuantityDecrease(item.product.id)}
                             className={styles.quantityBtn}
+                            disabled={loadingItems[item.product.id]}
                           >
                             <DecreaseIcon />
                           </button>
-                          <span>{parseInt(item.product_quantity, 10)}</span>
+                          <span>
+                            {localQuantities[item.product.id] !== undefined
+                              ? localQuantities[item.product.id]
+                              : parseInt(item.product_quantity, 10) || 0}
+                          </span>
                           <button
-                            onClick={() =>
-                              updateQuantity(
-                                item.product.id,
-                                parseInt(item.product_quantity, 10) + 1
-                              )
-                            }
+                            onClick={handleQuantityIncrease(item.product.id)}
                             className={styles.quantityBtn}
+                            disabled={loadingItems[item.product.id]}
                           >
                             <IncreaseIcon />
                           </button>

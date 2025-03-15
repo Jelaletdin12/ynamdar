@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import styles from "./contactUs.module.scss";
+import { useSubmitContactMessageMutation } from "../../app/api/contactUs";
 
 const ContactForm = () => {
+  const [submitContactMessage, { isLoading, isSuccess, error }] = useSubmitContactMessageMutation();
+  
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -14,9 +17,33 @@ const ContactForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+    
+    try {
+      
+      const apiData = {
+        phone:  formData.phone, 
+        title: formData.fullName, 
+        content: formData.message, 
+        type: "mobile_app" 
+      };
+      
+     
+      await submitContactMessage(apiData).unwrap();
+      
+      
+      if (isSuccess) {
+        setFormData({
+          fullName: "",
+          phone: "",
+          email: "",
+          message: "",
+        });
+      }
+    } catch (err) {
+      console.error("Failed to submit form:", err);
+    }
   };
 
   return (
@@ -36,6 +63,7 @@ const ContactForm = () => {
             name="fullName"
             value={formData.fullName}
             onChange={handleInputChange}
+            required
           />
         </div>
 
@@ -50,6 +78,7 @@ const ContactForm = () => {
               value={formData.phone}
               onChange={handleInputChange}
               className={styles.phoneInput}
+              required
             />
           </div>
         </div>
@@ -73,12 +102,29 @@ const ContactForm = () => {
             value={formData.message}
             onChange={handleInputChange}
             rows={4}
+            required
           />
         </div>
 
-        <button type="submit" className={styles.submitButton}>
-          <span>ugrat</span>
+        <button 
+          type="submit" 
+          className={styles.submitButton}
+          disabled={isLoading}
+        >
+          <span>{isLoading ? "Ugradylýar..." : "Ugrat"}</span>
         </button>
+        
+        {isSuccess && (
+          <div className={styles.successMessage}>
+            Hatyňyz üstünlikli ugradyldy!
+          </div>
+        )}
+        
+        {error && (
+          <div className={styles.errorMessage}>
+            Näsazlyk ýüze çykdy. Gaýtadan synanyşyň.
+          </div>
+        )}
       </form>
     </div>
   );

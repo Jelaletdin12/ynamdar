@@ -24,7 +24,7 @@ import {
   useRemoveFromCartMutation,
   useGetCartQuery,
 } from "../../app/api/cartApi";
-
+import ImageCarousel from "../../components/ProductCard/imageCarousel/index";
 const ProductPage = ({
   productProp,
   showAddToCart = true,
@@ -57,9 +57,7 @@ const ProductPage = ({
   const [localIsFavorite, setLocalIsFavorite] = useState(
     favoriteProducts.some((fav) => fav.product?.id === product?.id)
   );
-  // Get cart data and keep it updated
   const { data: cartData } = useGetCartQuery(undefined, {
-    // Use selective cache to reduce unnecessary re-renders
     selectFromResult: (result) => ({
       data: result.data,
     }),
@@ -68,15 +66,19 @@ const ProductPage = ({
   const [updateCartItem] = useUpdateCartItemMutation();
   const [removeFromCart] = useRemoveFromCartMutation();
   const [localQuantity, setLocalQuantity] = useState(0);
-  const [pendingQuantity, setPendingQuantity] = useState(localQuantity);
   const cartItem = cartData?.data?.find(
-    (item) => item.product?.id === product?.id || item.product_id === product?.id
+    (item) =>
+      item.product?.id === product?.id || item.product_id === product?.id
   );
+  const [pendingQuantity, setPendingQuantity] = useState(0);
+
   useEffect(() => {
     if (cartItem) {
       setLocalQuantity(cartItem.quantity || cartItem.product_quantity || 0);
+      setPendingQuantity(cartItem.quantity || cartItem.product_quantity || 0);
     } else {
       setLocalQuantity(0);
+      setPendingQuantity(0);
     }
   }, [cartData, cartItem]);
 
@@ -162,7 +164,8 @@ const ProductPage = ({
     event.preventDefault();
     event.stopPropagation();
 
-    // Check if adding would exceed stock
+    if (isLoading) return;
+
     if (localQuantity >= product.stock) {
       setStockErrorModalVisible(true);
       return;
@@ -171,24 +174,60 @@ const ProductPage = ({
     setLocalQuantity((prev) => prev + 1);
     setPendingQuantity((prev) => prev + 1);
   };
+
+  // Update quantity decrease handler
   const handleQuantityDecrease = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
+    if (isLoading) return;
+
     if (pendingQuantity <= 1) {
       setPendingQuantity(0);
       setLocalQuantity(0);
+      setIsLoading(true);
       removeFromCart({ productId: product.id })
         .unwrap()
         .catch(() => {
           setLocalQuantity(1);
           setPendingQuantity(1);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else {
       setLocalQuantity((prev) => prev - 1);
       setPendingQuantity((prev) => prev - 1);
     }
   };
+
+  useEffect(() => {
+    const updateCart = async () => {
+      if (pendingQuantity !== quantity && pendingQuantity > 0) {
+        try {
+          setIsLoading(true);
+          await updateCartItem({
+            productId: product.id,
+            quantity: pendingQuantity,
+          }).unwrap();
+        } catch (error) {
+          console.error("Failed to update cart item:", error);
+          setLocalQuantity(quantity);
+          setPendingQuantity(quantity);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    const debouncedUpdate = debounce(updateCart, 300);
+
+    if (pendingQuantity !== quantity) {
+      debouncedUpdate();
+    }
+
+    return () => debouncedUpdate.cancel();
+  }, [pendingQuantity, quantity, product, updateCartItem]);
 
   if (productLoading || similarProductsLoading) return <div>Loading...</div>;
   if (productError || similarProductsError) return <div>Error</div>;
@@ -215,11 +254,14 @@ const ProductPage = ({
       {/* Product Details */}
       <div className={styles.productSection}>
         <div className={styles.productImage}>
-          <img src={imageUrl} alt={product.name} />
+        <ImageCarousel images={product.media} altText={product.name} />
         </div>
         <div className={styles.productInfo}>
           <h1 className={styles.productTitle}>{product.name}</h1>
-          <p className={styles.productDescription}  dangerouslySetInnerHTML={{ __html: product.description }}></p>
+          <p
+            className={styles.productDescription}
+            dangerouslySetInnerHTML={{ __html: product.description }}
+          ></p>
 
           <div className={styles.productMeta}>
             <div className={styles.metaItem}>
@@ -303,17 +345,18 @@ const ProductPage = ({
             </div>
           </div>
           <div
-          className={styles.productActionsMobile}
-          style={{ position: "sticky", bottom: "59px" }}
-        >
-          <div className={styles.priceContainer}>
-            {" "}
-            <span className={styles.price}>{product.price_amount} m.</span>
-            <span className={styles.oldPrice}>{product.old_price_amount} m.</span>
-          </div>
-          <div className={styles.Btn}>
-            
-            {showFavoriteButton && (
+            className={styles.productActionsMobile}
+            style={{ position: "sticky", bottom: "59px" }}
+          >
+            <div className={styles.priceContainer}>
+              {" "}
+              <span className={styles.price}>{product.price_amount} m.</span>
+              <span className={styles.oldPrice}>
+                {product.old_price_amount} m.
+              </span>
+            </div>
+            <div className={styles.Btn}>
+              {showFavoriteButton && (
                 <button
                   className={styles.favoriteButton}
                   onClick={handleToggleFavorite}
@@ -321,8 +364,8 @@ const ProductPage = ({
                   {localIsFavorite ? <IoMdHeart /> : <IoMdHeartEmpty />}
                 </button>
               )}
-            
-            {showAddToCart && (
+
+              {showAddToCart && (
                 <>
                   {localQuantity > 0 ? (
                     <div className={styles.quantityControls}>
@@ -368,8 +411,8 @@ const ProductPage = ({
                   )}
                 </>
               )}
+            </div>
           </div>
-        </div>
         </div>
       </div>
       <ReviewSection

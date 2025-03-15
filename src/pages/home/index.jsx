@@ -4,6 +4,7 @@ import CategorySection from "../../components/CategorySection/index";
 import Carousel from "../../components/Banner/index";
 import styles from "./Home.module.scss";
 import { useGetCollectionsQuery } from "../../app/api/collectionsApi";
+import PageLoader from "../../components/Loader/pageLoader"
 
 const Home = () => {
   const { data, error, isLoading } = useGetCollectionsQuery();
@@ -37,7 +38,7 @@ const Home = () => {
     }
   };
 
-  if (isLoading) return <div>Loading..</div>;
+  if (isLoading) return <PageLoader/>;
   if (error) return <div>Error</div>;
 
   return (
