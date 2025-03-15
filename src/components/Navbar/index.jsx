@@ -4,6 +4,7 @@ import { Modal } from "antd";
 import SignupForm from "../BeSeller/index";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { LogoWithText } from "../Icons";
 const Navbar = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate();
@@ -26,22 +27,18 @@ const Navbar = () => {
                 className={styles.logoContainer}
                 onClick={() => navigate("/")}
               >
-                <img src={logo} alt="Logo" />
+                <LogoWithText />
                 <div style={{ backgroundColor: "red" }}></div>
                 <div
                   className={styles.Sides}
                   style={{ backgroundColor: "red" }}
                 ></div>
               </div>
-              {/* <div className={styles.logoContainer}>
-                <img src={logo} alt="Logo" />
-              </div>
-              <div className={styles.logoContainer}>
-                <img src={logo} alt="Logo" />
-              </div> */}
             </div>
-            <div style={{ display: "flex", alignItems: "center"  }}>
-              <button className={styles.btn} onClick={showModal}>Satyjy bol</button>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <button className={styles.btn} onClick={showModal}>
+                Satyjy bol
+              </button>
             </div>
           </div>
         </div>
