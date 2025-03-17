@@ -21,7 +21,7 @@ import {
 } from "../../app/api/collectionsApi";
 import { useGetBrandProductsQuery } from "../../app/api/brandsApi";
 // import Loader  from "../../components/Loader/index"
-import PageLoader from "../../components/Loader/pageLoader"
+import Loader from "../../components/Loader/index"
 
 const CategoryPage = () => {
   const { t } = useTranslation();
@@ -255,7 +255,7 @@ const CategoryPage = () => {
     );
   };
 
-  if (isLoading) return <PageLoader/>;
+  if (isLoading) return <Loader/>;
   if (hasError) return <div>Error loading content</div>;
 
   return (

@@ -181,7 +181,7 @@
   background-color: rgb(255 255 255);
   border: 1px solid rgb(237 228 255);
   svg {
-    fill: #ff6600;
+    fill: #888888;
     height: 20px;
     width: 20px;
   }
@@ -254,7 +254,7 @@
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
   transition-duration: 150ms;
-  background-color: #ec6323;
+  background-color: #888888;
   border: none;
   @media screen and (max-width: 639px) {
   min-width: auto;
@@ -266,7 +266,7 @@
   }
 
   &:hover {
-    background-color: rgb(243 146 87);
+    background-color: #aaaaaa;
     cursor: pointer;
   }
 }
@@ -276,7 +276,7 @@
   display: flex;
   align-items: center;
   gap: 2.5rem;
-  background-color: rgb(236 99 35);
+  background-color: #888888;
   // width: 10rem;
   // justify-content: center;
   border-radius: 5px;
@@ -311,7 +311,7 @@
     }
 
     &:hover {
-      background: rgb(243 147 87);
+      background: #aaaaaa;
     }
   }
 }

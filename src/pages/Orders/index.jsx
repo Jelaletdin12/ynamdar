@@ -70,7 +70,7 @@ const Orders = () => {
                 <tr key={order.id}>
                   <td>{order.id}</td>
                   <td>{formatOrderDate(order.delivery_at)}</td>
-                  <td style={{ color: "#ec6323", fontWeight: "600" }}>
+                  <td style={{ color: "#888888", fontWeight: "700" }}>
                     {totalAmount.toFixed(2)} m.
                   </td>
                   <td>{order.payment_type}</td>

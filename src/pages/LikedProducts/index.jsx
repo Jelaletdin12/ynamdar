@@ -7,6 +7,7 @@ import {
   useGetFavoritesQuery,
   useRemoveFavoriteMutation,
 } from "../../app/api/favoritesApi";
+import { motion, AnimatePresence } from "framer-motion";
 
 const WishList = () => {
   const { t } = useTranslation();
@@ -15,13 +16,14 @@ const WishList = () => {
     isFetching,
     error,
   } = useGetFavoritesQuery(undefined, {
-    // Add cache handling to help with optimistic updates
     refetchOnMountOrArgChange: true
   });
   
   const [removeFavorite] = useRemoveFavoriteMutation();
   // Track items being removed for optimistic UI updates
   const [removingItems, setRemovingItems] = useState(new Set());
+  // Track items being animated out
+  const [animatingItems, setAnimatingItems] = useState(new Set());
 
   const handleAddToCart = (product) => {
     // Implement cart logic here
@@ -30,35 +32,63 @@ const WishList = () => {
 
   const handleToggleFavorite = async (product) => {
     try {
-      // Add product ID to removing set for optimistic UI update
-      setRemovingItems(prev => new Set(prev).add(product.id));
+      // Add to animating set first for smooth visual transition
+      setAnimatingItems(prev => new Set(prev).add(product.id));
       
-      // Call API to remove from favorites
-      await removeFavorite(product.id);
+      // Wait a brief moment for animation to begin before making API call
+      setTimeout(async () => {
+        // Add product ID to removing set for optimistic UI update
+        setRemovingItems(prev => new Set(prev).add(product.id));
+        
+        // Call API to remove from favorites
+        await removeFavorite(product.id);
+      }, 300);
       
-      // We don't need to explicitly call refetch() here - RTK Query will 
-      // automatically invalidate and refetch due to the mutation
     } catch (err) {
       console.error("Error removing from wishlist:", err);
-    } finally {
-      // Remove from the set whether successful or not
-      setRemovingItems(prev => {
+      // If there's an error, remove from animating set
+      setAnimatingItems(prev => {
         const newSet = new Set(prev);
         newSet.delete(product.id);
         return newSet;
       });
+    } finally {
+      // Remove from the removing set after API call completes
+      setTimeout(() => {
+        setRemovingItems(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(product.id);
+          return newSet;
+        });
+        setAnimatingItems(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(product.id);
+          return newSet;
+        });
+      }, 500);
     }
   };
 
   if (isFetching && products.length === 0) {
-    return <div>Loading...</div>;
+    return <div className={styles.loadingContainer}>
+      <div className={styles.loadingSpinner}></div>
+      <p>{t("common.loading")}</p>
+    </div>;
   }
 
   if (error) {
-    return <div>Error loading wishlist.</div>;
+    return <div className={styles.errorContainer}>
+      <p>{t("common.error")}</p>
+      <button 
+        className={styles.retryButton}
+        onClick={() => refetch()}
+      >
+        {t("common.retry")}
+      </button>
+    </div>;
   }
 
-  // Filter out items that are being removed for optimistic UI update
+  // Filter out items that have been completely removed
   const displayedProducts = products.filter(
     ({ product }) => !removingItems.has(product.id)
   );
@@ -71,16 +101,35 @@ const WishList = () => {
         <>
           <h1 className={styles.title}>{t("wishtList.likedProducts")}</h1>
           <div className={styles.productGrid}>
-            {displayedProducts.map(({ product }) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={handleAddToCart}
-                onToggleFavorite={() => handleToggleFavorite(product)}
-                showFavoriteButton={true}
-                showAddToCart={true}
-              />
-            ))}
+            <AnimatePresence>
+              {displayedProducts.map(({ product }) => (
+                <motion.div
+                  key={product.id}
+                  layout
+                  initial={{ opacity: 1, scale: 1 }}
+                  animate={{ 
+                    opacity: animatingItems.has(product.id) ? 0.5 : 1,
+                    scale: animatingItems.has(product.id) ? 0.95 : 1,
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    scale: 0.8, 
+                    x: -20,
+                    transition: { duration: 0.3 } 
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className={animatingItems.has(product.id) ? styles.removingItem : ""}
+                >
+                  <ProductCard
+                    product={product}
+                    onAddToCart={handleAddToCart}
+                    onToggleFavorite={() => handleToggleFavorite(product)}
+                    showFavoriteButton={true}
+                    showAddToCart={true}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         </>
       )}

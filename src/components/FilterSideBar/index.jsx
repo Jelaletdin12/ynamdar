@@ -27,25 +27,28 @@ const FilterSidebar = ({ onPriceSortChange, currentPriceSort = "none" }) => {
   const filterOptions = Object.values(sortOptionsMap);
 
   // Update local state when prop changes
-  useEffect(() => {
-    setSelectedOption(currentPriceSort);
-  }, [currentPriceSort]);
+ // Change the useEffect to properly set the radio button value
+useEffect(() => {
+  // Map the currentPriceSort prop to the display value
+  setSelectedOption(sortOptionsMap[currentPriceSort] || sortOptionsMap.none);
+}, [currentPriceSort]);
+
+// Then make sure the handleOptionChange correctly gets the value
+const handleOptionChange = (e) => {
+  const displayValue = e.target.value;
+  const sortValue = displayToSortMap[displayValue] || "none";
+  setSelectedOption(displayValue);
+  
+  if (onPriceSortChange) {
+    onPriceSortChange(sortValue);
+  }
+};
 
   const handleFilterToggle = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleOptionChange = (e) => {
-    const displayValue = e.target.value;
-
-    const sortValue = displayToSortMap[displayValue] || "none";
-
-    setSelectedOption(displayValue);
-
-    if (onPriceSortChange) {
-      onPriceSortChange(sortValue);
-    }
-  };
+ 
 
   const handleClose = () => {
     setIsOpen(false);
@@ -75,7 +78,10 @@ const FilterSidebar = ({ onPriceSortChange, currentPriceSort = "none" }) => {
           className={styles.radioGroup}
         >
           {filterOptions.map((option, index) => (
-            <Radio key={index} value={option} className={styles.radioItem}>
+            <Radio key={index} value={option} className={styles.radioItem}  style={{ 
+              '--radio-dot-color': '#888888',
+              '--radio-checked-color': '#888888' 
+            }}>
               {option}
             </Radio>
           ))}

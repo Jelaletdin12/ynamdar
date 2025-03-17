@@ -5,7 +5,7 @@ export const searchApi = baseApi.injectEndpoints({
     searchProduct: builder.query({
       query: (query) => ({
         url: "/search-product",
-        params: { q: query }
+        params: { q: query },
       }),
     }),
     searchProductByBarcode: builder.query({
@@ -17,7 +17,5 @@ export const searchApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useSearchProductQuery,
-  useSearchProductByBarcodeQuery,
-} = searchApi;
+export const { useSearchProductQuery, useSearchProductByBarcodeQuery } =
+  searchApi;

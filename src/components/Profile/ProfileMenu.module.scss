@@ -40,20 +40,23 @@
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
+  &:last-child{
+    margin-bottom: 15px;
+  }
 }
 
 .icon {
   display: flex;
   align-items: center;
-  color: #ec6323; 
+  color: #000; 
   width: 24px;
   height: 24px;
 }
 
 .text {
   font-size: 16px;
-  color: #ec6323;
-  font-weight: 500;
+  color: #888888;
+  font-weight: 600;
 }
 
 .langModal {
@@ -161,13 +164,15 @@
 
 .phoneNumber {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
+  color: #888888;
 }
 
 .editProfileLink {
-  color: #ff6b35;
+  color: #888888;
   display: flex;
   align-items: center;
+  border: none;
 }
 
 .balanceSection {
@@ -176,13 +181,14 @@
   justify-content: space-between;
   background-color: white;
   border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 20px;
+  padding: 12px;
+  margin-bottom: 8px;
 }
 
 .balanceLabel {
   font-size: 14px;
-  color: #666;
+  color: #888888;
+  font-weight: 600;
 }
 
 .balanceAmount {

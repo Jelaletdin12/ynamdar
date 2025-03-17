@@ -11,6 +11,7 @@ import {
   useVerifyTokenMutation,
 } from "../../app/api/authApi";
 import { RegisterIcon } from "../Icons";
+import { useAuth } from "../../context/authContext";
 
 const SignUpModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
   const [internalIsVisible, setInternalIsVisible] = useState(false);
@@ -18,7 +19,7 @@ const SignUpModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
   const isControlled = propIsVisible !== undefined;
   const isVisible = isControlled ? propIsVisible : internalIsVisible;
   const [activeTab, setActiveTab] = useState("phone");
-
+  const { login: authLogin } = useAuth();
   const [phone, setPhone] = useState("+993");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -48,8 +49,6 @@ const SignUpModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
 
         maskRef.current = IMask(inputElement, maskOptions);
         maskRef.current.value = phone;
-
-        
 
         maskRef.current.on("accept", () => {
           setPhone(maskRef.current.value);
@@ -179,7 +178,11 @@ const SignUpModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
         code: verificationCodeInt, // Use the integer version of the code
       }).unwrap();
 
-      if (response?.token) {
+      if (response?.token || response?.data) {
+        const token = response?.token || response?.data;
+
+        authLogin(token);
+
         message.success(t("profile.registration_successful"));
         closeModal();
         resetForm();

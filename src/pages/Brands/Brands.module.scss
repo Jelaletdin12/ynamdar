@@ -48,7 +48,7 @@
     color: #111827;
     cursor: pointer;
     &:hover {
-      color: rgb(236 99 35);
+      color: #aaaaaa;
     }
   }
 }
@@ -135,4 +135,15 @@
   100% {
     background-position: -200% 0;
   }
+}
+
+
+.logoFallback {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
+  height: 100%;
+  border-radius: 4px;
+  object-fit: contain;
 }

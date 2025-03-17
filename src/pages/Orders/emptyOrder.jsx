@@ -9,8 +9,8 @@ const EmptyOrderState = () => {
         <div className={styles.emptyCartIcon}>
           <img src={order} alt="" />
         </div>
-        <h2>{t("cart.emptyCartTitle")}</h2>
-        <p>{t("cart.emptyCartMessage")}</p>
+        <h2>{t("order.emptyOrderTitle")}</h2>
+        <p>{t("order.emptyOrderMessage")}</p>
 
         <button
           onClick={() => (window.location.href = "/")}

@@ -62,7 +62,7 @@ function App() {
                   }}
                 >
                   <svg
-                    style={{ color: "#ec6323" }}
+                    style={{ color: "#888888" }}
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                   >

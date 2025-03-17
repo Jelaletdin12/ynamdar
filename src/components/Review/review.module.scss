@@ -65,12 +65,12 @@
 
     &:focus {
       outline: none;
-      border-color: #f97316;
+      border-color: #888888;
     }
   }
 
   &Submit {
-    background-color: #f97316;
+    background-color: #888888;
     color: white;
     padding: 8px 32px;
     border-radius: 8px;
@@ -79,7 +79,7 @@
     transition: background-color 0.2s;
 
     &:hover {
-      background-color: #ea580c;
+      background-color: #aaaaaa;
     }
   }
 }

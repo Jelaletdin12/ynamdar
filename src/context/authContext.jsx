@@ -57,13 +57,13 @@ export const AuthProvider = ({ children }) => {
       if (storedAuthToken) {
         setAuthToken(storedAuthToken);
         setIsAuthenticated(true);
-        console.log("Auth token bulundu ve aktif edildi");
+        // console.log("Auth token bulundu ve aktif edildi");
       } else if (storedGuestToken) {
         setGuestToken(storedGuestToken);
-        console.log("Guest token bulundu ve aktif edildi");
+        // console.log("Guest token bulundu ve aktif edildi");
       } else {
         try {
-          console.log("Token bulunamadı, guest token alınıyor...");
+          // console.log("Token bulunamadı, guest token alınıyor...");
           const response = await getGuestToken().unwrap();
 
           const newGuestToken =
@@ -92,10 +92,12 @@ export const AuthProvider = ({ children }) => {
   const login = (token) => {
     if (!token) return;
      
+    // Store the token
     document.cookie = `authToken=${token}; path=/; secure; SameSite=Strict`;
     localStorage.setItem("authToken", token);
     setAuthToken(token);
   
+    // Clear guest token
     localStorage.removeItem("guestToken");
     document.cookie = "guestToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     setGuestToken(null);
@@ -110,7 +112,6 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("authToken");
     setAuthToken(null);
     setIsAuthenticated(false);
-
     
     try {
       const response = await getGuestToken().unwrap();

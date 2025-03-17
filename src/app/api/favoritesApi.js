@@ -44,9 +44,8 @@ export const favoritesApi = baseApi.injectEndpoints({
             const parsed = JSON.parse(response);
             return parsed.data || "Added";
           } catch (error) {
-            // If we can't parse the response, check if it's HTML
             if (response.includes("<!doctype html>")) {
-              return "Added"; // Assume success if we got HTML back
+              return "Added";
             }
             console.error("Failed to parse add favorite response:", error);
             return "Added";
@@ -79,7 +78,7 @@ export const favoritesApi = baseApi.injectEndpoints({
             return parsed.data || "Removed";
           } catch (error) {
             if (response.includes("<!doctype html>")) {
-              return "Removed"; // Assume success if we got HTML back
+              return "Removed";
             }
             console.error("Failed to parse remove favorite response:", error);
             return "Removed";

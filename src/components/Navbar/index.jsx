@@ -1,5 +1,4 @@
 import styles from "./Navbar.module.scss";
-import logo from "../../assets/logo.png";
 import { Modal } from "antd";
 import SignupForm from "../BeSeller/index";
 import React, { useState } from "react";
@@ -20,7 +19,7 @@ const Navbar = () => {
       <header className={styles.navbar}>
         <div className={styles.navbarUp}>
           <div
-            style={{ maxWidth: "1366px", display: "flex", margin: "0 auto" }}
+            style={{ maxWidth: "1366px", display: "flex", margin: "0 auto", alignItems: "center"}}
           >
             <div className={styles.logo}>
               <div
@@ -28,14 +27,9 @@ const Navbar = () => {
                 onClick={() => navigate("/")}
               >
                 <LogoWithText />
-                <div style={{ backgroundColor: "red" }}></div>
-                <div
-                  className={styles.Sides}
-                  style={{ backgroundColor: "red" }}
-                ></div>
               </div>
             </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", padding: "8px 14px 6px" }}>
               <button className={styles.btn} onClick={showModal}>
                 Satyjy bol
               </button>

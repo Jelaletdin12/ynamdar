@@ -94,6 +94,8 @@ function Carousel() {
                   flex-direction: column;
                   height: 100%;
                   overflow: hidden;
+                  @media screen and (max-width:767px){
+                  display: none;}
                 }
                 .skeleton-thumb {
                   width: 100%;

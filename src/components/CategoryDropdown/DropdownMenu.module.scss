@@ -19,6 +19,7 @@
   font-size: 0.875rem;
   color: #4b5563;
   background-color: transparent;
+  font-weight: 600;
   cursor: pointer;
   &:hover {
     background-color: #f3f4f6;
@@ -67,10 +68,10 @@
   }
   .title {
     &:hover {
-      color: #ff6600;
+      color: #888888;
     }
     &:active {
-      color: #ff6600;
+      color: #888888;
     }
   }
 }
@@ -100,7 +101,7 @@
   .title {
     font-size: 14px;
     &:hover {
-      color: #ff6600;
+      color: #888888;
     }
   }
 }
@@ -129,7 +130,7 @@
     font-size: 24px;
     font-weight: 600;
     &:hover {
-      color: #ff6600;
+      color: #888888;
     }
   }
 }
@@ -147,7 +148,7 @@
   color: #361517;
   cursor: pointer;
   &:hover {
-    color: #ff6600;
+    color: #888888;
   }
 }
 
@@ -164,6 +165,6 @@
   transition: color 0.2s;
 
   &:hover {
-    color: #ff6600;
+    color: #888888;
   }
 }

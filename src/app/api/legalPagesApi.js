@@ -11,7 +11,5 @@ export const legalPagesApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useGetLegalPagesQuery,
-  useGetLegalPageBySlugQuery,
-} = legalPagesApi;
+export const { useGetLegalPagesQuery, useGetLegalPageBySlugQuery } =
+  legalPagesApi;

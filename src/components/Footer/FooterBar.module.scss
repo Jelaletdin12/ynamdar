@@ -3,9 +3,9 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: white;
+  
   border-top: 1px solid #e5e7eb;
-  background-color: #fef2ec;
+  background-color: #fff;
   z-index: 9;
   @media screen and (min-width: 1024px) {
     display: none;
@@ -38,17 +38,17 @@
   padding-bottom: 8px;
 
   &:hover .icon {
-    color: darken(#f97316, 5%);
+    color: #aaaaaa;
   }
 
   &.active {
-    border-bottom: 3px solid #ec6323;
+    border-bottom: 3px solid #888888;
     .label {
       font-weight: 600;
     }
 
     .icon {
-      color: #ec6323;
+      color: #888888;
     }
   }
 }
@@ -58,7 +58,7 @@
 }
 
 .icon {
-  color: #f97316;
+  color: #000000;
   transition: color 0.2s ease;
   svg {
     @media screen and (max-width: 425px) {
@@ -76,7 +76,7 @@
   position: absolute;
   top: -8px;
   right: -8px;
-  background-color: #ec6323;
+  background-color: #888888;
   color: white;
   font-size: 0.75rem;
   height: 16px;
@@ -90,8 +90,8 @@
 .label {
   margin-top: 0.25rem;
   font-size: 12px;
-  color: #ec6323;
-  font-weight: 500;
+  color: #000;
+  font-weight: 600;
   @media screen and (max-width: 425px) {
     font-size: 11px;
   }

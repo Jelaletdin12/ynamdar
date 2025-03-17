@@ -141,6 +141,9 @@ export default {
     information: "Maglumat",
     repeatOrder: "Sargydy gaýtalamak",
     Your_order_has_been_accepted: "Sargydyňyz kabul edildi!",
+    emptyOrderTitle: "Entek siz sargyt etmediňiz!",
+    emptyOrderMessage: "Haýyş söwda etmegiňizi dowam etdiriň!",
+    continueShopping: "Söwda etmegi dowam etdiriň",
   },
   category: {
     total: "Jemi",

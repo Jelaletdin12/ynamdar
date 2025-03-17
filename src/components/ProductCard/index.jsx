@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import styles from "./ProductCard.module.scss";
 import { IoMdHeartEmpty, IoMdHeart } from "react-icons/io";
@@ -20,7 +18,7 @@ import {
 import { Modal } from "antd";
 import { useTranslation } from "react-i18next";
 import { DecreaseIcon, IncreaseIcon } from "../Icons";
-import ImageCarousel from "./imageCarousel/index"; // Yeni carousel bileşenini import et
+import ImageCarousel from "./imageCarousel/index"; 
 
 const ProductCard = ({
   product,
@@ -225,6 +223,7 @@ const ProductCard = ({
               )}
             </div>
           </div>
+        </div>
           <div className={styles.actions}>
             {showFavoriteButton && (
               <button
@@ -263,7 +262,6 @@ const ProductCard = ({
               </>
             )}
           </div>
-        </div>
       </div>
 
       {/* Stock Error Modal */}

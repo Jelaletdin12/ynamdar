@@ -172,76 +172,6 @@ const Checkout = ({ cartItems, onBackToCart, onPlaceOrder }) => {
     });
   };
 
-  // const handlePlaceOrder = async () => {
-  //   // Validation checks
-  //   if (!selectedTimeSlot) {
-  //     console.error("No time slot selected");
-  //     alert("Please select a delivery time slot");
-  //     return;
-  //   }
-
-  //   if (
-  //     !formData.customer_name ||
-  //     !formData.customer_phone ||
-  //     !formData.customer_address ||
-  //     !formData.payment_type_id
-  //   ) {
-  //     console.error("Missing required fields");
-  //     alert("Please fill in all required fields");
-  //     return;
-  //   }
-
-  //   // Prepare data in the format expected by the API
-  //   const orderDetails = {
-  //     customer_name: formData.customer_name,
-  //     customer_phone: formatPhoneNumber(formData.customer_phone),
-  //     customer_address: formData.customer_address,
-  //     shipping_method:
-  //       selectedDeliveryType === "standard" ? "standart" : selectedDeliveryType, // Fix spelling if needed
-  //     payment_type_id: formData.payment_type_id,
-  //     delivery_time: selectedTimeSlot.hour,
-  //     delivery_at: selectedTimeSlot.date,
-  //     region: formData.region || "",
-  //   };
-
-  //   console.log("Sending order details:", orderDetails);
-
-  //   try {
-  //     // Use a workaround for HTML responses by catching the error at a lower level
-  //     const response = await placeOrder(orderDetails);
-
-  //     // Check if we got a successful response
-  //     if (response.data && !response.error) {
-  //       console.log("Order placed successfully:", response.data);
-  //       alert("Order placed successfully!");
-  //       if (onPlaceOrder) {
-  //         onPlaceOrder(response.data);
-  //       }
-  //       // You might want to redirect the user or clear the cart here
-  //     } else {
-  //       throw new Error(response.error || "Unknown error occurred");
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to place order:", error);
-
-  //     // Check if the error contains HTML
-  //     if (
-  //       error.data &&
-  //       typeof error.data === "string" &&
-  //       error.data.includes("<!doctype html>")
-  //     ) {
-  //       console.error("Server returned HTML instead of a proper API response");
-  //       alert(
-  //         "There was a problem with the server. Please try again later or contact support."
-  //       );
-  //     } else {
-  //       alert(
-  //         "Failed to place order. Please check your information and try again."
-  //       );
-  //     }
-  //   }
-  // };
-
   const getOrderData = () => {
     // Validation checks
     if (!selectedTimeSlot) {
@@ -287,6 +217,7 @@ const Checkout = ({ cartItems, onBackToCart, onPlaceOrder }) => {
 
           if (response.data && !response.error) {
             console.log("Order placed successfully:", response.data);
+            window.location.href = "/orders";
             return true;
           } else {
             throw new Error(response.error || "Unknown error occurred");
@@ -338,7 +269,9 @@ const Checkout = ({ cartItems, onBackToCart, onPlaceOrder }) => {
               }`}
             >
               <span></span>
-              <label>{slot.hour}</label>
+              <label onClick={() => handleTimeSlotSelect(slot)}>
+                {slot.hour}
+              </label>
             </button>
           ))}
         </div>
@@ -440,7 +373,15 @@ const Checkout = ({ cartItems, onBackToCart, onPlaceOrder }) => {
                 htmlFor={`payment${payment.id}`}
                 className={styles.customRadio}
               ></label>
-              <div className={styles.text}>
+              <div
+                className={styles.text}
+                onClick={() => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    payment_type_id: String(payment.id),
+                  }));
+                }}
+              >
                 <span className={styles.optionTitle}>{payment.name}</span>
                 <span className={styles.optionDesc}>
                   {payment.name === "Nagt"
@@ -553,7 +494,10 @@ const Checkout = ({ cartItems, onBackToCart, onPlaceOrder }) => {
                     onChange={() => handleDeliveryTypeChange("standard")}
                   />
                   <label className={styles.customRadio}></label>
-                  <label htmlFor="standard">
+                  <label
+                    htmlFor="standard"
+                    onClick={() => handleDeliveryTypeChange("standard")}
+                  >
                     <div className={styles.optionTitle}>
                       {t("checkout.standardShipping")}
                     </div>
@@ -570,7 +514,10 @@ const Checkout = ({ cartItems, onBackToCart, onPlaceOrder }) => {
                     onChange={() => handleDeliveryTypeChange("express")}
                   />
                   <label className={styles.customRadio}></label>
-                  <label htmlFor="express">
+                  <label
+                    htmlFor="express"
+                    onClick={() => handleDeliveryTypeChange("express")}
+                  >
                     <div className={styles.optionTitle}>
                       {t("checkout.expressDelivery")}
                     </div>
@@ -587,7 +534,10 @@ const Checkout = ({ cartItems, onBackToCart, onPlaceOrder }) => {
                     onChange={() => handleDeliveryTypeChange("pickup")}
                   />
                   <label className={styles.customRadio}></label>
-                  <label htmlFor="pickup">
+                  <label
+                    htmlFor="pickup"
+                    onClick={() => handleDeliveryTypeChange("pickup")}
+                  >
                     <div className={styles.optionTitle}>
                       {t("checkout.pickup")}
                     </div>

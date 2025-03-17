@@ -177,7 +177,7 @@
       }
 
       input[type="radio"]:checked + .customRadio {
-        background-color: #ff6600;
+        background-color: #888888;
       }
       input[type="checkbox"] {
         display: none;
@@ -204,7 +204,7 @@
         display: none;
         width: 18px;
         height: 18px;
-        fill: #ff6600;
+        fill: #888888;
       }
 
       input[type="checkbox"]:checked + .customCheckbox {

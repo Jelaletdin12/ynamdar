@@ -164,8 +164,8 @@
       }
 
       &:last-child {
-        font-weight: 500;
-        color: #000;
+        font-weight: 600;
+        color: #888;
         @media screen and (max-width: 640px) {
           text-align: right;
         }
@@ -290,7 +290,7 @@
       .price {
         font-size: 0.875rem;
         font-weight: 600;
-        color: #007bff;
+        color: #888888;
       }
     }
   }

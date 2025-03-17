@@ -30,6 +30,17 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: credentials,
       }),
+      transformResponse: (response) => {
+        const token = response?.token || response?.data;
+        if (token) {
+          localStorage.removeItem("guestToken");
+          document.cookie =
+            "guestToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+          localStorage.setItem("authToken", token);
+          document.cookie = `authToken=${token}; path=/; secure; SameSite=Strict`;
+        }
+        return response;
+      },
     }),
 
     register: builder.mutation({
@@ -38,6 +49,17 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: userData,
       }),
+      transformResponse: (response) => {
+        const token = response?.token || response?.data;
+        if (token) {
+          localStorage.removeItem("guestToken");
+          document.cookie =
+            "guestToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+          localStorage.setItem("authToken", token);
+          document.cookie = `authToken=${token}; path=/; secure; SameSite=Strict`;
+        }
+        return response;
+      },
     }),
     verifyToken: builder.mutation({
       query: ({ phone_number, code }) => ({
@@ -47,15 +69,14 @@ export const authApi = baseApi.injectEndpoints({
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-
         body: { phone_number, code },
       }),
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           const token = data.data;
-          console.log("Full Response:", data);
-          console.log("New TOken:", token);
+          // console.log("Full Response:", data);
+          // console.log("New Token:", token);
           if (token) {
             localStorage.removeItem("guestToken");
             document.cookie =

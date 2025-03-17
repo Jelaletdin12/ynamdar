@@ -12,10 +12,12 @@ import {
   useVerifyTokenMutation,
 } from "../../app/api/authApi";
 import { LoginIcon } from "../Icons";
+import { useAuth } from "../../context/authContext"; // Import the auth context
 
 const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
   const { t, i18n } = useTranslation();
   const [internalIsVisible, setInternalIsVisible] = useState(false);
+  const { login: authLogin } = useAuth(); // Get the login function from AuthContext
 
   const isControlled = propIsVisible !== undefined;
   const isVisible = isControlled ? propIsVisible : internalIsVisible;
@@ -185,6 +187,12 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
       }).unwrap();
 
       if (response && response.data) {
+        // Use the token to update authentication state
+        const token = response.data;
+        
+        // Call the AuthContext login function to update the state
+        authLogin(token);
+        
         message.success(t("profile.login_successful"));
         closeModal();
         resetForm();

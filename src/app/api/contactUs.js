@@ -9,7 +9,7 @@ export const contactApi = baseApi.injectEndpoints({
         body: { phone, title, content, type },
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
+          Accept: "application/json",
         },
       }),
     }),

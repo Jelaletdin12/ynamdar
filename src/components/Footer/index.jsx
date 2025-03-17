@@ -7,14 +7,17 @@ import logo from "../../assets/logoFooter.png";
 import FooterBar from "./FooterMobile";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { LogoWithText } from "../Icons";
+import { useNavigate } from "react-router-dom";
 const Footer = () => {
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   return (
     <>
       <footer className={styles.footer}>
         <div className={styles.container}>
-          <div className={styles.logo}>
-            <img src={logo} alt="" />
+          <div className={styles.logo}  onClick={() => navigate("/")}>
+            <LogoWithText/>
           </div>
           <div style={{ display: "flex" }}>
             <div className={styles.marketSection}>

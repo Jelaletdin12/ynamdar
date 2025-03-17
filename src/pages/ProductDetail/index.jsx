@@ -275,6 +275,10 @@ const ProductPage = ({
               <span className={styles.metaValue}>{product.barcode}</span>
             </div>
             <div className={styles.metaItem}>
+              <span className={styles.metaLabel}>Brand</span>
+              <span className={styles.metaValue}>{product.brand.name}</span>
+            </div>
+            <div className={styles.metaItem}>
               <span className={styles.metaLabel}>Stokta</span>
               <span className={styles.metaValue}>{product.stock}</span>
             </div>

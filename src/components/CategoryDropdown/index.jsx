@@ -88,7 +88,12 @@ const DropdownMenu = () => {
               activeCategory.children &&
               activeCategory.children.length > 0 && (
                 <div className={styles.contentPanel}>
-                  <h2 className={styles.title}>{activeCategory.name}</h2>
+                  <h2
+                    onClick={() => handleCategorySelect(activeCategory)}
+                    className={styles.title}
+                  >
+                    {activeCategory.name}
+                  </h2>
                   <div style={{ overflowY: "scroll", height: "100%" }}>
                     <div className={styles.subcategoryList}>
                       <div className={styles.column}>

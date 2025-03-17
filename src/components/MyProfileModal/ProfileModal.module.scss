@@ -25,6 +25,14 @@
     :global(.ant-input-affix-wrapper) {
       border-radius: 6px;
       height: 40px;
+      :hover{
+        border-color: #888888 !important;
+      }
+      &:focus-within{
+        outline: #888888;
+        border-color: #888888 !important;
+        box-shadow: none !important;
+      }
     }
   }
   
@@ -39,6 +47,7 @@
       min-width: 100px;
       height: 40px;
       border-radius: 6px;
+      margin-right: 10px;
     }
   }
   

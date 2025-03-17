@@ -13,18 +13,19 @@
     width: 100%;
     background-color: #fff;
     margin-bottom: 1px;
+    border-bottom: 3px solid #f3f4f6;
   }
 
   .btn{
     display: flex;
     width: max-content;
-    font-size: 16px;
-    border-radius: 8px;
-    border: navajowhite;
-    padding: 10px;
-    background-color: #ffffff;
+    font-size: 14px;
+    border-radius: 4px;
+    border: #000000;
+    background-color: #000000;
+    padding: 6px 10px;
     font-weight: bold;
-    color: #ff6600;
+    color: #ffffff;
   }
 
   .navbarDown {
@@ -46,10 +47,11 @@
   .logo {
     display: flex;
     width: 100%;
-    padding: 12px 22px 0px;
+    padding: 10px 22px 0px;
     height: 60px;
     gap: 10px;
     margin: 0 auto;
+    cursor: pointer;
     @media screen and (max-width: 426px) {
       height: 40px;
       justify-content: flex-start;
@@ -154,6 +156,7 @@
     height: 2.5rem;
     font-size: 0.875rem;
     color: #4b5563;
+    font-weight: 600;
     background-color: transparent;
     cursor: pointer;
     &:hover {

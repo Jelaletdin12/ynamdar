@@ -5,10 +5,10 @@ export const reviewsApi = baseApi.injectEndpoints({
     submitReview: builder.mutation({
       query: ({ productId, rating, title, source }) => ({
         url: `/products/${productId}/reviews`,
-        method: 'POST',
+        method: "POST",
         body: { rating: rating, title: title, source: source },
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       }),
     }),
@@ -18,7 +18,5 @@ export const reviewsApi = baseApi.injectEndpoints({
   }),
 });
 
-export const {
-  useSubmitReviewMutation,
-  useGetReviewsByProductQuery,
-} = reviewsApi;
+export const { useSubmitReviewMutation, useGetReviewsByProductQuery } =
+  reviewsApi;

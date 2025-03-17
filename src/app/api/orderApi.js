@@ -20,14 +20,13 @@ export const orderApi = baseApi.injectEndpoints({
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }),
-      // Add better handling for various response types
       transformResponse: (response, meta, arg) => {
         if (response && response.data) {
           return response.data;
         }
         return "Order placed";
       },
-      // Handle errors, especially HTML responses
+
       transformErrorResponse: (response, meta, arg) => {
         if (
           typeof response.data === "string" &&
@@ -43,7 +42,7 @@ export const orderApi = baseApi.injectEndpoints({
         }
         return response;
       },
-      // This will affect how RTK Query determines if the response is an error
+
       validateStatus: (response, result) => {
         return (
           response.status >= 200 && response.status < 300 && !result?.error

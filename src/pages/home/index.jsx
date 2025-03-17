@@ -50,11 +50,6 @@ const Home = () => {
           next={loadMoreCollections}
           hasMore={hasMore}
           loader={<h4 style={{ textAlign: 'center' }}>Loading more collections...</h4>}
-          endMessage={
-            <p style={{ textAlign: 'center' }}>
-              <b>You have seen all collections</b>
-            </p>
-          }
         >
           {collections.map((collection) => (
             <CategorySection key={collection.id} collection={collection} />

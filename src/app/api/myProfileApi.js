@@ -1,30 +1,30 @@
-import { baseApi } from './baseApi';
+import { baseApi } from "./baseApi";
 
 export const profileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getProfile: builder.query({
       query: () => {
-        const authToken = localStorage.getItem('authToken');
+        const authToken = localStorage.getItem("authToken");
         return {
-          url: 'profile',
-          method: 'GET',
+          url: "profile",
+          method: "GET",
           headers: {
             Authorization: `Bearer ${authToken}`,
-            Accept: 'application/json',
+            Accept: "application/json",
           },
         };
       },
     }),
     updateProfile: builder.mutation({
       query: (profileData) => {
-        const authToken = localStorage.getItem('authToken');
+        const authToken = localStorage.getItem("authToken");
         return {
-          url: 'profile',
-          method: 'POST',
+          url: "profile",
+          method: "POST",
           headers: {
             Authorization: `Bearer ${authToken}`,
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+            Accept: "application/json",
+            "Content-Type": "application/json",
           },
           body: profileData,
         };

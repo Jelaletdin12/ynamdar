@@ -123,7 +123,7 @@
   display: flex;
   align-items: center;
   gap: 2.5rem;
-  background-color: rgb(236 99 35);
+  background-color: #888888;
   border-radius: 5px;
   min-width: 160px;
 
@@ -156,7 +156,7 @@
     }
 
     &:hover {
-      background: rgb(243 147 87);
+      background: #aaaaaa;
       height: 100%;
     }
   }
@@ -190,7 +190,7 @@
   }
 }
 .summaryRow span:nth-of-type(2) {
-  color: #ec6323;
+  color: #888888;
   font-weight: 600;
 }
 .cartContent {
@@ -226,7 +226,7 @@
   width: 100%;
   padding: 8px;
   height: 40px;
-  background: #4bac43;
+  background: #d32824;
   color: #ffffff;
   border: none;
   border-radius: 5px;
@@ -237,7 +237,7 @@
   }
 
   &:hover {
-    background: rgb(126 210 111);
+    background: #e86064;
   }
 }
 
@@ -252,7 +252,7 @@
 .deleteBtn {
   display: flex;
   align-items: center;
-  background-color: rgb(236 99 35);
+  background-color: #888888;
   gap: 5px;
   border: none;
   color: #fff;
@@ -266,7 +266,7 @@
   }
 
   &:hover {
-    background: rgb(243 147 87);
+    background: #aaaaaa;
   }
 }
 
@@ -336,7 +336,7 @@
 }
 
 .amount {
-  color: #f97316;
+  color: #888888;
   font-weight: 500;
   font-size: 16px;
 
@@ -351,7 +351,7 @@
   padding: 12px;
   height: 100%;
   width: 50%;
-  background-color: #4bac43;
+  background-color: #d32824;
   justify-content: center;
   cursor: pointer;
   outline: none !important;

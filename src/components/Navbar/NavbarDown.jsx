@@ -121,15 +121,15 @@ const NavbarDown = () => {
         </div>
       ),
     },
-    {
-      key: "address",
-      label: (
-        <Link to="/addresses">
-          <HomeOutlined style={{ marginRight: "10px" }} />
-          {t("profile.my_address")}
-        </Link>
-      ),
-    },
+    // {
+    //   key: "address",
+    //   label: (
+    //     <Link to="/addresses">
+    //       <HomeOutlined style={{ marginRight: "10px" }} />
+    //       {t("profile.my_address")}
+    //     </Link>
+    //   ),
+    // },
     {
       key: "logout",
       label: (

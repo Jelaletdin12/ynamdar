@@ -5,7 +5,7 @@
 }
 
 .mobileNavButton {
-    background-color: #ec6323;
+    background-color: #888888;
     border-radius: 0.5rem;
     font-size: 14px;
     border: none;
@@ -36,12 +36,15 @@
       margin-bottom: 12px;
       font-size: 14px;
   
-      .ant-radio-inner {
-        border-color: #ff4d4f;
-      }
-  
-      .ant-radio-checked .ant-radio-inner {
-        background-color: #ff4d4f;
+      :global {
+        .ant-radio-checked .ant-radio-inner {
+          border-color: #888888;
+          background-color: #888888;
+          
+          &::after {
+            background-color: #ffffffff;
+          }
+        }
       }
     }
   }

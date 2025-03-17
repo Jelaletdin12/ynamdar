@@ -172,7 +172,6 @@ export const cartApi = baseApi.injectEndpoints({
           console.error("API update failed, retrying...");
         }
       },
-      // Add a transform response to match other mutations
       transformResponse: (response) => {
         if (typeof response === "object" && response.data) {
           return response;

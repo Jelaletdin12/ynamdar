@@ -15,8 +15,15 @@ import {
 } from "../../app/api/cartApi";
 import { DecreaseIcon, IncreaseIcon } from "../../components/Icons";
 import { debounce } from "lodash";
+import Loader from "../../components/Loader/index";
 const CartPage = () => {
-  const { data: response = {}, refetch, error, isError } = useGetCartQuery();
+  const {
+    data: response = {},
+    refetch,
+    error,
+    isError,
+    isLoading,
+  } = useGetCartQuery();
   const cartItems = isError ? [] : response.data || [];
   const { t, i18n } = useTranslation();
   const [isCheckout, setIsCheckout] = useState(false);
@@ -89,7 +96,6 @@ const CartPage = () => {
       } catch (error) {
         console.error("Failed to update cart:", error);
 
-        // Revert to server quantity on error
         const originalItem = cartItems.find(
           (item) => item.product.id === productId
         );
@@ -109,7 +115,6 @@ const CartPage = () => {
       }
     };
 
-    // Create a debounced function for each product
     const debouncedUpdates = {};
     Object.keys(pendingQuantities).forEach((productId) => {
       if (!debouncedUpdates[productId]) {
@@ -121,7 +126,6 @@ const CartPage = () => {
       debouncedUpdates[productId]();
     });
 
-    // Cleanup
     return () => {
       Object.values(debouncedUpdates).forEach((debouncedFn) =>
         debouncedFn.cancel()
@@ -129,7 +133,6 @@ const CartPage = () => {
     };
   }, [pendingQuantities, cartItems, updateCartItem, removeFromCart, refetch]);
 
-  // Replace the existing quantity handlers with these
   const handleQuantityIncrease = (productId) => (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -139,20 +142,14 @@ const CartPage = () => {
     const item = cartItems.find((item) => item.product.id === productId);
     if (!item) return;
 
-    // Check if stock is sufficient
     if (localQuantities[productId] >= item.product.stock) {
-      // Show stock error modal if needed
       return;
     }
-
-    // Update local state immediately for responsive UI
     const newQuantity = (localQuantities[productId] || 0) + 1;
     setLocalQuantities((prev) => ({
       ...prev,
       [productId]: newQuantity,
     }));
-
-    // Update pending state which will trigger the effect to send API request
     setPendingQuantities((prev) => ({
       ...prev,
       [productId]: newQuantity,
@@ -183,15 +180,11 @@ const CartPage = () => {
       showDeleteConfirm(productId);
       return;
     }
-
-    // Update local state immediately for responsive UI
     const newQuantity = currentQuantity - 1;
     setLocalQuantities((prev) => ({
       ...prev,
       [productId]: newQuantity,
     }));
-
-    // Update pending state which will trigger the effect to send API request
     setPendingQuantities((prev) => ({
       ...prev,
       [productId]: newQuantity,
@@ -274,7 +267,9 @@ const CartPage = () => {
       >
         <p>{t("common.Are_you_sure_you_want_to_empty_the_cart")}</p>
       </Modal>
-      {cartItems.length === 0 ? (
+      {isLoading ? (
+        <Loader />
+      ) : cartItems.length === 0 ? (
         <EmptyCartState />
       ) : (
         <div className={styles.cartItems}>
