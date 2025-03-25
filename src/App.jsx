@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import store from "./app/store";
 import "./i18n/i18n";
 import PageLoader from "./components/Loader/pageLoader.jsx";
-import "./App.css";
+
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./context/authContext.jsx";
 
