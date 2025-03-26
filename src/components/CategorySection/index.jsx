@@ -27,7 +27,7 @@ const CategorySection = ({ collection, selectedBrand }) => {
 
   // Render actual products when data is loaded
   const renderProducts = () => {
-    if (!allProducts || !allProducts.data) return null;
+    if (!allProducts || !allProducts.data || allProducts.data.length === 0) return null;
 
     const filteredProducts = selectedBrand
       ? allProducts.data.filter(
@@ -35,10 +35,15 @@ const CategorySection = ({ collection, selectedBrand }) => {
         )
       : allProducts.data;
 
-    return filteredProducts
-      .slice(0, 4)
-      .map((product) => <ProductCard key={product.id} product={product} />);
+    return filteredProducts.length > 0 
+      ? filteredProducts.slice(0, 4).map((product) => <ProductCard key={product.id} product={product} />) 
+      : null;
   };
+
+  // If no products exist, return null to hide the entire section
+  if (!isLoading && (!allProducts || !allProducts.data || allProducts.data.length === 0)) {
+    return null;
+  }
 
   return (
     <section className={styles.categorySection}>
