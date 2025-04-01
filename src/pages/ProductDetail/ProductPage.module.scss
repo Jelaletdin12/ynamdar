@@ -162,7 +162,7 @@
   }
   .oldPrice {
     font-size: 16px;
-    color: #999;
+    color: #d32824;
     text-decoration: line-through;
     font-weight: 600;
     @media screen and (max-width: 520px) {
@@ -254,7 +254,7 @@
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 300ms;
   transition-duration: 150ms;
-  background-color: #888888;
+  background-color: #d32824;
   border: none;
   @media screen and (max-width: 639px) {
   min-width: auto;
@@ -266,7 +266,7 @@
   }
 
   &:hover {
-    background-color: #aaaaaa;
+    background-color: #e86064;;
     cursor: pointer;
   }
 }
@@ -276,7 +276,7 @@
   display: flex;
   align-items: center;
   gap: 2.5rem;
-  background-color: #888888;
+  background-color: #d32824;
   // width: 10rem;
   // justify-content: center;
   border-radius: 5px;
@@ -311,7 +311,7 @@
     }
 
     &:hover {
-      background: #aaaaaa;
+      background: #e86064;;
     }
   }
 }

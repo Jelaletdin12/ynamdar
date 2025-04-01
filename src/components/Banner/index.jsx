@@ -58,6 +58,13 @@ function Carousel() {
     }
   };
 
+  // Handler for clicking on carousel images
+  const handleImageClick = (link) => {
+    if (link) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className={styles.carouselContainer}>
@@ -133,10 +140,16 @@ function Carousel() {
       >
         {data.data.map((item) => (
           <SwiperSlide key={item.id}>
-            <img
-              src={item.image}
-              alt={item.title || `Carousel Image ${item.id}`}
-            />
+            <div 
+              className={styles.imageWrapper}
+              onClick={() => handleImageClick(item.link)}
+              style={{ cursor: item.link ? 'pointer' : 'default' }}
+            >
+              <img
+                src={item.image}
+                alt={item.title || `Carousel Image ${item.id}`}
+              />
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>

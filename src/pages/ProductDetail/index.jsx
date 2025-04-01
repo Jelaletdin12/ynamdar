@@ -254,7 +254,11 @@ const ProductPage = ({
       {/* Product Details */}
       <div className={styles.productSection}>
         <div className={styles.productImage}>
-        <ImageCarousel images={product.media} altText={product.name} />
+          <ImageCarousel
+            images={product.media}
+            altText={product.name}
+            showThumbnails={true}
+          />
         </div>
         <div className={styles.productInfo}>
           <h1 className={styles.productTitle}>{product.name}</h1>
