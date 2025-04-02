@@ -8,7 +8,9 @@ import {
   useRemoveFavoriteMutation,
 } from "../../app/api/favoritesApi";
 import { motion, AnimatePresence } from "framer-motion";
-
+import Loader from "../../components/Loader/index";
+import { Result, Button } from "antd";
+import { useNavigate } from "react-router-dom";
 const WishList = () => {
   const { t } = useTranslation();
   const {
@@ -16,9 +18,9 @@ const WishList = () => {
     isFetching,
     error,
   } = useGetFavoritesQuery(undefined, {
-    refetchOnMountOrArgChange: true
+    refetchOnMountOrArgChange: true,
   });
-  
+  const navigate = useNavigate();
   const [removeFavorite] = useRemoveFavoriteMutation();
   // Track items being removed for optimistic UI updates
   const [removingItems, setRemovingItems] = useState(new Set());
@@ -33,21 +35,20 @@ const WishList = () => {
   const handleToggleFavorite = async (product) => {
     try {
       // Add to animating set first for smooth visual transition
-      setAnimatingItems(prev => new Set(prev).add(product.id));
-      
+      setAnimatingItems((prev) => new Set(prev).add(product.id));
+
       // Wait a brief moment for animation to begin before making API call
       setTimeout(async () => {
         // Add product ID to removing set for optimistic UI update
-        setRemovingItems(prev => new Set(prev).add(product.id));
-        
+        setRemovingItems((prev) => new Set(prev).add(product.id));
+
         // Call API to remove from favorites
         await removeFavorite(product.id);
       }, 300);
-      
     } catch (err) {
       console.error("Error removing from wishlist:", err);
       // If there's an error, remove from animating set
-      setAnimatingItems(prev => {
+      setAnimatingItems((prev) => {
         const newSet = new Set(prev);
         newSet.delete(product.id);
         return newSet;
@@ -55,12 +56,12 @@ const WishList = () => {
     } finally {
       // Remove from the removing set after API call completes
       setTimeout(() => {
-        setRemovingItems(prev => {
+        setRemovingItems((prev) => {
           const newSet = new Set(prev);
           newSet.delete(product.id);
           return newSet;
         });
-        setAnimatingItems(prev => {
+        setAnimatingItems((prev) => {
           const newSet = new Set(prev);
           newSet.delete(product.id);
           return newSet;
@@ -70,22 +71,24 @@ const WishList = () => {
   };
 
   if (isFetching && products.length === 0) {
-    return <div className={styles.loadingContainer}>
-      <div className={styles.loadingSpinner}></div>
-      <p>{t("common.loading")}</p>
-    </div>;
+    return (
+     <Loader />
+    );
   }
 
   if (error) {
-    return <div className={styles.errorContainer}>
-      <p>{t("common.error")}</p>
-      <button 
-        className={styles.retryButton}
-        onClick={() => refetch()}
-      >
-        {t("common.retry")}
-      </button>
-    </div>;
+    return (
+      <Result
+        status="500"
+        title="500"
+        subTitle="Näbelli ýalňyşlyk ýüze çykdy."
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Baş sahypa gidiň
+          </Button>
+        }
+      />
+    );
   }
 
   // Filter out items that have been completely removed
@@ -107,18 +110,20 @@ const WishList = () => {
                   key={product.id}
                   layout
                   initial={{ opacity: 1, scale: 1 }}
-                  animate={{ 
+                  animate={{
                     opacity: animatingItems.has(product.id) ? 0.5 : 1,
                     scale: animatingItems.has(product.id) ? 0.95 : 1,
                   }}
-                  exit={{ 
-                    opacity: 0, 
-                    scale: 0.8, 
+                  exit={{
+                    opacity: 0,
+                    scale: 0.8,
                     x: -20,
-                    transition: { duration: 0.3 } 
+                    transition: { duration: 0.3 },
                   }}
                   transition={{ duration: 0.3 }}
-                  className={animatingItems.has(product.id) ? styles.removingItem : ""}
+                  className={
+                    animatingItems.has(product.id) ? styles.removingItem : ""
+                  }
                 >
                   <ProductCard
                     product={product}

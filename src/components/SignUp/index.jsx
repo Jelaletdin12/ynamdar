@@ -225,7 +225,7 @@ const SignUpModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
             <Input
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value)}
-              placeholder="123456"
+              placeholder="00000"
               maxLength={6}
             />
           </div>

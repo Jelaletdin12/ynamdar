@@ -80,6 +80,10 @@ export default {
     warning: "Осторожно!",
     not_enough_stock: "На складе недостаточно товара!",
     ok: "OK",
+    something_went_wrong: "Что-то пошло не так!",
+    Register_or_use_your_existing_account_to_post_a_comment: "Пожалуйста, зарегистрируйтесь или используйте существующую учетную запись, чтобы оставить комментарий!",
+    Writecomment: "Написать комментарий",
+    comment:  "Комментарий",
    
 
   },

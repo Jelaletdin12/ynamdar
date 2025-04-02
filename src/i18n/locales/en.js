@@ -79,6 +79,10 @@ export default {
     warning: "Warning!",
     not_enough_stock: "Not enough product!",
     ok: "OK",
+    something_went_wrong: "Something went wrong!",
+    Register_or_use_your_existing_account_to_post_a_comment:"Register or use your existing account to post a comment!",
+    Writecomment: "Write a comment",
+    comment: "Comment",
     
   },
   search: {

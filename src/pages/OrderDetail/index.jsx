@@ -4,12 +4,14 @@ import { Ban, CircleCheck, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useGetOrderByIdQuery } from "../../app/api/orderApi"; // Update with your correct path
 import track from "../../assets/track.jpg"; // Keep for delivery service icon
-
+import Loader from "../../components/Loader/index";
+import { Result, Button } from "antd";
+import { useNavigate } from "react-router-dom";
 const OrderDetail = () => {
   const { t } = useTranslation();
   const { id } = useParams(); // Get the order ID from URL params
   const { data: orderData, isLoading, error } = useGetOrderByIdQuery(id);
-
+  const navigate = useNavigate();
   // Format date function
   const formatDate = (dateString) => {
     try {
@@ -53,13 +55,21 @@ const OrderDetail = () => {
   };
 
   // Handle loading state
-  if (isLoading)
-    return <div className={styles.loading}>Loading order details...</div>;
+  if (isLoading) return <Loader />;
 
   // Handle error state
   if (error)
     return (
-      <div className={styles.error}>Error loading order: {error.message}</div>
+      <Result
+        status="500"
+        title="500"
+        subTitle="Näbelli ýalňyşlyk ýüze çykdy."
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Baş sahypa gidiň
+          </Button>
+        }
+      />
     );
 
   // Handle case where order data is not available

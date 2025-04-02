@@ -21,7 +21,8 @@ import {
 } from "../../app/api/collectionsApi";
 import { useGetBrandProductsQuery } from "../../app/api/brandsApi";
 // import Loader  from "../../components/Loader/index"
-import Loader from "../../components/Loader/index"
+import Loader from "../../components/Loader/index";
+import { Result, Button } from "antd";
 
 const CategoryPage = () => {
   const { t } = useTranslation();
@@ -255,8 +256,23 @@ const CategoryPage = () => {
     );
   };
 
-  if (isLoading) return <Loader/>;
-  if (hasError) return <div>Error loading content</div>;
+  if (isLoading) return <Loader />;
+  if (hasError)
+    return (
+      <div>
+        {" "}
+        <Result
+          status="500"
+          title="500"
+          subTitle="Näbelli ýalňyşlyk ýüze çykdy."
+          extra={
+            <Button type="primary" onClick={() => navigate("/")}>
+              Baş sahypa gidiň
+            </Button>
+          }
+        />
+      </div>
+    );
 
   return (
     <div className={styles.categoryPage} style={{ flexDirection: "column" }}>

@@ -8,16 +8,15 @@ import { FaApple } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import {
   useLoginMutation,
-  useRegisterMutation,
   useVerifyTokenMutation,
 } from "../../app/api/authApi";
 import { LoginIcon } from "../Icons";
-import { useAuth } from "../../context/authContext"; // Import the auth context
+import { useAuth } from "../../context/authContext";
 
 const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
   const { t, i18n } = useTranslation();
   const [internalIsVisible, setInternalIsVisible] = useState(false);
-  const { login: authLogin } = useAuth(); // Get the login function from AuthContext
+  const { login: authLogin } = useAuth();
 
   const isControlled = propIsVisible !== undefined;
   const isVisible = isControlled ? propIsVisible : internalIsVisible;
@@ -29,12 +28,10 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
   const [isVerificationModalVisible, setIsVerificationModalVisible] =
     useState(false);
   const [verificationCode, setVerificationCode] = useState("");
-  const [isLogin, setIsLogin] = useState(true);
   const [formattedPhone, setFormattedPhone] = useState("");
 
   // API hooks
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
-  const [register, { isLoading: isRegisterLoading }] = useRegisterMutation();
   const [verifyToken, { isLoading: isVerifyLoading }] =
     useVerifyTokenMutation();
 
@@ -138,43 +135,33 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
       if (activeTab === "phone") {
         // Validate phone number
         if (formattedPhone.length < 8) {
-          return message.error(t("validation.enter_valid_phone"));
+          return message.error(t("profile.enter_valid_phone"));
         }
 
         // Convert to integer
         const phoneInt = parseInt(formattedPhone, 10);
         console.log(phoneInt);
 
-        // Call the appropriate API endpoint
-        if (isLogin) {
-          const response = await login({ phone_number: phoneInt }).unwrap();
-          if (response) {
-            message.success(t("profile.verification_code_sent"));
-            setIsVerificationModalVisible(true);
-          }
-        } else {
-          const response = await register({ phone_number: phoneInt }).unwrap();
-          if (response) {
-            message.success(t("profile.verification_code_sent"));
-            setIsVerificationModalVisible(true);
-            console.log(response);
-          }
+        // Call login API endpoint
+        const response = await login({ phone_number: phoneInt }).unwrap();
+        if (response) {
+          message.success(t("profile.verification_code_sent"));
+          setIsVerificationModalVisible(true);
         }
       } else if (activeTab === "email") {
-        // Handle email login/registration
-        // Note: Your API seems to only support phone authentication currently
+        // Handle email login
         message.info(t("profile.email_not_implemented"));
       }
     } catch (err) {
       console.error("Authentication error:", err);
-      message.error(err.data?.message || t("errors.something_went_wrong"));
+      message.error(err.data?.message || t("common.something_went_wrong"));
     }
   };
 
   const handleVerifyCode = async () => {
     try {
       if (!verificationCode || verificationCode.length < 5) {
-        return message.error(t("validation.enter_valid_code"));
+        return message.error(t("profile.enter_valid_code"));
       }
 
       // Convert to integer
@@ -202,19 +189,11 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
       }
     } catch (err) {
       console.error("Verification error:", err);
-
-      // More detailed error logging
       console.log("Full error object:", JSON.stringify(err, null, 2));
-
       message.error(
         err.data?.message || err.error || t("errors.something_went_wrong")
       );
     }
-  };
-
-  // Toggle between login and register
-  const toggleAuthMode = () => {
-    setIsLogin(!isLogin);
   };
 
   return (
@@ -226,9 +205,9 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
         </Button>
       )}
 
-      {/* Main Login/Register Modal */}
+      {/* Main Login Modal */}
       <Modal
-        title={isLogin ? t("profile.login") : t("profile.register")}
+        title={t("profile.login")}
         open={isVisible && !isVerificationModalVisible}
         onCancel={handleCancel}
         footer={null}
@@ -282,24 +261,11 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
         <button
           className={styles.submitButton}
           onClick={handleSubmit}
-          disabled={isLoginLoading || isRegisterLoading}
+          disabled={isLoginLoading}
         >
           <LoginIcon />
-          {isLoginLoading || isRegisterLoading
-            ? t("common.processing")
-            : isLogin
-            ? t("profile.login")
-            : t("profile.register")}
+          {isLoginLoading ? t("common.processing") : t("profile.login")}
         </button>
-
-        <div className={styles.toggleAuth}>
-          {isLogin
-            ? t("profile.dont_have_account")
-            : t("profile.already_have_account")}
-          <span onClick={toggleAuthMode}>
-            {isLogin ? t("profile.register") : t("profile.login")}
-          </span>
-        </div>
 
         <div className={styles.divider}>{t("common.or")}</div>
 
@@ -335,7 +301,7 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
               onChange={(e) =>
                 handleInputChange("verification", e.target.value)
               }
-              placeholder="0000"
+              placeholder="00000"
               maxLength={6}
             />
           </div>

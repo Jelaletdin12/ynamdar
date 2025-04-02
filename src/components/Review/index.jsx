@@ -2,12 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { Star } from "lucide-react";
+import { Modal, Button } from "antd";
 import styles from "./review.module.scss";
 import {
   useSubmitReviewMutation,
   useGetReviewsByProductQuery,
 } from "../../app/api/reviewApi";
-
+import { useAuth } from "../../context/authContext";
+import LoginModal from "../Login/index";
+import SignUpModal from "../SignUp/index";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 const StarRating = ({ rating, onRatingChange, interactive = false }) => {
   const [hoverRating, setHoverRating] = useState(0);
 
@@ -35,6 +40,14 @@ const ReviewSection = ({
   existingReviews = [],
   reviewStats = { count: 0, rating: "0.00" },
 }) => {
+  // Get authentication status from auth context
+  const { isAuthenticated } = useAuth();
+   const { t, i18n } = useTranslation();
+  // States for modals
+  const [isWarningModalVisible, setIsWarningModalVisible] = useState(false);
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+  const [isSignUpModalVisible, setIsSignUpModalVisible] = useState(false);
+
   // Always call the hook, but skip the query if we already have reviews
   const { data: apiReviews, isLoading: isLoadingReviews } =
     useGetReviewsByProductQuery(productId, {
@@ -79,6 +92,14 @@ const ReviewSection = ({
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
+    
+    // Check if user is authenticated
+    if (!isAuthenticated) {
+      // Show warning modal
+      setIsWarningModalVisible(true);
+      return;
+    }
+    
     if (!newReview.rating || !newReview.title?.trim()) return;
 
     try {
@@ -110,10 +131,64 @@ const ReviewSection = ({
     }
   };
 
+  // Modal handlers
+  const handleLoginClick = () => {
+    setIsWarningModalVisible(false);
+    setIsLoginModalVisible(true);
+  };
+
+  const handleSignUpClick = () => {
+    setIsWarningModalVisible(false);
+    setIsSignUpModalVisible(true);
+  };
+
   return (
     <div className={styles.root}>
+      {/* Warning Modal */}
+      <Modal
+        open={isWarningModalVisible}
+        onCancel={() => setIsWarningModalVisible(false)}
+        footer={null}
+        closeIcon={<span>×</span>}
+      >
+        <div style={{ textAlign: 'center', padding: '10px 0'}}>
+          <p style={{ marginBottom: '20px', gap: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          
+          {t("common.Register_or_use_your_existing_account_to_post_a_comment")}
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
+            <Button
+              type="primary"
+              onClick={handleLoginClick}
+              style={{ minWidth: '100px' }}
+            >
+              {t("profile.login")}
+            </Button>
+            <Button 
+              onClick={handleSignUpClick}
+              style={{ minWidth: '100px' }}
+              type="primary"
+            >
+               {t("profile.registration")}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      
+      {/* Login Modal */}
+      <LoginModal
+        isVisible={isLoginModalVisible}
+        onClose={() => setIsLoginModalVisible(false)}
+      />
+      
+      {/* SignUp Modal */}
+      <SignUpModal
+        isVisible={isSignUpModalVisible}
+        onClose={() => setIsSignUpModalVisible(false)}
+      />
+      
       <div className={styles.header}>
-        <h2 className={styles.title}>Teswir({reviews.length})</h2>
+        <h2 className={styles.title}>  {t("common.comment")}({reviews.length})</h2>
         <div className={styles.ratingStar}>
           <span>{averageRating}</span>
           <div>
@@ -133,7 +208,7 @@ const ReviewSection = ({
 
       <div className={styles.container}>
         <form className={styles.form} onSubmit={handleSubmitReview}>
-          <h3 className={styles.formTitle}>Teswir ýaz</h3>
+          <h3 className={styles.formTitle}>  {t("common.Writecomment")}</h3>
 
           <div className={styles.formRating}>
             <StarRating
@@ -151,7 +226,7 @@ const ReviewSection = ({
             onChange={(e) =>
               setNewReview((prev) => ({ ...prev, title: e.target.value }))
             }
-            placeholder="Teswir"
+            placeholder={t("common.comment")}
           />
 
           <button
@@ -159,7 +234,7 @@ const ReviewSection = ({
             className={styles.formSubmit}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Göndermek..." : "Teswir ýaz"}
+            {isSubmitting ? "Ugratmak..." : t("common.Writecomment")}
           </button>
         </form>
 

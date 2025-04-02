@@ -25,6 +25,9 @@ import {
   useGetCartQuery,
 } from "../../app/api/cartApi";
 import ImageCarousel from "../../components/ProductCard/imageCarousel/index";
+import Loader from "../../components/Loader/index";
+import { Result, Button } from "antd";
+
 const ProductPage = ({
   productProp,
   showAddToCart = true,
@@ -229,8 +232,20 @@ const ProductPage = ({
     return () => debouncedUpdate.cancel();
   }, [pendingQuantity, quantity, product, updateCartItem]);
 
-  if (productLoading || similarProductsLoading) return <div>Loading...</div>;
-  if (productError || similarProductsError) return <div>Error</div>;
+  if (productLoading || similarProductsLoading) return <Loader />;
+  if (productError || similarProductsError)
+    return (
+      <Result
+        status="500"
+        title="500"
+        subTitle="Näbelli ýalňyşlyk ýüze çykdy."
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Baş sahypa gidiň
+          </Button>
+        }
+      />
+    );
 
   if (!product) return <div>Can not find product</div>;
 
@@ -290,9 +305,12 @@ const ProductPage = ({
           <div className={styles.productActions}>
             <div className={styles.priceContainer}>
               <span className={styles.price}>{product.price_amount} m.</span>
-              <span className={styles.oldPrice}>
-                {product.old_price_amount} m.
-              </span>
+
+              {product.old_price_amount && (
+                <span className={styles.oldPrice}>
+                  {product.old_price_amount} m.
+                </span>
+              )}
             </div>
             <div className={styles.Btn}>
               {showFavoriteButton && (

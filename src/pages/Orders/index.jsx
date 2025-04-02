@@ -5,11 +5,13 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useGetOrdersQuery } from "../../app/api/orderApi"; // Update with your correct path
 import EmptyOrderState from "./emptyOrder"; // Import the EmptyOrderState component
-
+import Loader from "../../components/Loader/index";
+import { Result, Button } from "antd";
+import { useNavigate } from "react-router-dom";
 const Orders = () => {
   const { t } = useTranslation();
   const { data: orders, isLoading, error } = useGetOrdersQuery();
-
+  const navigate = useNavigate();
   // Function to format date - implement this or use a library like date-fns
   const formatOrderDate = (dateString) => {
     try {
@@ -26,13 +28,21 @@ const Orders = () => {
     }
   };
 
-  // Handle loading state
-  if (isLoading) return <div className={styles.loading}>Loading orders...</div>;
+  if (isLoading) return <Loader />;
 
   // Handle error state
   if (error)
     return (
-      <div className={styles.error}>Error loading orders: {error.message}</div>
+      <Result
+        status="500"
+        title="500"
+        subTitle="Näbelli ýalňyşlyk ýüze çykdy."
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Baş sahypa gidiň
+          </Button>
+        }
+      />
     );
 
   // Handle empty orders - render EmptyOrderState component

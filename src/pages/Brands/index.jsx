@@ -6,7 +6,8 @@ import styles from "./Brands.module.scss";
 import { CiSearch } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { Logo } from "../../components/Icons";
-
+import Loader from "../../components/Loader/index";
+import { Result, Button } from "antd";
 const BrandsPage = () => {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
@@ -101,10 +102,22 @@ const BrandsPage = () => {
     }
   };
   const handleBrandClick = (brandId) => {
-    navigate(`/brands/${brandId}`); 
+    navigate(`/brands/${brandId}`);
   };
-  if (isLoading && page === 1) return <p>{t("common.loading")}</p>;
-  if (error) return <p>{t("common.error")}</p>;
+  if (isLoading && page === 1) return <Loader />;
+  if (error)
+    return (
+      <Result
+        status="500"
+        title="500"
+        subTitle="Näbelli ýalňyşlyk ýüze çykdy."
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Baş sahypa gidiň
+          </Button>
+        }
+      />
+    );
 
   return (
     <div className={styles.brandsContainer}>
@@ -122,7 +135,7 @@ const BrandsPage = () => {
         dataLength={allBrands.length}
         next={loadMoreBrands}
         hasMore={hasMore && !searchTerm}
-        loader={<p style={{ textAlign: "center" }}>{t("common.loading")}</p>}
+        
       >
         {visibleBrands.map((group, index) => (
           <section key={index} className={styles.categorySection}>

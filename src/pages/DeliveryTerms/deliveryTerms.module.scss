@@ -1,6 +1,6 @@
 .termsContainer {
     max-width: 1366px;
-    margin: 30px 30px;
+    margin: auto;
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -46,6 +46,10 @@
     color: #ff5722;
   }
   
+  @media (max-width: 1440px) {
+    .termsContainer {
+      margin: 30px 30px;
+    }}
   @media (max-width: 768px) {
     .termsContainer {
       padding: 0.5rem;
