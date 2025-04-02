@@ -9,7 +9,7 @@ import {
   useGetReviewsByProductQuery,
 } from "../../app/api/reviewApi";
 import { useAuth } from "../../context/authContext";
-import LoginModal from "../Login/index";
+import LoginModal from "../LogIn/index";
 import SignUpModal from "../SignUp/index";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
