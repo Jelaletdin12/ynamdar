@@ -51,7 +51,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
   // }
 
   const baseQuery = fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL || "http://216.250.14.144/api/v1/",
+    baseUrl: import.meta.env.VITE_API_URL || "https://mm.com.tm/api/v1/",
     prepareHeaders: (headers) => {
       headers.set("Api-Token", import.meta.env.VITE_API_TOKEN || "hello-mf-s");
       if (token) {
