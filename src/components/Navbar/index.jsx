@@ -4,6 +4,7 @@ import SignupForm from "../BeSeller/index";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogoWithText } from "../Icons";
+import Logo from "../../assets/logo2.png"
 const Navbar = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate();
@@ -26,7 +27,8 @@ const Navbar = () => {
                 className={styles.logoContainer}
                 onClick={() => navigate("/")}
               >
-                <LogoWithText />
+                {/* <LogoWithText /> */}
+                <img style={{width: "200px"}} src={Logo} alt="" />
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", padding: "8px 14px 6px" }}>

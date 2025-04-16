@@ -4,7 +4,7 @@ import EmptyCart from "../../assets/cart.png"
 const EmptyCartState = () => {
   const { t, i18n } = useTranslation();
   return (
-    <div className={styles.emptyCartContainer}>
+    <div className={styles.emptyCartContainer} style={{margin: "auto"}}>
       <div className={styles.emptyCartContent}>
         <div className={styles.emptyCartIcon}>
           <img src={EmptyCart} alt="" />
