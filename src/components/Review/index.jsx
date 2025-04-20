@@ -240,7 +240,7 @@ const ReviewSection = ({
 
         <div className={styles.reviews}>
           {isLoadingReviews ? (
-            <div>Ýüklenýär...</div>
+            <div>Loading...</div>
           ) : reviews.length > 0 ? (
             <div className={styles.reviewsList}>
               {reviews.map((review) => (
@@ -255,7 +255,7 @@ const ReviewSection = ({
             </div>
           ) : (
             <div className={styles.reviewsEmpty}>
-              Bu haryt barada teswir ýazylmandyr
+              {t("common.noComment")}
             </div>
           )}
         </div>

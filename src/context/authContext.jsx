@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useGetGuestTokenMutation } from "../app/api/authApi";
-
+import { useTranslation } from "react-i18next";
 export const AuthContext = createContext({
   isAuthenticated: false,
   authToken: null,
@@ -13,6 +13,10 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authToken, setAuthToken] = useState(null);
   const [guestToken, setGuestToken] = useState(null);
+  
+  const { t, i18n } = useTranslation();
+  
+  
 
   const [getGuestToken] = useGetGuestTokenMutation();
 
@@ -50,6 +54,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+
+    const savedLanguage = localStorage.getItem('preferredLanguage');
+  if (savedLanguage) {
+    i18n.changeLanguage(savedLanguage);
+  }
+
     const initialize = async () => {
       const { authToken: storedAuthToken, guestToken: storedGuestToken } =
         getTokensFromStorage();

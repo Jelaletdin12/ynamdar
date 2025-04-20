@@ -84,6 +84,7 @@ export default {
     Register_or_use_your_existing_account_to_post_a_comment: "Пожалуйста, зарегистрируйтесь или используйте существующую учетную запись, чтобы оставить комментарий!",
     Writecomment: "Написать комментарий",
     comment:  "Комментарий",
+   noComment: "Пока нет комментариев"
    
 
   },

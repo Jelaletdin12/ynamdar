@@ -83,6 +83,7 @@ export default {
     Register_or_use_your_existing_account_to_post_a_comment:"Register or use your existing account to post a comment!",
     Writecomment: "Write a comment",
     comment: "Comment",
+    noComment: "There is no comment yet"
     
   },
   search: {

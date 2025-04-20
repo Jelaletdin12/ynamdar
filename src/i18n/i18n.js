@@ -9,7 +9,7 @@ import ruTranslations from './locales/ru';
 import enTranslations from './locales/en';
 
 const resources = {
-  tm: {
+  tk: {
     translation: tmTranslations
   },
   ru: {
@@ -25,8 +25,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'tm',
-    supportedLngs: ['tm', 'ru', 'en'],
+    fallbackLng: 'tk',
+    supportedLngs: ['tk', 'ru', 'en'],
     interpolation: {
       escapeValue: false
     },

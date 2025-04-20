@@ -1,8 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import i18n from '../../i18n/i18n'; // Import your i18n configuration
 
 const getToken = () => {
-  // console.log("getToken çağrıldı");
-
   let token = localStorage.getItem("authToken");
   let tokenType = token ? "auth" : "guest";
   if (!token) {
@@ -19,7 +18,6 @@ const getToken = () => {
   if (!token) {
     token = localStorage.getItem("guestToken");
     tokenType = "guest";
-    // console.log("Guest token", token);
     if (!token) {
       const guestTokenCookie = document.cookie
         .split("; ")
@@ -32,23 +30,20 @@ const getToken = () => {
     }
   }
 
-  // if (token) {
-  //   console.log(`${tokenType.toUpperCase()} token kullanılıyor`);
-  // } else {
-  //   console.warn("Token bulunamadı! API istekleri başarısız olabilir.");
-  // }
-
   return token || null;
 };
 
 const customBaseQuery = async (args, api, extraOptions) => {
   const token = getToken();
+  const currentLanguage = i18n.language || 'tm'; // Get current language, fallback to 'tm'
 
-  // if (token) {
-  //   console.log("Using token:", token);
-  // } else {
-  //   console.warn("No token available for request");
-  // }
+  // Add language parameter to the URL
+  const urlWithLang = typeof args === 'string' 
+    ? `${args}${args.includes('?') ? '&' : '?'}lang=${currentLanguage}`
+    : {
+        ...args,
+        url: `${args.url}${args.url.includes('?') ? '&' : '?'}lang=${currentLanguage}`
+      };
 
   const baseQuery = fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL || "https://mm.com.tm/api/v1/",
@@ -67,7 +62,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
   });
 
   try {
-    const result = await baseQuery(args, api, extraOptions);
+    const result = await baseQuery(urlWithLang, api, extraOptions);
     if (
       result.error &&
       typeof result.error.data === "string" &&

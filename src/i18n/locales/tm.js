@@ -83,6 +83,7 @@ export default {
     Register_or_use_your_existing_account_to_post_a_comment: " Teswir yazmak için registirasiýa boluň ýa-da bar bolan hasabyňyzy ulanyň!",
     Writecomment: "Teswir ýaz",
     comment: "Teswir",
+    noComment: "Bu haryt barada teswir ýazylmandyr"
     
   },
   search: {

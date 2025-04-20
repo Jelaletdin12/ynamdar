@@ -63,6 +63,7 @@ const NavbarDown = () => {
   const changeLanguage = (langCode) => {
     i18n.changeLanguage(langCode);
     localStorage.setItem("preferredLanguage", langCode);
+    window.location.reload();
   };
 
   const handleLogout = async () => {
@@ -72,9 +73,9 @@ const NavbarDown = () => {
   useEffect(() => {}, [isAuthenticated]);
   const items = [
     {
-      key: "tm",
+      key: "tk",
       label: (
-        <div onClick={() => changeLanguage("tm")}>
+        <div onClick={() => changeLanguage("tk")}>
           <img
             src={tm}
             alt={t("navbar.languages.tm")}
