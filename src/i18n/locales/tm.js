@@ -80,11 +80,11 @@ export default {
     not_enough_stock: "Ammarda ýeterlik haryt ýok!",
     ok: "OK",
     something_went_wrong: "Näbelli ýalňyşlyk ýüze çykdy!",
-    Register_or_use_your_existing_account_to_post_a_comment: " Teswir yazmak için registirasiýa boluň ýa-da bar bolan hasabyňyzy ulanyň!",
+    Register_or_use_your_existing_account_to_post_a_comment:
+      " Teswir yazmak için registirasiýa boluň ýa-da bar bolan hasabyňyzy ulanyň!",
     Writecomment: "Teswir ýaz",
     comment: "Teswir",
-    noComment: "Bu haryt barada teswir ýazylmandyr"
-    
+    noComment: "Bu haryt barada teswir ýazylmandyr",
   },
   search: {
     resultsFor: "Gozleg netijesi",
@@ -112,7 +112,7 @@ export default {
     enter_valid_code: "Dogry kod giriziň",
     login_successful: "Giriş üstünlikli",
     verification_failed: "Barlamak şowsuz",
-    my_profile : "Hasabym",
+    my_profile: "Hasabym",
     my_address: "Salgylarym",
     logout: "Çyk",
     dont_have_account: "Hasabyňyz ýok, haýyş ",
@@ -186,5 +186,10 @@ export default {
     TermsofUseandPrivacyPolicy: "Ulanyş düzgünleri we gizlinlik syýasaty",
     mobile_applications: "Mobile goşundylar",
     copyright: "Ähli hukuklar goralan.",
+    about_paragraph1: "Biziň bazarymyz amatly onlaýn platforma bolup, ol ýerde hemme zady bir ýerde tapyp bilersiňiz: awtoulag zapas şaýlaryndan we elektronikadan başlap, öý önümlerine we täze önümlere çenli. 2019-njy ýyldan bäri işleýäris we bu döwürde diňe gowularyny saýlap bilersiňiz diýip, ýüzlerçe ygtybarly marka ýygnadyk. Aralygy yzygiderli ösýär - islegleriňize ýakyndan gözegçilik edýäris we elmydama has köp zat hödürlemäge synanyşýarys..",
+    about_paragraph2: "Biziň wezipämiz, söwda etmegi ýönekeý we amatly etmek. Gerek zatlaryň hemmesini indi öýüňizden çykman iki gezek basyp sargyt edip bilersiňiz. Wagt, güýç we pul tygşytlaýarsyňyz - we hemme zadyň çalt we gereksiz kynçylyksyz gelýändigine göz ýetirýäris.",
+    about_paragraph3: "Sargydyňyzy özüňize amatly görnüşde töläp bilersiňiz: nagt ýa-da alandan soň kredit kartoçkasy bilen.",
+    about_paragraph4: "Hyzmatdaşlyga elmydama açyk we pikirleri kabul edýäris. Pikiriňiz, soragyňyz ýa-da teklibiňiz barmy? Bize ýazyň - jogap bermäge şat bolarys!"
+ 
   },
 };

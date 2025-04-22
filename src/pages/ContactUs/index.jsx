@@ -3,8 +3,9 @@ import styles from "./contactUs.module.scss";
 import { useSubmitContactMessageMutation } from "../../app/api/contactUs";
 
 const ContactForm = () => {
-  const [submitContactMessage, { isLoading, isSuccess, error }] = useSubmitContactMessageMutation();
-  
+  const [submitContactMessage, { isLoading, isSuccess, error }] =
+    useSubmitContactMessageMutation();
+
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -19,20 +20,17 @@ const ContactForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
-      
       const apiData = {
-        phone:  formData.phone, 
-        title: formData.fullName, 
-        content: formData.message, 
-        type: "mobile_app" 
+        phone: formData.phone,
+        title: formData.fullName,
+        content: formData.message,
+        type: "mobile_app",
       };
-      
-     
+
       await submitContactMessage(apiData).unwrap();
-      
-      
+
       if (isSuccess) {
         setFormData({
           fullName: "",
@@ -49,11 +47,36 @@ const ContactForm = () => {
   return (
     <div className={styles.formContainer}>
       <div className={styles.contactInfo}>
-        <div><h3>Telefon: </h3><span>+99361097651</span></div>
-        <div><h3>Imo: </h3><span>+99361097651</span></div>
-        <div><h3>E-mail: </h3><span>+99361097651</span></div>
-        <div><h3>Instagram: </h3><span>+99361097651</span></div>
+        <div>
+          <h3>Telefon: </h3>
+          <a href="tel:+99360122213">
+            <span>+993 60 12-22-13</span>
+          </a>
+        </div>
+        <div>
+          <h3>Imo: </h3>
+          <a href="https://imo.im" target="_blank" rel="noopener noreferrer">
+            <span>+993 65 95-00-91</span> 
+          </a>
+        </div>
+        <div>
+          <h3>E-mail: </h3>
+          <a href="mailto:mm.marketplace.tm@gmail.com">
+            <span>mm.marketplace.tm@gmail.com</span>
+          </a>
+        </div>
+        <div>
+          <h3>Instagram: </h3>
+          <a
+            href="https://www.instagram.com/mm.com.tm"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>mm.com.tm</span>
+          </a>
+        </div>
       </div>
+
       <form className={styles.contactForm} onSubmit={handleSubmit}>
         <div className={styles.formField}>
           <label htmlFor="fullName">Doly adyňyz</label>
@@ -106,20 +129,20 @@ const ContactForm = () => {
           />
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className={styles.submitButton}
           disabled={isLoading}
         >
           <span>{isLoading ? "Ugradylýar..." : "Ugrat"}</span>
         </button>
-        
+
         {isSuccess && (
           <div className={styles.successMessage}>
             Hatyňyz üstünlikli ugradyldy!
           </div>
         )}
-        
+
         {error && (
           <div className={styles.errorMessage}>
             Näsazlyk ýüze çykdy. Gaýtadan synanyşyň.

@@ -16,8 +16,8 @@ const Footer = () => {
     <>
       <footer className={styles.footer}>
         <div className={styles.container}>
-          <div className={styles.logo}  onClick={() => navigate("/")}>
-            <LogoWithText/>
+          <div className={styles.logo} onClick={() => navigate("/")}>
+            <LogoWithText />
           </div>
           <div style={{ display: "flex" }}>
             <div className={styles.marketSection}>
@@ -45,10 +45,34 @@ const Footer = () => {
             <div className={styles.contactSection}>
               <h3>{t("footer.contactUs")}</h3>
               <ul>
-                <li>{t("checkout.telephone")}: +993 12 22-74-75</li>
-                <li>Imo: +993 63 75-74-22</li>
-                <li>E-mail: info@ynamdar.com</li>
-                <li>Instagram: @ynamdar_com</li>
+                <li>
+                  <a href="tel:+99360122213">
+                    {t("checkout.telephone")}: +993 60 12-22-13
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://imo.im"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Imo: +993 65 95-00-91
+                  </a>
+                </li>
+                <li>
+                  <a href="mailto:mm.marketplace.tm@gmail.com">
+                    E-mail: mm.marketplace.tm@gmail.com
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.instagram.com/mm.com.tm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Instagram: mm.com.tm
+                  </a>
+                </li>
               </ul>
             </div>
 
@@ -73,7 +97,7 @@ const Footer = () => {
           </div>
         </div>
         <div className={styles.bottom}>
-          <p> © 2019-2024 ynamdar.com. {t("footer.copyright")}</p>
+          <p> © 2019-2025 mm.com.tm {t("footer.copyright")}</p>
         </div>
       </footer>
       <FooterBar />

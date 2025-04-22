@@ -80,11 +80,11 @@ export default {
     not_enough_stock: "Not enough product!",
     ok: "OK",
     something_went_wrong: "Something went wrong!",
-    Register_or_use_your_existing_account_to_post_a_comment:"Register or use your existing account to post a comment!",
+    Register_or_use_your_existing_account_to_post_a_comment:
+      "Register or use your existing account to post a comment!",
     Writecomment: "Write a comment",
     comment: "Comment",
-    noComment: "There is no comment yet"
-    
+    noComment: "There is no comment yet",
   },
   search: {
     resultsFor: "Search results for",
@@ -112,7 +112,7 @@ export default {
     enter_valid_code: "Enter valid code",
     login_successful: "Login successful",
     verification_failed: "Verification failed",
-    my_profile : "My Profile",
+    my_profile: "My Profile",
     my_address: "My Address",
     logout: "Logout",
 
@@ -127,9 +127,6 @@ export default {
     verify: "Verify",
     name: "Name",
     address: "Address",
-
-    
-
   },
   order: {
     orderDate: "Order Date",
@@ -189,5 +186,10 @@ export default {
     TermsofUseandPrivacyPolicy: "Terms of Use and Privacy Policy",
     mobile_applications: "Mobile applications",
     copyright: " All rights reserved.",
+    about_paragraph1: "Our Marketplace is a convenient online marketplace where you'll find everything in one place, from auto parts and electronics to home goods and fresh produce. We've been in business since 2019, and in that time we've collected hundreds of trusted brands so you can choose only the best. The range is constantly growing - we keep a close eye on your requests and always try to offer more.",
+    about_paragraph2: "Our mission is to make shopping easy and convenient. Everything you need can now be ordered in a couple of clicks from the comfort of your own home. You save time, effort and money - and we make sure that everything arrives quickly and hassle-free.",
+    about_paragraph3: "You can pay for the order as you like: cash or bank card upon receipt.",
+    about_paragraph4: "We are always open to co-operation and welcome feedback. Do you have an idea, question or suggestion? Write to us - we will be happy to answer!"
+ 
   },
 };
