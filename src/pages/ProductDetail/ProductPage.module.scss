@@ -257,7 +257,7 @@
   background-color: #d32824;
   border: none;
   @media screen and (max-width: 639px) {
-  min-width: auto;
+    min-width: auto;
   }
   svg {
     fill: #fff;
@@ -266,7 +266,7 @@
   }
 
   &:hover {
-    background-color: #e86064;;
+    background-color: #e86064;
     cursor: pointer;
   }
 }
@@ -311,11 +311,10 @@
     }
 
     &:hover {
-      background: #e86064;;
+      background: #e86064;
     }
   }
 }
-
 
 .outOfStock {
   background-color: #ff4d4f;

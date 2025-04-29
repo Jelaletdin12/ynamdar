@@ -13,10 +13,8 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authToken, setAuthToken] = useState(null);
   const [guestToken, setGuestToken] = useState(null);
-  
+
   const { t, i18n } = useTranslation();
-  
-  
 
   const [getGuestToken] = useGetGuestTokenMutation();
 
@@ -54,11 +52,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-
-    const savedLanguage = localStorage.getItem('preferredLanguage');
-  if (savedLanguage) {
-    i18n.changeLanguage(savedLanguage);
-  }
+    const savedLanguage = localStorage.getItem("preferredLanguage");
+    if (savedLanguage) {
+      i18n.changeLanguage(savedLanguage);
+    }
 
     const initialize = async () => {
       const { authToken: storedAuthToken, guestToken: storedGuestToken } =
@@ -101,17 +98,18 @@ export const AuthProvider = ({ children }) => {
 
   const login = (token) => {
     if (!token) return;
-     
+
     // Store the token
     document.cookie = `authToken=${token}; path=/; secure; SameSite=Strict`;
     localStorage.setItem("authToken", token);
     setAuthToken(token);
-  
+
     // Clear guest token
     localStorage.removeItem("guestToken");
-    document.cookie = "guestToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    document.cookie =
+      "guestToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     setGuestToken(null);
-  
+
     // Set authenticated state immediately
     setIsAuthenticated(true);
   };
@@ -122,11 +120,11 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("authToken");
     setAuthToken(null);
     setIsAuthenticated(false);
-    
+  
     try {
       const response = await getGuestToken().unwrap();
       const newGuestToken = response.token || response.data?.token;
-
+  
       if (newGuestToken) {
         setGuestToken(newGuestToken);
         localStorage.setItem("guestToken", newGuestToken);
@@ -134,8 +132,12 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error("Failed to get guest token after logout:", error);
+    } finally {
+      // Her durumda sayfa yenilenir
+      window.location.reload();
     }
   };
+  
 
   return (
     <AuthContext.Provider

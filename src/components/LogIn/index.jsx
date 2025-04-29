@@ -3,8 +3,6 @@ import { Modal, Input, Button, message } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import IMask from "imask";
 import styles from "./LoginModal.module.scss";
-import { FcGoogle } from "react-icons/fc";
-import { FaApple } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import {
   useLoginMutation,
@@ -21,9 +19,7 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
   const isControlled = propIsVisible !== undefined;
   const isVisible = isControlled ? propIsVisible : internalIsVisible;
 
-  const [activeTab, setActiveTab] = useState("phone");
   const [phone, setPhone] = useState("+993");
-  const [email, setEmail] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
   const [isVerificationModalVisible, setIsVerificationModalVisible] =
     useState(false);
@@ -39,7 +35,7 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
   const maskRef = useRef(null);
 
   useEffect(() => {
-    if (activeTab === "phone" && phoneInputRef.current) {
+    if (phoneInputRef.current) {
       const inputElement = phoneInputRef.current.input;
 
       if (inputElement) {
@@ -68,7 +64,7 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
         };
       }
     }
-  }, [activeTab, phone]);
+  }, [phone]);
 
   const showModal = () => {
     if (!isControlled) {
@@ -96,7 +92,6 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
 
   const resetForm = () => {
     setPhone("+993 ");
-    setEmail("");
     setHasChanges(false);
     setVerificationCode("");
   };
@@ -109,9 +104,6 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
           maskRef.current.value = value;
         }
         setPhone(value);
-        break;
-      case "email":
-        setEmail(value);
         break;
       case "verification":
         setVerificationCode(value);
@@ -132,25 +124,15 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
 
   const handleSubmit = async () => {
     try {
-      if (activeTab === "phone") {
-        // Validate phone number
-        if (formattedPhone.length < 8) {
-          return message.error(t("profile.enter_valid_phone"));
-        }
-
-        // Convert to integer
-        const phoneInt = parseInt(formattedPhone, 10);
-        console.log(phoneInt);
-
-        // Call login API endpoint
-        const response = await login({ phone_number: phoneInt }).unwrap();
-        if (response) {
-          message.success(t("profile.verification_code_sent"));
-          setIsVerificationModalVisible(true);
-        }
-      } else if (activeTab === "email") {
-        // Handle email login
-        message.info(t("profile.email_not_implemented"));
+      if (formattedPhone.length < 8) {
+        return message.error(t("profile.enter_valid_phone"));
+      }
+      const phoneInt = parseInt(formattedPhone, 10);
+      console.log(phoneInt);
+      const response = await login({ phone_number: phoneInt }).unwrap();
+      if (response) {
+        message.success(t("profile.verification_code_sent"));
+        setIsVerificationModalVisible(true);
       }
     } catch (err) {
       console.error("Authentication error:", err);
@@ -163,8 +145,6 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
       if (!verificationCode || verificationCode.length < 5) {
         return message.error(t("profile.enter_valid_code"));
       }
-
-      // Convert to integer
       const phoneInt = parseInt(formattedPhone, 10);
       const codeInt = parseInt(verificationCode, 10);
 
@@ -174,17 +154,14 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
       }).unwrap();
 
       if (response && response.data) {
-        // Use the token to update authentication state
         const token = response.data;
-        
-        // Call the AuthContext login function to update the state
+
         authLogin(token);
-        
+
         message.success(t("profile.login_successful"));
         closeModal();
         resetForm();
       } else {
-        // Fallback error handling
         message.error(t("errors.verification_failed"));
       }
     } catch (err) {
@@ -214,48 +191,14 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
         className={styles.modalWrapper}
         closeIcon={<span>×</span>}
       >
-        <div className={styles.tabWrapper}>
-          <div
-            className={`${styles.tab} ${
-              activeTab === "phone" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("phone")}
-          >
-            {t("profile.telephone")}
-          </div>
-          <div
-            className={`${styles.tab} ${
-              activeTab === "email" ? styles.active : ""
-            }`}
-            onClick={() => setActiveTab("email")}
-          >
-            {t("profile.email")}
-          </div>
-        </div>
-
         <div className={styles.inputGroup}>
-          <label>
-            {activeTab === "phone"
-              ? t("profile.telephone")
-              : t("profile.email")}
-          </label>
-          {activeTab === "phone" ? (
-            <Input
-              ref={phoneInputRef}
-              value={phone}
-              onChange={(e) => handleInputChange("phone", e.target.value)}
-              className={styles.phoneInput}
-            />
-          ) : (
-            <Input
-              value={email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-            />
-          )}
-        </div>
-
-        <div className={styles.forgotPassword}>
-          <p>{t("profile.forgotPass")}</p>
+          <label>{t("profile.telephone")}</label>
+          <Input
+            ref={phoneInputRef}
+            value={phone}
+            onChange={(e) => handleInputChange("phone", e.target.value)}
+            className={styles.phoneInput}
+          />
         </div>
 
         <button
@@ -266,17 +209,6 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
           <LoginIcon />
           {isLoginLoading ? t("common.processing") : t("profile.login")}
         </button>
-
-        <div className={styles.divider}>{t("common.or")}</div>
-
-        <div className={styles.socialLogin}>
-          <button>
-            <FcGoogle />
-          </button>
-          <button>
-            <FaApple />
-          </button>
-        </div>
       </Modal>
 
       {/* Verification Code Modal */}
@@ -313,11 +245,6 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
           >
             {isVerifyLoading ? t("common.verifying") : t("profile.verify")}
           </button>
-
-          <Button type="link">
-            {t("profile.didnt_receive_code")}
-            <span onClick={handleSubmit}>{t("profile.resend")}</span>
-          </Button>
         </div>
       </Modal>
     </>

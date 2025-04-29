@@ -7,16 +7,16 @@ const ImageCarousel = ({ images, altText, showThumbnails = false }) => {
   const touchEndX = useRef(0);
   const carouselRef = useRef(null);
 
-  // Birden fazla resim olup olmadığını kontrol et
+  // Check if there are multiple images
   const hasMultipleImages = Array.isArray(images) && images.length > 1;
 
-  // Geçerli resim URL'sini al
+  // Get current image URL
   const currentImage =
     hasMultipleImages && images[currentIndex]
       ? images[currentIndex].images_400x400
       : images[0]?.images_400x400 || "";
 
-  // Auto-slide functionality - every 3 seconds
+  // Auto-slide functionality - every 9 seconds
   useEffect(() => {
     if (!hasMultipleImages) return;
 
@@ -27,21 +27,21 @@ const ImageCarousel = ({ images, altText, showThumbnails = false }) => {
     return () => clearInterval(interval);
   }, [hasMultipleImages, images]);
 
-  // Önceki resme geç
+  // Navigate to previous image
   const handlePrev = (e) => {
     if (e) e.stopPropagation();
     if (!hasMultipleImages) return;
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
-  // Sonraki resme geç
+  // Navigate to next image
   const handleNext = (e) => {
     if (e) e.stopPropagation();
     if (!hasMultipleImages) return;
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  // Thumbnail tıklandığında
+  // Handle thumbnail click
   const handleThumbnailClick = (index, e) => {
     if (e) e.stopPropagation();
     setCurrentIndex(index);
@@ -88,7 +88,7 @@ const ImageCarousel = ({ images, altText, showThumbnails = false }) => {
     }
   }, [currentIndex]);
 
-  // Eğer tek resim varsa sadece resmi göster
+  // If there's only one image, just show it
   if (!hasMultipleImages) {
     return (
       <img
@@ -115,7 +115,7 @@ const ImageCarousel = ({ images, altText, showThumbnails = false }) => {
           />
         </div>
 
-        {/* Navigasyon okları */}
+        {/* Navigation arrows */}
         <button
           onClick={handlePrev}
           className={`${styles.arrowButton} ${styles.leftArrow}`}
@@ -156,7 +156,7 @@ const ImageCarousel = ({ images, altText, showThumbnails = false }) => {
           </svg>
         </button>
 
-        {/* İndikatörler (noktalar) */}
+        {/* Indicators (dots) */}
         <div className={styles.indicators}>
           {images.map((_, idx) => (
             <span
@@ -170,7 +170,7 @@ const ImageCarousel = ({ images, altText, showThumbnails = false }) => {
         </div>
       </div>
 
-      {/* Küçük resim önizlemeleri - sadece showThumbnails true ise göster */}
+      {/* Thumbnails - only show if showThumbnails is true */}
       {showThumbnails && (
         <div className={styles.thumbnailContainer}>
           {images.map((image, idx) => (

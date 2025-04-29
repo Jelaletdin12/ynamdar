@@ -1,9 +1,8 @@
-import React from "react";
 import styles from "./Footer.module.scss";
 import playstore from "../../assets/playstore.png";
 import appstore from "../../assets/appstore.png";
 import apk from "../../assets/apk.png";
-import logo from "../../assets/logoFooter.png";
+
 import FooterBar from "./FooterMobile";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -11,7 +10,7 @@ import { LogoWithText } from "../Icons";
 import { useNavigate } from "react-router-dom";
 const Footer = () => {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   return (
     <>
       <footer className={styles.footer}>

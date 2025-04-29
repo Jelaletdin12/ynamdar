@@ -13,6 +13,7 @@ import LoginModal from "../LogIn/index";
 import SignUpModal from "../SignUp/index";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
+
 const StarRating = ({ rating, onRatingChange, interactive = false }) => {
   const [hoverRating, setHoverRating] = useState(0);
 
@@ -42,7 +43,7 @@ const ReviewSection = ({
 }) => {
   // Get authentication status from auth context
   const { isAuthenticated } = useAuth();
-   const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   // States for modals
   const [isWarningModalVisible, setIsWarningModalVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
@@ -81,14 +82,14 @@ const ReviewSection = ({
     }
   }, [apiReviews, existingReviews]);
 
+  // Calculate average rating, ensuring we display "0" if there are no reviews
   const averageRating =
-    (reviewStats.rating ? Number.parseFloat(reviewStats.rating) : 0) ||
-    (reviews.length
+    reviews.length > 0
       ? (
           reviews.reduce((sum, review) => sum + review.rating, 0) /
           reviews.length
         ).toFixed(2)
-      : "0.00");
+      : "0";
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
@@ -164,13 +165,13 @@ const ReviewSection = ({
             >
               {t("profile.login")}
             </Button>
-            <Button 
+            {/* <Button 
               onClick={handleSignUpClick}
               style={{ minWidth: '100px' }}
               type="primary"
             >
                {t("profile.registration")}
-            </Button>
+            </Button> */}
           </div>
         </div>
       </Modal>
@@ -188,7 +189,7 @@ const ReviewSection = ({
       />
       
       <div className={styles.header}>
-        <h2 className={styles.title}>  {t("common.comment")}({reviews.length})</h2>
+        <h2 className={styles.title}>{t("common.comment")}({reviews.length || 0})</h2>
         <div className={styles.ratingStar}>
           <span>{averageRating}</span>
           <div>
@@ -208,7 +209,7 @@ const ReviewSection = ({
 
       <div className={styles.container}>
         <form className={styles.form} onSubmit={handleSubmitReview}>
-          <h3 className={styles.formTitle}>  {t("common.Writecomment")}</h3>
+          <h3 className={styles.formTitle}>{t("common.Writecomment")}</h3>
 
           <div className={styles.formRating}>
             <StarRating

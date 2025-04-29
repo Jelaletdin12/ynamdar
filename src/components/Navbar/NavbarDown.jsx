@@ -68,9 +68,12 @@ const NavbarDown = () => {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/");
+    // Note: The page refresh is now being handled in the AuthContext's logout function
+    // window.location.reload() is no longer needed here
   };
+  
   useEffect(() => {}, [isAuthenticated]);
+  
   const items = [
     {
       key: "tk",
@@ -196,27 +199,29 @@ const NavbarDown = () => {
                   <LoginModal />
                 </li>
                 <div className={styles.stick}></div>
-                <li>
+                {/* <li>
                   <SignUpModal />
-                </li>
+                </li> */}
               </>
             ) : (
-              <li>
-                <Dropdown
-                  menu={{ items: profileItems }}
-                  placement="bottomLeft"
-                  trigger={["click"]}
-                >
-                  <span
-                    className={styles.navButton}
-                    style={{ cursor: "pointer" }}
+              <>
+                <li>
+                  <Dropdown
+                    menu={{ items: profileItems }}
+                    placement="bottomLeft"
+                    trigger={["click"]}
                   >
-                    <UserOutlined /> {t("profile.my_profile")}
-                  </span>
-                </Dropdown>
-              </li>
+                    <span
+                      className={styles.navButton}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <UserOutlined /> {t("profile.my_profile")}
+                    </span>
+                  </Dropdown>
+                </li>
+                <div className={styles.stick}></div>
+              </>
             )}
-            <div className={styles.stick}></div>
             <li>
               <Link to={"/orders"}>
                 <Badge
