@@ -18,7 +18,7 @@ import {
 import { Modal } from "antd";
 import { useTranslation } from "react-i18next";
 import { DecreaseIcon, IncreaseIcon } from "../Icons";
-import ImageCarousel from "./imageCarousel/index"; 
+import ImageCarousel from "./imageCarousel/index";
 
 const ProductCard = ({
   product,
@@ -224,44 +224,44 @@ const ProductCard = ({
             </div>
           </div>
         </div>
-          <div className={styles.actions}>
-            {showFavoriteButton && (
-              <button
-                className={styles.favoriteButton}
-                onClick={handleToggleFavorite}
-              >
-                {localIsFavorite ? <IoMdHeart /> : <IoMdHeartEmpty />}
-              </button>
-            )}
-            {showAddToCart && (
-              <>
-                {localQuantity > 0 ? (
-                  <div className={styles.quantityControls}>
-                    <button
-                      onClick={handleQuantityDecrease}
-                      className={styles.quantityBtn}
-                    >
-                      <DecreaseIcon />
-                    </button>
-                    <span>{localQuantity}</span>
-                    <button
-                      onClick={handleQuantityIncrease}
-                      className={styles.quantityBtn}
-                    >
-                      <IncreaseIcon />
-                    </button>
-                  </div>
-                ) : (
+        <div className={styles.actions}>
+          {showFavoriteButton && (
+            <button
+              className={styles.favoriteButton}
+              onClick={handleToggleFavorite}
+            >
+              {localIsFavorite ? <IoMdHeart /> : <IoMdHeartEmpty />}
+            </button>
+          )}
+          {showAddToCart && (
+            <>
+              {localQuantity > 0 ? (
+                <div className={styles.quantityControls}>
                   <button
-                    className={styles.addToCartButton}
-                    onClick={handleAddToCart}
+                    onClick={handleQuantityDecrease}
+                    className={styles.quantityBtn}
                   >
-                    <FaShoppingCart />
+                    <DecreaseIcon />
                   </button>
-                )}
-              </>
-            )}
-          </div>
+                  <span>{localQuantity}</span>
+                  <button
+                    onClick={handleQuantityIncrease}
+                    className={styles.quantityBtn}
+                  >
+                    <IncreaseIcon />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  className={styles.addToCartButton}
+                  onClick={handleAddToCart}
+                >
+                  <FaShoppingCart />
+                </button>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       {/* Stock Error Modal */}

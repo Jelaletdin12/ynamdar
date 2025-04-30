@@ -5,12 +5,12 @@ import { Modal, Form, Input, Button, message } from "antd"
 import { UserOutlined, PhoneOutlined, HomeOutlined } from "@ant-design/icons"
 import styles from "./ProfileModal.module.scss"
 import { useGetProfileQuery, useUpdateProfileMutation } from "../../app/api/myProfileApi"
-
+import { useTranslation } from "react-i18next";
 const ProfileModal = ({ visible, onClose }) => {
   const [form] = Form.useForm()
   const { data: profileData, isLoading, refetch } = useGetProfileQuery()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
-
+ const { t, i18n } = useTranslation();
   useEffect(() => {
     if (profileData?.data) {
       // Map the API response fields to form fields
@@ -37,14 +37,14 @@ const ProfileModal = ({ visible, onClose }) => {
   }
 
   return (
-    <Modal title="My Profile" open={visible} onCancel={onClose} footer={null} className={styles.profileModal}>
+    <Modal title={t("profile.profile")} open={visible} onCancel={onClose} footer={null} className={styles.profileModal}>
       {isLoading ? (
         <div className={styles.loading}>Loading profile data...</div>
       ) : (
         <Form form={form} layout="vertical" onFinish={handleSubmit} className={styles.form}>
           <Form.Item
             name="name"
-            label="First Name"
+            label={t("profile.name")}
             rules={[{ required: true, message: "Please enter your first name" }]}
           >
             <Input prefix={<UserOutlined />} placeholder="First Name" />
@@ -52,7 +52,7 @@ const ProfileModal = ({ visible, onClose }) => {
 
           <Form.Item
             name="last_name"
-            label="Last Name"
+            label={t("profile.lastname")}
             rules={[{ required: true, message: "Please enter your last name" }]}
           >
             <Input prefix={<UserOutlined />} placeholder="Last Name" />
@@ -60,7 +60,7 @@ const ProfileModal = ({ visible, onClose }) => {
 
           <Form.Item
             name="phone_number"
-            label="Phone Number"
+            label={t("profile.telephone")}
             rules={[
               { required: true, message: "Please enter your phone number" },
               { pattern: /^\d+$/, message: "Phone number must contain only digits" },
@@ -75,10 +75,10 @@ const ProfileModal = ({ visible, onClose }) => {
 
           <Form.Item className={styles.buttons}>
             <Button type="default" onClick={onClose}>
-              Cancel
+            {t("common.cancel")}
             </Button>
             <Button type="primary" htmlType="submit" loading={isUpdating}>
-              Save Changes
+            {t("common.save")}
             </Button>
           </Form.Item>
         </Form>

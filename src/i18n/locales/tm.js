@@ -104,7 +104,7 @@ export default {
     forgotPass: "Paroly unutdyňyzmy",
     email: "E-poçta",
     confirmPassword: "Paroly tassyklaň",
-    telephone: "Telefon",
+    telephone: "Telefon belgiňiz",
     keyword: "Açar söz",
     profile: "Profil",
     enter_valid_phone: "Dogry telefon belgisini giriziň",
@@ -126,6 +126,7 @@ export default {
     verify: "Tassykla",
     name: "Ady",
     address: "Salgy",
+    lastname:"Familýaňyz"
   },
   order: {
     orderDate: "Sargyt senesi",

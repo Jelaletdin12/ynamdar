@@ -115,7 +115,7 @@ export default {
     my_profile: "My Profile",
     my_address: "My Address",
     logout: "Logout",
-
+    lastname:"Last Name",
     dont_have_account: "Do not have your account please ",
     already_have_account: "Already have your account please ",
     register: "register",

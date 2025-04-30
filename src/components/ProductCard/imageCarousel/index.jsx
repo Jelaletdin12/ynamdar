@@ -1,7 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./ImageCarousel.module.scss";
 
-const ImageCarousel = ({ images, altText, showThumbnails = false }) => {
+const ImageCarousel = ({
+  images,
+  altText,
+  showThumbnails = false,
+  isDetailView = false, // New prop to differentiate between card and detail view
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -88,30 +93,45 @@ const ImageCarousel = ({ images, altText, showThumbnails = false }) => {
     }
   }, [currentIndex]);
 
-  // If there's only one image, just show it
+  // If there's only one image, just show it - applying different classes based on view
   if (!hasMultipleImages) {
     return (
-      <img
-        src={currentImage || "/placeholder.svg"}
-        alt={altText || "Ürün resmi"}
-        className={styles.productImage}
-      />
+      <div className={isDetailView ? styles.fixedFrameContainer : undefined}>
+        <img
+          src={currentImage || "/placeholder.svg"}
+          alt={altText || "Ürün resmi"}
+          className={`${styles.productImage} ${
+            isDetailView ? styles.detailImage : ""
+          }`}
+        />
+      </div>
     );
   }
 
   return (
-    <div className={styles.carouselWrapper}>
+    <div
+      className={`${styles.carouselWrapper} ${
+        isDetailView ? styles.detailCarousel : ""
+      }`}
+    >
       <div
         className={styles.carouselContainer}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div ref={carouselRef} className={styles.imageWrapper}>
+        <div
+          ref={carouselRef}
+          className={`${styles.imageWrapper} ${
+            isDetailView ? styles.fixedFrameContainer : ""
+          }`}
+        >
           <img
             src={currentImage || "/placeholder.svg"}
             alt={altText || "Ürün resmi"}
-            className={styles.productImage}
+            className={`${styles.productImage} ${
+              isDetailView ? styles.detailImage : ""
+            }`}
           />
         </div>
 

@@ -273,6 +273,7 @@ const ProductPage = ({
             images={product.media}
             altText={product.name}
             showThumbnails={true}
+            isDetailView={true}
           />
         </div>
         <div className={styles.productInfo}>

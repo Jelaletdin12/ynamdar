@@ -36,7 +36,10 @@ body {
 //   min-width: 570px;
 // }
 main {
-  min-height: 100dvh;
+  // min-height: 100dvh;
+  @media screen and (min-width: 768px) {
+    min-height: 100%;
+  }
   @media screen and (max-width: 1023px) {
     padding-bottom: 45px;
   }
