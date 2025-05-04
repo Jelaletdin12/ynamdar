@@ -25,6 +25,15 @@
   overflow: hidden;
 }
 
+/* Style for product card (non-detail view) images */
+.cardImage {
+  width: auto;
+  height: 300px; /* Increased height for card view */
+  max-width: 100%;
+  margin: auto;
+  object-fit: contain;
+}
+
 /* Style for images inside detail view */
 .detailImage {
   width: auto;
@@ -190,5 +199,9 @@
     .fixedFrameContainer {
       min-height: 300px;
     }
+  }
+
+  .cardImage {
+    height: 180px; /* Adjusted height for mobile view */
   }
 }

@@ -16,6 +16,35 @@ import {
 import { DecreaseIcon, IncreaseIcon } from "../../components/Icons";
 import { debounce } from "lodash";
 import Loader from "../../components/Loader/index";
+
+// New component for truncated text
+const TruncatedDescription = ({ description, maxLength = 100 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Strip HTML tags for character count
+  const stripHtml = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
+  };
+
+  const plainText = stripHtml(description);
+  const shouldTruncate = plainText.length > maxLength;
+
+  return (
+    <div className={styles.truncatedDescription}>
+      <div
+        dangerouslySetInnerHTML={{
+          __html: isExpanded
+            ? description
+            : shouldTruncate
+            ? description.substring(0, maxLength) + "..."
+            : description,
+        }}
+      />
+    </div>
+  );
+};
+
 const CartPage = () => {
   const {
     data: response = {},
@@ -312,11 +341,11 @@ const CartPage = () => {
                     <div className={styles.itemInfo}>
                       <div style={{ flex: "1" }}>
                         <h3>{item.product.name}</h3>
-                        <p
-                          dangerouslySetInnerHTML={{
-                            __html: item.product.description,
-                          }}
-                        ></p>
+                        {/* Replace the original description with the TruncatedDescription component */}
+                        <TruncatedDescription
+                          description={item.product.description}
+                          maxLength={150}
+                        />
                       </div>
                       <div className={styles.priceQuantity}>
                         <span className={styles.price}>

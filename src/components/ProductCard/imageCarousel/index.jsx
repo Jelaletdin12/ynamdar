@@ -5,7 +5,7 @@ const ImageCarousel = ({
   images,
   altText,
   showThumbnails = false,
-  isDetailView = false, // New prop to differentiate between card and detail view
+  isDetailView = false, // Prop to differentiate between card and detail view
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartX = useRef(0);
@@ -101,7 +101,7 @@ const ImageCarousel = ({
           src={currentImage || "/placeholder.svg"}
           alt={altText || "Ürün resmi"}
           className={`${styles.productImage} ${
-            isDetailView ? styles.detailImage : ""
+            isDetailView ? styles.detailImage : styles.cardImage
           }`}
         />
       </div>
@@ -130,7 +130,7 @@ const ImageCarousel = ({
             src={currentImage || "/placeholder.svg"}
             alt={altText || "Ürün resmi"}
             className={`${styles.productImage} ${
-              isDetailView ? styles.detailImage : ""
+              isDetailView ? styles.detailImage : styles.cardImage
             }`}
           />
         </div>

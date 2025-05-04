@@ -20,6 +20,24 @@ import { useTranslation } from "react-i18next";
 import { DecreaseIcon, IncreaseIcon } from "../Icons";
 import ImageCarousel from "./imageCarousel/index";
 
+// Helper function to strip HTML tags and truncate text
+const truncateDescription = (htmlString, maxLength = 80) => {
+  // Create a temporary div to parse HTML
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = htmlString;
+
+  // Get text content without HTML tags
+  const textContent = tempDiv.textContent || tempDiv.innerText || "";
+
+  // Truncate the text
+  const truncatedText =
+    textContent.length > maxLength
+      ? textContent.substring(0, maxLength).trim() + "..."
+      : textContent;
+
+  return truncatedText;
+};
+
 const ProductCard = ({
   product,
   showAddToCart = true,
@@ -27,6 +45,7 @@ const ProductCard = ({
   onAddToCart,
   onToggleFavorite,
   isFavorite = false,
+  descriptionMaxLength = 85, // New prop to control description length
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -37,6 +56,11 @@ const ProductCard = ({
   const [isLoading, setIsLoading] = useState(false);
   const [localIsFavorite, setLocalIsFavorite] = useState(
     favoriteProducts.some((fav) => fav.product?.id === product.id)
+  );
+  // Process description
+  const truncatedDesc = truncateDescription(
+    product.description,
+    descriptionMaxLength
   );
 
   const { data: cartData } = useGetCartQuery(undefined, {
@@ -206,15 +230,14 @@ const ProductCard = ({
             </span>
           )}
 
-          {/* Tek resim yerine ImageCarousel bileşenini kullan */}
           <ImageCarousel images={media} altText={name} />
         </div>
         <div className={styles.productInfo}>
           <h3 className={styles.productName}>{name}</h3>
-          <p
-            className={styles.productDescription}
-            dangerouslySetInnerHTML={{ __html: product.description }}
-          ></p>
+
+          {/* Simple truncated description */}
+          <p className={styles.productDescription}>{truncatedDesc}</p>
+
           <div className={styles.priceContainer}>
             <div>
               <span className={styles.currentPrice}>{price_amount} m.</span>

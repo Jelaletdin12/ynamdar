@@ -71,9 +71,7 @@ const WishList = () => {
   };
 
   if (isFetching && products.length === 0) {
-    return (
-     <Loader />
-    );
+    return <Loader />;
   }
 
   if (error) {
@@ -131,6 +129,7 @@ const WishList = () => {
                     onToggleFavorite={() => handleToggleFavorite(product)}
                     showFavoriteButton={true}
                     showAddToCart={true}
+                   
                   />
                 </motion.div>
               ))}
