@@ -6,14 +6,18 @@ import styles from "./CategorySection.module.scss";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { useGetCollectionProductsQuery } from "../../app/api/collectionsApi";
 
-const CategorySection = ({ collection, selectedBrand, preventEmptyRender = false }) => {
+const CategorySection = ({
+  collection,
+  selectedBrand,
+  preventEmptyRender = false,
+}) => {
   const navigate = useNavigate();
   const {
     data: allProducts,
     error,
     isLoading,
   } = useGetCollectionProductsQuery(collection.id);
-  
+
   // State to track if this section should be displayed
   const [shouldRender, setShouldRender] = useState(true);
 
@@ -38,7 +42,8 @@ const CategorySection = ({ collection, selectedBrand, preventEmptyRender = false
 
   // Render actual products when data is loaded
   const renderProducts = () => {
-    if (!allProducts || !allProducts.data || allProducts.data.length === 0) return null;
+    if (!allProducts || !allProducts.data || allProducts.data.length === 0)
+      return null;
 
     const filteredProducts = selectedBrand
       ? allProducts.data.filter(
@@ -47,7 +52,9 @@ const CategorySection = ({ collection, selectedBrand, preventEmptyRender = false
       : allProducts.data;
 
     return filteredProducts.length > 0
-      ? filteredProducts.slice(0, 4).map((product) => <ProductCard key={product.id} product={product} />)
+      ? filteredProducts
+          .slice(0, 4)
+          .map((product) => <ProductCard key={product.id} product={product} />)
       : null;
   };
 
@@ -56,20 +63,23 @@ const CategorySection = ({ collection, selectedBrand, preventEmptyRender = false
     return null;
   }
 
-  // If still loading and we want to prevent flash, return null or minimal placeholder
+  // If still loading and we want to prevent flash, return minimal placeholder
   if (preventEmptyRender && isLoading) {
     return (
       <section className={`${styles.categorySection} ${styles.loadingSection}`}>
-        <h2 className={styles.title}>{collection.name} <IoIosArrowRoundForward /></h2>
-        <div className={styles.productList}>
-          {renderSkeletons()}
-        </div>
+        <h2 className={styles.title}>
+          {collection.name} <IoIosArrowRoundForward />
+        </h2>
+        <div className={styles.productList}>{renderSkeletons()}</div>
       </section>
     );
   }
 
   // If there's data and we decide not to show the section, return null
-  if (!isLoading && (!allProducts || !allProducts.data || allProducts.data.length === 0)) {
+  if (
+    !isLoading &&
+    (!allProducts || !allProducts.data || allProducts.data.length === 0)
+  ) {
     return null;
   }
 

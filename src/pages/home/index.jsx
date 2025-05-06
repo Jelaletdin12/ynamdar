@@ -13,18 +13,30 @@ const Home = () => {
   const [visibleCollections, setVisibleCollections] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
+  const [processedCollections, setProcessedCollections] = useState([]);
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
   const processCollections = async (collectionsData) => {
     if (!collectionsData || !collectionsData.data) return [];
 
+    // Cache the processed collections to prevent duplicate processing
     const collectionsWithProducts = [];
 
     for (const collection of collectionsData.data) {
       const hasProducts = await checkIfCollectionHasProducts(collection.id);
       if (hasProducts) {
-        collectionsWithProducts.push(collection);
+        collectionsWithProducts.push({
+          ...collection,
+          hasProductsChecked: true,
+          hasProducts: true,
+        });
+      } else {
+        collectionsWithProducts.push({
+          ...collection,
+          hasProductsChecked: true,
+          hasProducts: false,
+        });
       }
     }
 
@@ -32,19 +44,22 @@ const Home = () => {
   };
 
   const checkIfCollectionHasProducts = async (collectionId) => {
+    // This is a placeholder - your actual implementation would check if products exist
+    // For now, we just return true as in your original code
     return true;
   };
 
   useEffect(() => {
     if (data && data.data) {
       processCollections(data).then((filteredCollections) => {
+        setProcessedCollections(filteredCollections);
         loadMoreCollections(filteredCollections);
       });
     }
   }, [data]);
 
   const loadMoreCollections = (filteredCollections = null) => {
-    const collections = filteredCollections || visibleCollections;
+    const collections = filteredCollections || processedCollections;
 
     if (collections.length > 0) {
       const startIndex = page * itemsPerPage;
@@ -65,11 +80,10 @@ const Home = () => {
     }
   };
 
-  if (isLoading) return <PageLoader />;
+  // if (isLoading) return <PageLoader />;
   if (error)
     return (
       <div>
-        {" "}
         <Result
           status="500"
           title="500"

@@ -26,9 +26,23 @@ export const brandsApi = baseApi.injectEndpoints({
       query: (brandId) => `/brands/${brandId}`,
       transformResponse: (response) => response.data || response,
     }),
+    
     getBrandProducts: builder.query({
-      query: (brandId) => {
-        return `/brands/${brandId}/products`;
+      query: (params) => {
+        // Handle both string ID and object with pagination params
+        if (typeof params === 'string' || typeof params === 'number') {
+          return `/brands/${params}/products`;
+        }
+        
+        // Handle object with pagination
+        const { id, page = 1, limit } = params;
+        let url = `/brands/${id}/products?page=${page}`;
+        
+        if (limit) {
+          url += `&limit=${limit}`;
+        }
+        
+        return url;
       },
       transformResponse: (response) => {
         return response.data || response;
@@ -42,4 +56,5 @@ export const {
   useLazyGetBrandsQuery,
   useGetBrandDetailsQuery,
   useGetBrandProductsQuery,
+  useLazyGetBrandProductsQuery,
 } = brandsApi;
