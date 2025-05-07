@@ -33,7 +33,7 @@ export const categoriesApi = baseApi.injectEndpoints({
         return { data: allProducts };
       },
     }),
-    // New lazy version for subcategory pagination
+
     getAllCategoryProductsPaginated: builder.query({
       async queryFn(
         { category, page = 1, limit = 6 },
@@ -44,13 +44,11 @@ export const categoriesApi = baseApi.injectEndpoints({
         if (!category) return { data: [] };
 
         try {
-          // Her kategori için "daha fazla ürün var mı" durumunu takip etmek için obje
           const hasMoreByCategory = {};
 
-          // Her sayfada tüm kategori ve alt kategoriler için ürünleri sayfalandırarak getir
           const fetchProductsForPage = async (categoryIds, currentPage) => {
             let allPageProducts = [];
-            const perCategoryLimit = Math.ceil(limit / categoryIds.length); // Limit'i kategoriler arasında dağıt
+            const perCategoryLimit = Math.ceil(limit / categoryIds.length);
 
             for (const categoryId of categoryIds) {
               const result = await baseQuery(
@@ -59,7 +57,6 @@ export const categoriesApi = baseApi.injectEndpoints({
               if (result.data && result.data.data) {
                 allPageProducts = [...allPageProducts, ...result.data.data];
 
-                // Kategori bazında hasMore kontrolü
                 hasMoreByCategory[categoryId] =
                   !!result.data.pagination.next_page_url;
               }
@@ -68,16 +65,13 @@ export const categoriesApi = baseApi.injectEndpoints({
             return allPageProducts;
           };
 
-          // Ana kategori ve tüm alt kategorilerin ID'lerini topla
           const categoryIds = [category.id];
           if (category.children && category.children.length > 0) {
             category.children.forEach((child) => categoryIds.push(child.id));
           }
 
-          // Seçilen sayfa için tüm kategorilerin ürünlerini getir
           const productsForPage = await fetchProductsForPage(categoryIds, page);
 
-          // En az bir kategoride daha fazla ürün varsa hasMorePages true olsun
           const hasMorePages = Object.values(hasMoreByCategory).some(
             (hasMore) => hasMore
           );
