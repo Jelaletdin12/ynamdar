@@ -35,46 +35,62 @@ export const categoriesApi = baseApi.injectEndpoints({
     }),
     // New lazy version for subcategory pagination
     getAllCategoryProductsPaginated: builder.query({
-      async queryFn({ category, page = 1, limit = 6 }, queryApi, extraOptions, baseQuery) {
+      async queryFn(
+        { category, page = 1, limit = 6 },
+        queryApi,
+        extraOptions,
+        baseQuery
+      ) {
         if (!category) return { data: [] };
-        
+
         try {
-          // For first page, fetch products for the category and all children
-          if (page === 1) {
-            const fetchProducts = async (categoryId) => {
-              const result = await baseQuery(`categories/${categoryId}/products?page=1&limit=${limit}`);
-              return result.data ? result.data.data : [];
-            };
-    
-            let allProducts = await fetchProducts(category.id);
-    
-            if (category.children && category.children.length > 0) {
-              for (const child of category.children) {
-                const childProducts = await fetchProducts(child.id);
-                allProducts = [...allProducts, ...childProducts];
+          // Her kategori için "daha fazla ürün var mı" durumunu takip etmek için obje
+          const hasMoreByCategory = {};
+
+          // Her sayfada tüm kategori ve alt kategoriler için ürünleri sayfalandırarak getir
+          const fetchProductsForPage = async (categoryIds, currentPage) => {
+            let allPageProducts = [];
+            const perCategoryLimit = Math.ceil(limit / categoryIds.length); // Limit'i kategoriler arasında dağıt
+
+            for (const categoryId of categoryIds) {
+              const result = await baseQuery(
+                `categories/${categoryId}/products?page=${currentPage}&limit=${perCategoryLimit}`
+              );
+              if (result.data && result.data.data) {
+                allPageProducts = [...allPageProducts, ...result.data.data];
+
+                // Kategori bazında hasMore kontrolü
+                hasMoreByCategory[categoryId] =
+                  !!result.data.pagination.next_page_url;
               }
             }
-    
-            return { 
-              data: {
-                data: allProducts,
-                pagination: {
-                  currentPage: 1,
-                  hasMorePages: allProducts.length >= limit
-                }
-              }
-            };
-          } 
-          // For subsequent pages, just fetch from the main category
-          else {
-            const result = await baseQuery(`categories/${category.id}/products?page=${page}&limit=${limit}`);
-            return { 
-              data: {
-                data: result.data ? result.data.data : [],
-                pagination: result.data ? result.data.pagination : {}
-              }
-            };
+
+            return allPageProducts;
+          };
+
+          // Ana kategori ve tüm alt kategorilerin ID'lerini topla
+          const categoryIds = [category.id];
+          if (category.children && category.children.length > 0) {
+            category.children.forEach((child) => categoryIds.push(child.id));
           }
+
+          // Seçilen sayfa için tüm kategorilerin ürünlerini getir
+          const productsForPage = await fetchProductsForPage(categoryIds, page);
+
+          // En az bir kategoride daha fazla ürün varsa hasMorePages true olsun
+          const hasMorePages = Object.values(hasMoreByCategory).some(
+            (hasMore) => hasMore
+          );
+
+          return {
+            data: {
+              data: productsForPage,
+              pagination: {
+                currentPage: page,
+                hasMorePages: hasMorePages,
+              },
+            },
+          };
         } catch (error) {
           return { error };
         }

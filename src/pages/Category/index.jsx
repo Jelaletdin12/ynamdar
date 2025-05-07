@@ -75,8 +75,7 @@ const CategoryPage = () => {
     return checkIsSubCategory(categoriesData.data, parseInt(categoryId));
   }, [categoriesData, categoryId]);
 
-  // API queries with conditional skipping
-  // Original query for backwards compatibility
+  // Original query for first page data - only run on first page load
   const {
     data: categoryProducts = [],
     error: categoryError,
@@ -137,7 +136,7 @@ const CategoryPage = () => {
     },
   ] = useLazyGetCollectionProductsPaginatedQuery();
 
-  // Original collection products query for backward compatibility
+  // Original collection products query for first page data
   const {
     data: collectionProducts = { data: [] },
     error: collectionProductsError,
@@ -146,13 +145,13 @@ const CategoryPage = () => {
     skip: !collectionId || currentPage > 1,
   });
 
-  // Load subcategory products when category changes or page changes
+  // Load subcategory products when page changes
   useEffect(() => {
-    if (categoryId && isSubCategory && selectedCategory) {
+    if (categoryId && isSubCategory && selectedCategory && currentPage > 1) {
       fetchSubcategoryProducts({
         category: selectedCategory,
         page: currentPage,
-        limit: 6, // Adjust based on your needs
+        limit: 6,
       });
     }
   }, [
@@ -165,54 +164,63 @@ const CategoryPage = () => {
 
   // Fetch collection products when page changes
   useEffect(() => {
-    if (collectionId && currentPage >= 1) {
+    if (collectionId && currentPage > 1) {
       fetchCollectionProducts({
         collectionId,
         page: currentPage,
-        limit: 6, // Adjust based on your needs
+        limit: 6,
       });
     }
   }, [collectionId, currentPage, fetchCollectionProducts]);
 
   // Fetch more brand products when page changes
   useEffect(() => {
-    if (brandId && currentPage >= 1) {
+    if (brandId && currentPage > 1) {
       fetchBrandProducts({
         type: undefined,
         page: currentPage,
-        limit: 6, // Adjust based on your API's default limit
+        limit: 6,
         id: brandId,
       });
     }
   }, [brandId, currentPage, fetchBrandProducts]);
 
-  // Update products list when pagination data arrives
+  const isProductInList = (list, newProduct) => {
+    return list.some((product) => product.id === newProduct.id);
+  };
+
   useEffect(() => {
-    // Handle category pagination
     if (
       paginatedCategoryProducts &&
       categoryId &&
       !isSubCategory &&
       !searchQuery
     ) {
-      if (paginatedCategoryProducts.data.length > 0) {
-        if (currentPage === 1) {
-          setAllProducts(paginatedCategoryProducts.data);
-        } else {
-          setAllProducts((prev) => [
-            ...prev,
-            ...paginatedCategoryProducts.data,
-          ]);
-        }
+      if (
+        paginatedCategoryProducts.data &&
+        paginatedCategoryProducts.data.length > 0
+      ) {
+        setAllProducts((prevProducts) => {
+          if (currentPage === 1) {
+            return [...paginatedCategoryProducts.data];
+          }
 
-        // Check if there's a next page
+          const newProducts = paginatedCategoryProducts.data.filter(
+            (newProduct) => !isProductInList(prevProducts, newProduct)
+          );
+
+          return [...prevProducts, ...newProducts];
+        });
+
         setHasMore(!!paginatedCategoryProducts.pagination.next_page_url);
+      } else if (currentPage === 1) {
+        setAllProducts([]);
+        setHasMore(false);
       } else {
         setHasMore(false);
       }
     }
 
-    // Handle subcategory pagination
     if (
       paginatedSubcategoryProducts &&
       categoryId &&
@@ -223,58 +231,65 @@ const CategoryPage = () => {
         paginatedSubcategoryProducts.data &&
         paginatedSubcategoryProducts.data.length > 0
       ) {
-        if (currentPage === 1) {
-          setAllProducts(paginatedSubcategoryProducts.data);
-        } else {
-          setAllProducts((prev) => [
-            ...prev,
-            ...paginatedSubcategoryProducts.data,
-          ]);
-        }
+        setAllProducts((prevProducts) => {
+          if (currentPage === 1) {
+            return [...paginatedSubcategoryProducts.data];
+          }
 
-        // Check if there's more pages
+          const newProducts = paginatedSubcategoryProducts.data.filter(
+            (newProduct) => !isProductInList(prevProducts, newProduct)
+          );
+
+          return [...prevProducts, ...newProducts];
+        });
+
         setHasMore(
           paginatedSubcategoryProducts.pagination?.hasMorePages || false
         );
-      } else {
+      } else if (currentPage > 1) {
         setHasMore(false);
       }
     }
 
-    // Handle brand pagination
     if (paginatedBrandProducts && brandId) {
       if (paginatedBrandProducts.length > 0) {
-        if (currentPage === 1) {
-          setAllProducts(paginatedBrandProducts);
-        } else {
-          setAllProducts((prev) => [...prev, ...paginatedBrandProducts]);
-        }
+        setAllProducts((prevProducts) => {
+          if (currentPage === 1) {
+            return [...paginatedBrandProducts];
+          }
 
-        // Assume there's more if we got a full page
-        setHasMore(paginatedBrandProducts.length === 6); // Adjust based on your API's limit
-      } else {
+          const newProducts = paginatedBrandProducts.filter(
+            (newProduct) => !isProductInList(prevProducts, newProduct)
+          );
+
+          return [...prevProducts, ...newProducts];
+        });
+
+        setHasMore(paginatedBrandProducts.length === 6);
+      } else if (currentPage > 1) {
         setHasMore(false);
       }
     }
 
-    // Handle collection pagination
     if (paginatedCollectionProducts && collectionId) {
       if (
         paginatedCollectionProducts.data &&
         paginatedCollectionProducts.data.length > 0
       ) {
-        if (currentPage === 1) {
-          setAllProducts(paginatedCollectionProducts.data);
-        } else {
-          setAllProducts((prev) => [
-            ...prev,
-            ...paginatedCollectionProducts.data,
-          ]);
-        }
+        setAllProducts((prevProducts) => {
+          if (currentPage === 1) {
+            return [...paginatedCollectionProducts.data];
+          }
 
-        // Check if there's a next page
+          const newProducts = paginatedCollectionProducts.data.filter(
+            (newProduct) => !isProductInList(prevProducts, newProduct)
+          );
+
+          return [...prevProducts, ...newProducts];
+        });
+
         setHasMore(!!paginatedCollectionProducts.pagination?.next_page_url);
-      } else {
+      } else if (currentPage > 1) {
         setHasMore(false);
       }
     }
@@ -291,7 +306,6 @@ const CategoryPage = () => {
     searchQuery,
   ]);
 
-  // Helper function to find category by ID
   const findCategoryById = (categories, id) => {
     if (!categories) return null;
 
@@ -305,30 +319,29 @@ const CategoryPage = () => {
     return null;
   };
 
-  // Update selected category when category data changes
   useEffect(() => {
     if (categoriesData?.data && categoryId) {
       const category = findCategoryById(
         categoriesData.data,
         parseInt(categoryId)
       );
-      setSelectedCategory(category);
 
-      // Reset pagination when category changes
-      setCurrentPage(1);
-      setAllProducts([]);
-      setHasMore(true);
+      if (selectedCategory?.id !== category?.id) {
+        // Only reset product-related states
+        setAllProducts([]);
+        setHasMore(true);
+        setCurrentPage(1);
+        setSelectedCategory(category);
+      }
     }
   }, [categoriesData, categoryId]);
 
-  // Reset pagination when route changes
   useEffect(() => {
     setCurrentPage(1);
     setAllProducts([]);
     setHasMore(true);
-  }, [categoryId, brandId, collectionId, searchQuery]);
+  }, [categoryId, brandId, collectionId, searchQuery, location.key]);
 
-  // Initialize allProducts for first page
   useEffect(() => {
     if (
       categoryId &&
@@ -357,7 +370,6 @@ const CategoryPage = () => {
     isSubCategory,
   ]);
 
-  // Load more function for infinite scroll
   const loadMoreData = useCallback(() => {
     if (
       !hasMore ||
@@ -367,6 +379,7 @@ const CategoryPage = () => {
       subcategoryProductsLoading
     )
       return;
+
     setCurrentPage((prevPage) => prevPage + 1);
   }, [
     hasMore,
@@ -376,7 +389,6 @@ const CategoryPage = () => {
     subcategoryProductsLoading,
   ]);
 
-  // Loading and error states
   const isLoading =
     categoryLoading ||
     collectionLoading ||
@@ -392,19 +404,12 @@ const CategoryPage = () => {
     collectionProductsError ||
     brandProductsError;
 
-  // Determine which products to display with sorting applied
   const products = useMemo(() => {
     let productsList = [];
 
-    // Get base products list
     if (searchQuery) productsList = [...searchResults];
-    else if (brandId) productsList = [...allProducts];
-    else if (categoryId && isSubCategory) productsList = [...allProducts];
-    else if (categoryId) productsList = [...allProducts];
-    else if (collectionId) productsList = [...allProducts];
-    else productsList = [];
+    else productsList = [...allProducts];
 
-    // Apply sorting
     if (priceSort === "lowToHigh") {
       return [...productsList].sort(
         (a, b) => (a.price_amount || 0) - (b.price_amount || 0)
@@ -416,16 +421,7 @@ const CategoryPage = () => {
     }
 
     return productsList;
-  }, [
-    searchQuery,
-    searchResults,
-    brandId,
-    categoryId,
-    collectionId,
-    priceSort,
-    allProducts,
-    isSubCategory,
-  ]);
+  }, [searchQuery, searchResults, priceSort, allProducts]);
 
   const totalItems = useMemo(() => {
     if (
@@ -445,12 +441,10 @@ const CategoryPage = () => {
     categoryId,
   ]);
 
-  // Handle price sort change
   const handlePriceSortChange = (sortType) => {
     setPriceSort(sortType);
   };
 
-  // Event handlers
   const handleAddToCart = (product) => {
     console.log("Adding to cart:", product);
   };
@@ -460,14 +454,39 @@ const CategoryPage = () => {
   };
 
   const handleSubCategorySelect = (subCategoryId) => {
-    navigate(`/category/${subCategoryId}`);
+    // Only reset product-related states
+    setAllProducts([]);
+    setCurrentPage(1);
+    setHasMore(true);
+    setPriceSort("none");
+
+    // Use the existing category data instead of fetching again
+    const newCategory = findCategoryById(
+      categoriesData?.data,
+      parseInt(subCategoryId)
+    );
+    setSelectedCategory(newCategory);
+
+    // Update URL without full navigation
+    navigate(`/category/${subCategoryId}`, { replace: true });
+
+    // Fetch products for new subcategory
+    if (newCategory) {
+      fetchSubcategoryProducts({
+        category: newCategory,
+        page: 1,
+        limit: 6,
+      });
+    }
   };
 
   const handleCategoryClick = (categoryId) => {
+    setAllProducts([]);
+    setCurrentPage(1);
+    setHasMore(true);
     navigate(`/category/${categoryId}`);
   };
 
-  // Generate breadcrumbs for subcategories
   const renderBreadcrumbs = () => {
     if (!isSubCategory || !categoriesData?.data || !selectedCategory)
       return null;
@@ -505,14 +524,13 @@ const CategoryPage = () => {
   // Page title based on context
   const pageTitle = useMemo(() => {
     if (searchQuery) return `${t("search.resultsFor")}: "${searchQuery}"`;
-    if (brandId) return "Brand Products"; // Could be improved by fetching brand name
+    if (brandId) return "Brand Products";
     if (categoryId && selectedCategory) return selectedCategory.name;
     if (categoryId) return "Category";
     if (collectionData?.data?.name) return collectionData.data.name;
     return "Collection";
   }, [searchQuery, brandId, categoryId, selectedCategory, collectionData, t]);
 
-  // Display subcategories section
   const renderSubCategories = () => {
     if (!selectedCategory?.children || searchQuery || isSubCategory)
       return null;
@@ -530,11 +548,6 @@ const CategoryPage = () => {
       </div>
     );
   };
-
-  // Determine if we should use infinite scroll
-  const shouldUseInfiniteScroll = useMemo(() => {
-    return true; // Now we always use infinite scroll for better consistency
-  }, []);
 
   if (isLoading) return <Loader />;
   if (hasError)
@@ -554,7 +567,13 @@ const CategoryPage = () => {
     );
 
   return (
-    <div className={styles.categoryPage} style={{ flexDirection: "column" }}>
+    <div
+      className={styles.categoryPage}
+      style={{ flexDirection: "column" }}
+      key={`category-${categoryId || collectionId || brandId}-${
+        searchQuery ? "search" : ""
+      }`}
+    >
       {renderBreadcrumbs()}
       <h2>{pageTitle}</h2>
       <p className={styles.sum}>
@@ -652,45 +671,31 @@ const CategoryPage = () => {
 
         <main className={styles.productsContainer}>
           {products.length > 0 ? (
-            shouldUseInfiniteScroll ? (
-              <InfiniteScroll
-                dataLength={products.length}
-                next={loadMoreData}
-                hasMore={hasMore}
-                scrollThreshold={0.8}
-                style={{ overflow: "visible" }}
-                loader={
-                  <div className={styles.loaderContainer}>
-                    <Loader />
-                  </div>
-                }
-                className={styles.productGrid}
-              >
-                {products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onAddToCart={handleAddToCart}
-                    onToggleFavorite={handleToggleFavorite}
-                    showFavoriteButton={true}
-                    showAddToCart={true}
-                  />
-                ))}
-              </InfiniteScroll>
-            ) : (
-              <div className={styles.productGrid}>
-                {products.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onAddToCart={handleAddToCart}
-                    onToggleFavorite={handleToggleFavorite}
-                    showFavoriteButton={true}
-                    showAddToCart={true}
-                  />
-                ))}
-              </div>
-            )
+            <InfiniteScroll
+              dataLength={products.length}
+              next={loadMoreData}
+              hasMore={hasMore}
+              scrollThreshold={0.8}
+              style={{ overflow: "visible" }}
+              loader={
+                <div className={styles.loaderContainer}>
+                  <Loader />
+                </div>
+              }
+              className={styles.productGrid}
+              key={`scroll-${categoryId || collectionId || brandId}`}
+            >
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAddToCart={handleAddToCart}
+                  onToggleFavorite={handleToggleFavorite}
+                  showFavoriteButton={true}
+                  showAddToCart={true}
+                />
+              ))}
+            </InfiniteScroll>
           ) : (
             <div>{t("search.noResults")}</div>
           )}
