@@ -75,8 +75,8 @@ export const authApi = baseApi.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           const token = data.data;
-          // console.log("Full Response:", data);
-          // console.log("New Token:", token);
+          console.log("Full Response:", data);
+          console.log("New Token:", token);
           if (token) {
             localStorage.removeItem("guestToken");
             document.cookie =

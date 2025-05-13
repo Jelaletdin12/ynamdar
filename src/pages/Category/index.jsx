@@ -41,6 +41,10 @@ const CategoryPage = () => {
   const { data: categoriesData } = useGetCategoriesQuery("tree");
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  // Track if the category has subcategories to display
+  const [hasSubcategories, setHasSubcategories] = useState(false);
+  const [subcategoriesToShow, setSubcategoriesToShow] = useState([]);
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -61,12 +65,16 @@ const CategoryPage = () => {
       for (const category of categories) {
         if (category.children) {
           for (const subCategory of category.children) {
-            if (subCategory.id === targetId) {
+            if (subCategory.id === parseInt(targetId)) {
               return true;
             }
+
+            // Check deeper nested levels
+            if (subCategory.children) {
+              const foundInNested = checkIsSubCategory([subCategory], targetId);
+              if (foundInNested) return true;
+            }
           }
-          const foundInNested = checkIsSubCategory(category.children, targetId);
-          if (foundInNested) return true;
         }
       }
       return false;
@@ -309,16 +317,45 @@ const CategoryPage = () => {
   const findCategoryById = (categories, id) => {
     if (!categories) return null;
 
+    const parsedId = typeof id === "string" ? parseInt(id) : id;
+
     for (const category of categories) {
-      if (category.id === id) return category;
+      if (category.id === parsedId) return category;
       if (category.children) {
-        const found = findCategoryById(category.children, id);
+        const found = findCategoryById(category.children, parsedId);
         if (found) return found;
       }
     }
     return null;
   };
 
+  // Get parent category for the current subcategory
+  const getParentCategory = (categories, childId) => {
+    if (!categories) return null;
+
+    const parsedChildId =
+      typeof childId === "string" ? parseInt(childId) : childId;
+
+    for (const category of categories) {
+      if (category.children) {
+        for (const child of category.children) {
+          if (child.id === parsedChildId) {
+            return category;
+          }
+
+          // Check deeper nested levels
+          if (child.children) {
+            const foundInNested = getParentCategory([child], parsedChildId);
+            if (foundInNested) return child;
+          }
+        }
+      }
+    }
+
+    return null;
+  };
+
+  // Find and setup the selected category and its subcategories
   useEffect(() => {
     if (categoriesData?.data && categoryId) {
       const category = findCategoryById(
@@ -327,14 +364,28 @@ const CategoryPage = () => {
       );
 
       if (selectedCategory?.id !== category?.id) {
-        // Only reset product-related states
+        // Reset product-related states
         setAllProducts([]);
         setHasMore(true);
         setCurrentPage(1);
         setSelectedCategory(category);
+
+        // Set subcategories to display in sidebar
+        // Set subcategories to display in sidebar
+        if (category) {
+          if (category.children && category.children.length > 0) {
+            // If the category has children, show them
+            setHasSubcategories(true);
+            setSubcategoriesToShow(category.children);
+          } else {
+            // If this is a subcategory without children, don't show any category in sidebar
+            setHasSubcategories(false);
+            setSubcategoriesToShow([]);
+          }
+        }
       }
     }
-  }, [categoriesData, categoryId]);
+  }, [categoriesData, categoryId, selectedCategory]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -454,7 +505,7 @@ const CategoryPage = () => {
   };
 
   const handleSubCategorySelect = (subCategoryId) => {
-    // Only reset product-related states
+    // Reset product-related states
     setAllProducts([]);
     setCurrentPage(1);
     setHasMore(true);
@@ -488,18 +539,24 @@ const CategoryPage = () => {
   };
 
   const renderBreadcrumbs = () => {
-    if (!isSubCategory || !categoriesData?.data || !selectedCategory)
-      return null;
+    if (!categoriesData?.data || !selectedCategory) return null;
 
     const breadcrumbs = [];
     let currentCategory = selectedCategory;
+    let parentId = currentCategory.parent_id;
 
-    while (currentCategory) {
-      breadcrumbs.unshift(currentCategory);
-      currentCategory = findCategoryById(
-        categoriesData.data,
-        currentCategory.parent_id
-      );
+    // Add the current category first
+    breadcrumbs.unshift(currentCategory);
+
+    // Then add all parent categories
+    while (parentId) {
+      const parentCategory = findCategoryById(categoriesData.data, parentId);
+      if (parentCategory) {
+        breadcrumbs.unshift(parentCategory);
+        parentId = parentCategory.parent_id;
+      } else {
+        break;
+      }
     }
 
     return (
@@ -532,8 +589,7 @@ const CategoryPage = () => {
   }, [searchQuery, brandId, categoryId, selectedCategory, collectionData, t]);
 
   const renderSubCategories = () => {
-    if (!selectedCategory?.children || searchQuery || isSubCategory)
-      return null;
+    if (!selectedCategory?.children || searchQuery) return null;
 
     return (
       <div className={styles.subCategories}>
@@ -574,7 +630,7 @@ const CategoryPage = () => {
         searchQuery ? "search" : ""
       }`}
     >
-      {renderBreadcrumbs()}
+      {categoryId && renderBreadcrumbs()}
       <h2>{pageTitle}</h2>
       <p className={styles.sum}>
         {t("category.total")}: {totalItems} {t("category.items")}
@@ -595,21 +651,28 @@ const CategoryPage = () => {
 
       <div className={styles.Container}>
         <aside className={styles.sidebar}>
-          {!searchQuery && selectedCategory?.children && !isSubCategory && (
-            <div className={styles.filterSection}>
-              <h3>{t("category.subCategories")}</h3>
-              <ul>
-                {selectedCategory.children.map((subCategory) => (
-                  <li
-                    key={subCategory.id}
-                    onClick={() => handleSubCategorySelect(subCategory.id)}
-                  >
-                    {subCategory.name}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {!searchQuery &&
+            hasSubcategories &&
+            subcategoriesToShow.length > 0 && (
+              <div className={styles.filterSection}>
+                <h3>{t("category.subCategories")}</h3>
+                <ul>
+                  {subcategoriesToShow.map((subCategory) => (
+                    <li
+                      key={subCategory.id}
+                      onClick={() => handleSubCategorySelect(subCategory.id)}
+                      className={
+                        parseInt(categoryId) === subCategory.id
+                          ? styles.activeSubcategory
+                          : ""
+                      }
+                    >
+                      {subCategory.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           <div className={styles.filterSection}>
             <h3>{t("category.composition")}</h3>
             <label>

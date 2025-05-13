@@ -4,11 +4,91 @@ import { useNavigate } from "react-router-dom";
 import styles from "./DropdownMenu.module.scss";
 import { useGetCategoriesQuery } from "../../app/api/categories";
 import { CategoryIcon } from "../Icons";
+import { ChevronRight, ChevronDown } from "lucide-react"; // Assuming you have access to lucide-react or similar
+
+const NestedCategory = ({
+  category,
+  level = 0,
+  handleCategorySelect,
+  closeDropdown,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const hasChildren = category.children && category.children.length > 0;
+
+  const handleClick = (e) => {
+    e.stopPropagation();
+    if (hasChildren) {
+      setIsExpanded(!isExpanded);
+    } else {
+      handleCategorySelect(category);
+      closeDropdown();
+    }
+  };
+
+  const handleDirectNavigation = (e) => {
+    e.stopPropagation();
+    handleCategorySelect(category);
+    closeDropdown();
+  };
+
+  return (
+    <div
+      className={styles.nestedCategoryContainer}
+      style={{ paddingLeft: `${level * 16}px` }}
+    >
+      <div className={styles.nestedCategoryItem} onClick={handleClick}>
+        <div className={styles.categoryLabel}>
+          <span className={styles.title}>{category.name}</span>
+        </div>
+
+        {hasChildren && (
+          <button
+            className={styles.expandButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsExpanded(!isExpanded);
+            }}
+          >
+            {isExpanded ? (
+              <ChevronDown size={16} />
+            ) : (
+              <ChevronRight size={16} />
+            )}
+          </button>
+        )}
+
+        {hasChildren && (
+          <button
+            className={styles.navigateButton}
+            onClick={handleDirectNavigation}
+            title="Go to category"
+          >
+            →
+          </button>
+        )}
+      </div>
+
+      {hasChildren && isExpanded && (
+        <div className={styles.nestedChildren}>
+          {category.children.map((child) => (
+            <NestedCategory
+              key={child.id}
+              category={child}
+              level={level + 1}
+              handleCategorySelect={handleCategorySelect}
+              closeDropdown={closeDropdown}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const DropdownMenu = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const dropdownRef = useRef(null); // Ref ekledik
+  const dropdownRef = useRef(null);
   const {
     data: categoriesData,
     isLoading,
@@ -17,14 +97,13 @@ const DropdownMenu = () => {
 
   const categories = categoriesData?.data || [];
   const [isOpen, setIsOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState(null);
+  const [activeMainCategory, setActiveMainCategory] = useState(null);
 
   useEffect(() => {
     if (categories.length > 0) {
-      const defaultCategory = categories.find(
-        (cat) => cat.name === "Aýallar üçin"
-      );
-      setActiveCategory(defaultCategory);
+      const defaultCategory =
+        categories.find((cat) => cat.name === "Aýallar üçin") || categories[0];
+      setActiveMainCategory(defaultCategory);
     }
   }, [categories]);
 
@@ -33,10 +112,11 @@ const DropdownMenu = () => {
   };
 
   const handleMouseLeave = () => {
-    const defaultCategory = categories.find(
-      (cat) => cat.name === "Aýallar üçin"
-    );
-    setActiveCategory(defaultCategory);
+    if (categories.length > 0) {
+      const defaultCategory =
+        categories.find((cat) => cat.name === "Aýallar üçin") || categories[0];
+      setActiveMainCategory(defaultCategory);
+    }
   };
 
   const handleCategorySelect = (category) => {
@@ -44,7 +124,7 @@ const DropdownMenu = () => {
     setIsOpen(false);
   };
 
-  // Dışarıya tıklanınca kapanması için event listener
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -67,6 +147,7 @@ const DropdownMenu = () => {
         <CategoryIcon />
         {t("navbar.category")}
       </button>
+
       {isOpen && (
         <div className={styles.dropdownWrapper}>
           <div className={styles.dropdownPanel} onMouseLeave={handleMouseLeave}>
@@ -75,60 +156,44 @@ const DropdownMenu = () => {
                 <div
                   key={category.id}
                   className={`${styles.categoryItem} ${
-                    activeCategory?.id === category.id ? styles.active : ""
+                    activeMainCategory?.id === category.id ? styles.active : ""
                   }`}
-                  onMouseEnter={() => setActiveCategory(category)}
+                  onMouseEnter={() => setActiveMainCategory(category)}
                   onClick={() => handleCategorySelect(category)}
                 >
                   <span className={styles.title}>{category.name}</span>
                 </div>
               ))}
             </div>
-            {activeCategory &&
-              activeCategory.children &&
-              activeCategory.children.length > 0 && (
-                <div className={styles.contentPanel}>
-                  <h2
-                    onClick={() => handleCategorySelect(activeCategory)}
-                    className={styles.title}
-                  >
-                    {activeCategory.name}
-                  </h2>
-                  <div style={{ overflowY: "scroll", height: "100%" }}>
-                    <div className={styles.subcategoryList}>
-                      <div className={styles.column}>
-                        {activeCategory.children
-                          .slice(
-                            0,
-                            Math.ceil(activeCategory.children.length / 2)
-                          )
-                          .map((subcategory) => (
-                            <div
-                              key={subcategory.id}
-                              className={styles.subcategoryItem}
-                              onClick={() => handleCategorySelect(subcategory)}
-                            >
-                              {subcategory.name}
-                            </div>
-                          ))}
-                      </div>
-                      <div className={styles.column}>
-                        {activeCategory.children
-                          .slice(Math.ceil(activeCategory.children.length / 2))
-                          .map((subcategory) => (
-                            <div
-                              key={subcategory.id}
-                              className={styles.subcategoryItem}
-                              onClick={() => handleCategorySelect(subcategory)}
-                            >
-                              {subcategory.name}
-                            </div>
-                          ))}
-                      </div>
+
+            {activeMainCategory && (
+              <div className={styles.contentPanel}>
+                <h2
+                  onClick={() => handleCategorySelect(activeMainCategory)}
+                  className={styles.title}
+                >
+                  {activeMainCategory.name}
+                </h2>
+
+                <div className={styles.subCategoriesContainer}>
+                  {activeMainCategory.children &&
+                  activeMainCategory.children.length > 0 ? (
+                    activeMainCategory.children.map((subcategory) => (
+                      <NestedCategory
+                        key={subcategory.id}
+                        category={subcategory}
+                        handleCategorySelect={handleCategorySelect}
+                        closeDropdown={() => setIsOpen(false)}
+                      />
+                    ))
+                  ) : (
+                    <div className={styles.noSubcategories}>
+                      {/* No subcategories available */}
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
       )}

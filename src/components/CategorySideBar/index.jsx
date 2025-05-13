@@ -1,14 +1,85 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Drawer } from "antd";
 import styles from "./Sidebar.module.scss";
 import { useTranslation } from "react-i18next";
 import { useGetCategoriesQuery } from "../../app/api/categories";
 import { useNavigate } from "react-router-dom";
+import { ChevronRight, ChevronDown } from "lucide-react"; // Assuming you have access to lucide-react or similar
+
+const NestedCategoryMobile = ({ category, handleCategoryClick, level = 0 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const hasChildren = category.children && category.children.length > 0;
+
+  const handleNestedClick = (e) => {
+    e.stopPropagation();
+    if (hasChildren) {
+      setIsExpanded(!isExpanded);
+    } else {
+      handleCategoryClick(category);
+    }
+  };
+
+  const handleNavigateClick = (e) => {
+    e.stopPropagation();
+    handleCategoryClick(category);
+  };
+
+  return (
+    <div className={styles.nestedCategoryContainer}>
+      <div
+        className={styles.nestedCategoryItem}
+        style={{ paddingLeft: `${level * 16 + 16}px` }}
+        onClick={handleNestedClick}
+      >
+        <span className={styles.title}>{category.name}</span>
+
+        <div className={styles.categoryActions}>
+          {hasChildren && (
+            <button
+              className={styles.expandButton}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
+            >
+              {isExpanded ? (
+                <ChevronDown size={16} />
+              ) : (
+                <ChevronRight size={16} />
+              )}
+            </button>
+          )}
+
+          {hasChildren && (
+            <button
+              className={styles.navigateButton}
+              onClick={handleNavigateClick}
+            >
+              →
+            </button>
+          )}
+        </div>
+      </div>
+
+      {hasChildren && isExpanded && (
+        <div className={styles.nestedSubcategories}>
+          {category.children.map((child) => (
+            <NestedCategoryMobile
+              key={child.id}
+              category={child}
+              handleCategoryClick={handleCategoryClick}
+              level={level + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState(null);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const {
     data: categoriesData,
     isLoading,
@@ -17,18 +88,17 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const categories = categoriesData?.data || [];
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading categories</div>;
-
   const handleToggle = () => {
     setIsOpen(!isOpen);
-    console.log("Tıklama çalışıyor mu?", isOpen);
   };
 
   const handleCategoryClick = (category) => {
     navigate(`/category/${category.id}`, { state: { category } });
-    setIsOpen(!isOpen);
+    setIsOpen(false);
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading categories</div>;
 
   return (
     <div className={styles.sidebarContainer}>
@@ -51,25 +121,20 @@ const Sidebar = () => {
       </button>
 
       <Drawer
-        title="Categories"
+        title={t("navbar.category")}
         placement="left"
         onClose={handleToggle}
         open={isOpen}
         className={styles.sidebarDrawer}
-        width={360}
+        width={300}
       >
-        <div className={styles.categoriesList}>
+        <div className={styles.mobileMenuContent}>
           {categories.map((category) => (
-            <div
+            <NestedCategoryMobile
               key={category.id}
-              className={`${styles.categoryItem} ${
-                activeCategory?.id === category.id ? styles.active : ""
-              }`}
-              onClick={() => handleCategoryClick(category)}
-            >
-              {/* <span className={styles.icon}>{category.icon}</span> */}
-              <span className={styles.title}>{category.name}</span>
-            </div>
+              category={category}
+              handleCategoryClick={handleCategoryClick}
+            />
           ))}
         </div>
       </Drawer>
