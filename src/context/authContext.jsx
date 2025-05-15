@@ -67,10 +67,10 @@ export const AuthProvider = ({ children }) => {
         // console.log("Auth token bulundu ve aktif edildi");
       } else if (storedGuestToken) {
         setGuestToken(storedGuestToken);
-        console.log("Guest token bulundu ve aktif edildi", storedGuestToken);
+        // console.log("Guest token bulundu ve aktif edildi", storedGuestToken);
       } else {
         try {
-          console.log("Token bulunamadı, guest token alınıyor...");
+          // console.log("Token bulunamadı, guest token alınıyor...");
           const response = await getGuestToken().unwrap();
 
           const newGuestToken =
@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }) => {
             setGuestToken(newGuestToken);
             localStorage.setItem("guestToken", newGuestToken);
             document.cookie = `guestToken=${newGuestToken}; path=/; secure; SameSite=Strict`;
-            console.log("Guest token obtained and stored successfully");
+            // console.log("Guest token obtained and stored successfully");
           } else {
             console.error("Guest token response format unexpected:", response);
           }

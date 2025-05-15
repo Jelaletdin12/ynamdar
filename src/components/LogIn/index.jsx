@@ -128,7 +128,6 @@ const LoginModal = ({ isVisible: propIsVisible, onClose: propOnClose }) => {
         return message.error(t("profile.enter_valid_phone"));
       }
       const phoneInt = parseInt(formattedPhone, 10);
-      console.log(phoneInt);
       const response = await login({ phone_number: phoneInt }).unwrap();
       if (response) {
         message.success(t("profile.verification_code_sent"));

@@ -6,23 +6,23 @@ const getToken = () => {
   const authTokenCookie = document.cookie
     .split("; ")
     .find((row) => row.startsWith("authToken="));
-  
+
   const guestTokenCookie = document.cookie
     .split("; ")
     .find((row) => row.startsWith("guestToken="));
-    
+
   // Sonra localStorage'dan kontrol et
   const authTokenLocal = localStorage.getItem("authToken");
   const guestTokenLocal = localStorage.getItem("guestToken");
-  
+
   // Auth token varsa onu döndür (önce cookie sonra localStorage)
   if (authTokenCookie) return authTokenCookie.split("=")[1];
   if (authTokenLocal) return authTokenLocal;
-  
+
   // Guest token varsa onu döndür
   if (guestTokenCookie) return guestTokenCookie.split("=")[1];
   if (guestTokenLocal) return guestTokenLocal;
-  
+
   return null;
 };
 
@@ -59,14 +59,13 @@ const customBaseQuery = async (args, api, extraOptions) => {
 
   try {
     const result = await baseQuery(urlWithLang, api, extraOptions);
-    
-    // Token geçersiz (401) ise yeni token al ve yeniden dene
+
     if (result.error && result.error.status === 401) {
-      console.log("Token geçersiz, yeni guest token alınıyor...");
       try {
-        // Guest token almak için özel bir istek yap
         const guestTokenResponse = await fetch(
-          `${import.meta.env.VITE_API_URL || "https://mm.com.tm/api/v1/"}/auth/guest-token`,
+          `${
+            import.meta.env.VITE_API_URL || "https://mm.com.tm/api/v1/"
+          }/auth/guest-token`,
           {
             method: "POST",
             headers: {
@@ -75,15 +74,14 @@ const customBaseQuery = async (args, api, extraOptions) => {
             },
           }
         );
-        
+
         const data = await guestTokenResponse.json();
         const newGuestToken = data.token || data.data;
-        
+
         if (newGuestToken) {
           localStorage.setItem("guestToken", newGuestToken);
           document.cookie = `guestToken=${newGuestToken}; path=/; secure; SameSite=Strict`;
-          
-          // Token yenilendi, isteği tekrar dene
+
           const retryResult = await baseQuery(urlWithLang, api, extraOptions);
           return retryResult;
         }
@@ -91,7 +89,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
         console.error("Failed to get new guest token:", error);
       }
     }
-    
+
     if (
       result.error &&
       typeof result.error.data === "string" &&
