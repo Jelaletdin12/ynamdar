@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import { useGetGuestTokenMutation } from "../app/api/authApi";
 import { useTranslation } from "react-i18next";
 export const AuthContext = createContext({
@@ -67,10 +67,10 @@ export const AuthProvider = ({ children }) => {
         // console.log("Auth token bulundu ve aktif edildi");
       } else if (storedGuestToken) {
         setGuestToken(storedGuestToken);
-        // console.log("Guest token bulundu ve aktif edildi");
+        console.log("Guest token bulundu ve aktif edildi", storedGuestToken);
       } else {
         try {
-          // console.log("Token bulunamadı, guest token alınıyor...");
+          console.log("Token bulunamadı, guest token alınıyor...");
           const response = await getGuestToken().unwrap();
 
           const newGuestToken =
@@ -117,14 +117,21 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     document.cookie =
       "authToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    document.cookie =
+      "guestToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC";
     localStorage.removeItem("authToken");
+    localStorage.removeItem("guestToken");
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("guestToken");
+
     setAuthToken(null);
+    setGuestToken(null);
     setIsAuthenticated(false);
-  
+
     try {
       const response = await getGuestToken().unwrap();
       const newGuestToken = response.token || response.data?.token;
-  
+
       if (newGuestToken) {
         setGuestToken(newGuestToken);
         localStorage.setItem("guestToken", newGuestToken);
@@ -133,11 +140,11 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Failed to get guest token after logout:", error);
     } finally {
-      // Her durumda sayfa yenilenir
-      window.location.reload();
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 100);
     }
   };
-  
 
   return (
     <AuthContext.Provider
